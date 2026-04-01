@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Arquivados - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/css/notifications.css" />
+    <link rel="stylesheet" href="../../assets/css/user-menu.css" />
+    <style>
+      .archive-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+
+      .archive-card {
+        background: #fff;
+        border: 1px solid rgba(31, 96, 232, 0.15);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(31, 96, 232, 0.07);
+      }
+
+      .archive-card h3 {
+        margin: 0 0 14px;
+        color: #1f2937;
+        font-size: 18px;
+      }
+
+      .archive-list {
+        max-height: 520px;
+        overflow: auto;
+      }
+
+      .archive-item {
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 10px;
+        background: #fafafa;
+      }
+
+      .archive-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+
+      .archive-meta {
+        margin-top: 4px;
+        font-size: 12px;
+        color: #6b7280;
+      }
+
+      .archive-empty {
+        color: #9ca3af;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .tag {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        color: #1d4ed8;
+        background: #dbeafe;
+      }
+
+      @media (max-width: 900px) {
+        .archive-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="/assets/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link" href="../dashboard/dashboard.html">
+            <span>🏠</span>
+            Dashboard
+          </a>
+          <a class="sidebar__link" href="../activities/activities.html">
+            <span>📋</span>
+            Atividades
+          </a>
+          <a class="sidebar__link" href="../patients/list.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="../patients/medical-records.html">📋 Prontuários Cadastrados</a>
+              <a class="sidebar__submenu-link" href="../patients/questions.html">❓ Cadastro de Perguntas</a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="attendance-menu">
+              <a class="sidebar__submenu-link" href="../attendance/attendance.html">✋ Registrar Frequência</a>
+              <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">📄 Relatório Frequência</a>
+            </div>
+          </div>
+          <a class="sidebar__link sidebar__link--active" href="../admin/users.html#arquivados" data-require-role="SUPERVISOR">
+            <span>🛡️</span>
+            Painel de Gerenciamento
+          </a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2>Arquivados</h2>
+            <p>Conferência histórica de registros desabilitados (somente supervisão)</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <button class="user-dropdown__item" data-action="manage-users" style="display: none;" id="btn-manage-users">
+                  <span class="user-dropdown__item-icon">🔐</span>
+                  Gerenciar Usuários
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="breadcrumb"><span>Arquivados</span></div>
+
+        <div class="archive-grid">
+          <section class="archive-card">
+            <h3>🧑 Pacientes Arquivados</h3>
+            <div id="patient-archived-list" class="archive-list">
+              <p class="archive-empty">Carregando...</p>
+            </div>
+          </section>
+
+          <section class="archive-card">
+            <h3>👤 Usuários Desabilitados</h3>
+            <div id="users-archived-list" class="archive-list">
+              <p class="archive-empty">Carregando...</p>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script src="../../assets/js/notifications.js"></script>
+    <script src="../../assets/js/user-menu.js"></script>
+    <script>
+      window.location.replace('../admin/users.html#arquivados');
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) { window.location.href = '../auth/login.html'; }
+      const initials = (userEmail || '').split('@')[0].substring(0, 2).toUpperCase();
+
+      document.getElementById('user-avatar').textContent = initials;
+      document.getElementById('dropdown-avatar').textContent = initials;
+      document.getElementById('dropdown-email').textContent = userEmail;
+
+      async function checkSupervisorAccess() {
+        try {
+          const response = await fetch(`${API_URL}/profile`, {
+            headers: { 'x-user-email': userEmail }
+          });
+
+          if (!response.ok) {
+            notify.error('Sessao invalida. Faça login novamente.');
+            setTimeout(() => { window.location.href = '../auth/login.html'; }, 1200);
+            return false;
+          }
+
+          const profile = await response.json();
+          const role = profile.role || profile.user?.role;
+
+          const btnManageUsers = document.getElementById('btn-manage-users');
+          if (btnManageUsers && role === 'SUPERVISOR') {
+            btnManageUsers.style.display = 'block';
+          }
+
+          if (role !== 'SUPERVISOR') {
+            notify.error('Acesso restrito a supervisores.');
+            setTimeout(() => { window.location.href = '../dashboard/dashboard.html'; }, 1200);
+            return false;
+          }
+
+          return true;
+        } catch (error) {
+          console.error(error);
+          notify.error('Erro ao validar permissao.');
+          return false;
+        }
+      }
+
+      function renderArchivedPatients(items) {
+        const container = document.getElementById('patient-archived-list');
+        if (!Array.isArray(items) || !items.length) {
+          container.innerHTML = '<p class="archive-empty">Nenhum paciente arquivado.</p>';
+          return;
+        }
+
+        container.innerHTML = items.map((item) => `
+          <article class="archive-item">
+            <div class="archive-title">${item.name || 'Sem nome'} <span class="tag">${item.status || 'archived'}</span></div>
+            <div class="archive-meta">CPF: ${item.cpf || '-'} | Contato: ${item.phone || item.phone2 || '-'}</div>
+            <div class="archive-meta">Criado em: ${item.created_at || '-'}</div>
+          </article>
+        `).join('');
+      }
+
+      function renderArchivedUsers(items) {
+        const container = document.getElementById('users-archived-list');
+        if (!Array.isArray(items) || !items.length) {
+          container.innerHTML = '<p class="archive-empty">Nenhum usuario desabilitado definitivamente.</p>';
+          return;
+        }
+
+        container.innerHTML = items.map((item) => `
+          <article class="archive-item">
+            <div class="archive-title">${item.email || 'Sem email'} <span class="tag">${item.role || '-'}</span></div>
+            <div class="archive-meta">Setor: ${item.sector || '-'} | Ativo: ${item.is_active ? 'Sim' : 'Nao'} | Oculto: ${item.is_hidden ? 'Sim' : 'Nao'}</div>
+            <div class="archive-meta">Criado em: ${item.created_at || '-'}</div>
+          </article>
+        `).join('');
+      }
+
+      async function loadArchivedData() {
+        try {
+          const [patientsResponse, usersResponse] = await Promise.all([
+            fetch(`${API_URL}/api/archive/patients`, { headers: { 'x-user-email': userEmail } }),
+            fetch(`${API_URL}/api/archive/users`, { headers: { 'x-user-email': userEmail } })
+          ]);
+
+          const patientsData = await patientsResponse.json();
+          const usersData = await usersResponse.json();
+
+          if (!patientsResponse.ok || !usersResponse.ok) {
+            notify.error('Erro ao carregar registros arquivados.');
+            return;
+          }
+
+          renderArchivedPatients(patientsData.archived_patients || []);
+          renderArchivedUsers(usersData.archived_users || []);
+        } catch (error) {
+          console.error(error);
+          notify.error('Erro de conexao ao buscar arquivados.');
+        }
+      }
+
+      // Menu Toggle
+      const menuToggles = document.querySelectorAll('.sidebar__menu-toggle');
+      menuToggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const menuId = toggle.getAttribute('data-expand');
+          const submenu = document.getElementById(menuId);
+          const isOpen = submenu.classList.contains('open');
+
+          document.querySelectorAll('.sidebar__submenu').forEach(menu => {
+            if (menu.id !== menuId) {
+              menu.classList.remove('open');
+            }
+          });
+
+          if (isOpen) {
+            submenu.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+          } else {
+            submenu.classList.add('open');
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      document.querySelectorAll('.sidebar__submenu-link[href="#"]').forEach(link => {
+        if (link.textContent.includes('Prontuários')) {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            notify.info('Funcionalidade de Prontuarios em desenvolvimento');
+          });
+        }
+      });
+
+      (async () => {
+        const allowed = await checkSupervisorAccess();
+        if (allowed) {
+          loadArchivedData();
+        }
+      })();
+    </script>
+  </body>
+</html>
+

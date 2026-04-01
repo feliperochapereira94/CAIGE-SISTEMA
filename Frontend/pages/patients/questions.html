@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Perguntas - CAIGE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+  <link rel="stylesheet" href="../../assets/css/profile.css" />
+  <link rel="stylesheet" href="../../assets/css/notifications.css" />
+  <link rel="stylesheet" href="../../assets/css/user-menu.css" />
+  <style>
+    .panel {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e6e8eb;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      font-size: 12px;
+      color: #48535b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      border: 1px solid #d3d8de;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    .field textarea {
+      min-height: 84px;
+      resize: vertical;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .btn-main,
+    .btn-alt,
+    .btn-danger {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-main {
+      background: #1d6b73;
+      color: #fff;
+    }
+
+    .btn-main:hover {
+      background: #155561;
+    }
+
+    .btn-alt {
+      background: #eef2f5;
+      color: #1f2a2e;
+    }
+
+    .btn-alt:hover {
+      background: #dde5eb;
+    }
+
+    .btn-danger {
+      background: #fdecec;
+      color: #9e2525;
+    }
+
+    .btn-danger:hover {
+      background: #f8d6d6;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 12px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .list-tools {
+      display: grid;
+      grid-template-columns: 2fr 1fr auto;
+      gap: 10px;
+      margin-top: 10px;
+      align-items: center;
+    }
+
+    .list-tools input,
+    .list-tools select {
+      border: 1px solid #d3d8de;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    .list-tools__count {
+      font-size: 12px;
+      color: #66737d;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .type-pill {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #e9f2f3;
+      color: #1d6b73;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+    }
+
+    .item {
+      border: 1px solid #e3e7ec;
+      border-radius: 10px;
+      background: #fbfcfd;
+      overflow: hidden;
+    }
+
+    .item__head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      cursor: pointer;
+    }
+
+    .item__head-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .item__chevron {
+      font-size: 10px;
+      color: #67757f;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .item.open .item__chevron {
+      transform: rotate(90deg);
+    }
+
+    .item__body {
+      display: none;
+      border-top: 1px solid #e8edf2;
+      background: #fff;
+      padding: 12px;
+    }
+
+    .item.open .item__body {
+      display: block;
+    }
+
+    .item__title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1f2a2e;
+      margin: 0;
+    }
+
+    .item__meta {
+      font-size: 12px;
+      color: #66737d;
+      margin: 2px 0 0;
+    }
+
+    .item__desc {
+      font-size: 13px;
+      color: #43515b;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+
+    .item__footer {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #67757f;
+      margin: 2px 0 0;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .list-tools {
+        grid-template-columns: 1fr;
+      }
+
+      .list-tools__count {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="sidebar__brand">
+        <img src="/assets/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+        <div>
+          <h1>CAIGE</h1>
+          <span>Univale</span>
+        </div>
+      </div>
+      <nav class="sidebar__nav">
+        <a class="sidebar__link" href="../dashboard/dashboard.html">
+          <span>🏠</span>
+          Dashboard
+        </a>
+        <a class="sidebar__link" href="../activities/activities.html">
+          <span>📋</span>
+          Atividades
+        </a>
+        <a class="sidebar__link" href="../patients/list.html">
+          <span>👥</span>
+          Pacientes
+        </a>
+        <div class="sidebar__menu-item">
+          <button class="sidebar__menu-toggle sidebar__menu-toggle--active" data-expand="prontuarios-menu" aria-expanded="true">
+            <span>📄</span>
+            <span>Prontuários</span>
+            <span class="sidebar__menu-icon">+</span>
+          </button>
+          <div class="sidebar__submenu open" id="prontuarios-menu">
+            <a class="sidebar__submenu-link" href="./medical-records.html">
+              📋 Prontuários Cadastrados
+            </a>
+            <a class="sidebar__submenu-link sidebar__submenu-link--active" href="./questions.html">
+              ❓ Cadastro de Perguntas
+            </a>
+          </div>
+        </div>
+        <div class="sidebar__menu-item">
+          <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+            <span>📊</span>
+            <span>Frequência</span>
+            <span class="sidebar__menu-icon">+</span>
+          </button>
+          <div class="sidebar__submenu" id="attendance-menu">
+            <a class="sidebar__submenu-link" href="../attendance/attendance.html">✋ Registrar Frequência</a>
+            <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">📄 Relatório Frequência</a>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <header class="content__header">
+        <div>
+          <h2>❓ Cadastro de Perguntas</h2>
+          <p>Gerencie as perguntas disponíveis para montar prontuários por curso.</p>
+        </div>
+        <div class="user-menu">
+          <button class="user-avatar-btn">
+            <span class="content__user-avatar" id="user-avatar">SC</span>
+          </button>
+          <div class="user-dropdown">
+            <div class="user-dropdown__header">
+              <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+              <div style="flex: 1;">
+                <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+              </div>
+            </div>
+            <div class="user-dropdown__body">
+              <button class="user-dropdown__item" data-modal="account">
+                <span class="user-dropdown__item-icon">👤</span>
+                Minha Conta
+              </button>
+              <div class="user-dropdown__divider"></div>
+              <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                <span class="user-dropdown__item-icon">🚪</span>
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="panel">
+        <h3 style="margin-top: 0;">Nova Pergunta</h3>
+        <p class="hint">Perguntas ficam disponíveis para montar prontuários do curso selecionado.</p>
+        <form id="form-question">
+          <div class="grid-2">
+            <div class="field">
+              <label for="question-course">Curso</label>
+              <select id="question-course" required></select>
+            </div>
+            <div class="field">
+              <label for="question-type">Tipo de pergunta</label>
+              <select id="question-type" required>
+                <option value="texto_livre">Texto livre</option>
+                <option value="multipla_escolha">Multipla escolha</option>
+                <option value="sim_nao">Sim/não</option>
+                <option value="escala">Escala (1 a 5)</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="question-title">Titulo</label>
+            <input id="question-title" type="text" maxlength="255" required />
+          </div>
+          <div class="field">
+            <label for="question-description">Descricao</label>
+            <textarea id="question-description" placeholder="Opcional"></textarea>
+          </div>
+          <div class="field hidden" id="multiple-options-wrap">
+            <label for="question-options">Opcoes (separadas por ; )</label>
+            <input id="question-options" type="text" placeholder="Opcao A; Opcao B; Opcao C" />
+          </div>
+          <div class="actions">
+            <button class="btn-main" type="submit">Salvar Pergunta</button>
+            <button class="btn-alt" id="btn-refresh-questions" type="button">Atualizar Lista</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h3 style="margin-top: 0;">Perguntas do Curso</h3>
+        <div class="list-tools">
+          <input id="questions-search" type="text" placeholder="Buscar por titulo ou descricao" />
+          <select id="questions-type-filter">
+            <option value="all">Todos os tipos</option>
+            <option value="texto_livre">Texto livre</option>
+            <option value="multipla_escolha">Multipla escolha</option>
+            <option value="sim_nao">Sim/Não</option>
+            <option value="escala">Escala</option>
+          </select>
+          <div class="list-tools__count" id="questions-count">0 pergunta(s)</div>
+        </div>
+        <div id="questions-list" class="list"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../../assets/js/notifications.js"></script>
+  <script src="../../assets/js/user-menu.js"></script>
+  <script>
+    const API_BASE = 'http://localhost:3000/api/questionnaires';
+    const API_PROFILE = 'http://localhost:3000/profile';
+    const userEmail = localStorage.getItem('userEmail');
+    const allowedCourses = [
+      'Fisioterapia',
+      'Educacao Fisica',
+      'Agronomia',
+      'Farmacia',
+      'Enfermagem',
+      'Medicina',
+      'Estetica e Cosmetica',
+      'Fonoaudiologia',
+      'Nutricao'
+    ];
+
+    let selectedCourse = 'Fisioterapia';
+    let currentUserRole = null;
+    let currentUserSector = null;
+    let cachedQuestions = [];
+    let questionState = {};
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function authHeaders() {
+      return {
+        'x-user-email': userEmail,
+        'Content-Type': 'application/json'
+      };
+    }
+
+    function fillCourseSelect() {
+      const select = document.getElementById('question-course');
+      const effectiveCourses = (currentUserRole === 'SUPERVISOR' || !currentUserSector)
+        ? allowedCourses
+        : [currentUserSector];
+
+      if (!effectiveCourses.includes(selectedCourse)) {
+        selectedCourse = effectiveCourses[0] || selectedCourse;
+      }
+
+      select.innerHTML = effectiveCourses
+        .map((course) => `<option value="${escapeHtml(course)}">${escapeHtml(course)}</option>`)
+        .join('');
+      select.value = selectedCourse;
+      select.disabled = currentUserRole !== 'SUPERVISOR' && !!currentUserSector;
+    }
+
+    async function loadProfileCourse() {
+      try {
+        const res = await fetch(API_PROFILE, { headers: { 'x-user-email': userEmail } });
+        if (!res.ok) return;
+        const profile = await res.json();
+        if (profile && profile.role) {
+          currentUserRole = profile.role;
+        }
+        if (profile && profile.sector && allowedCourses.includes(profile.sector)) {
+          currentUserSector = profile.sector;
+          selectedCourse = profile.sector;
+        }
+      } catch (err) {
+        console.error('Erro ao carregar curso do usuario:', err);
+      }
+    }
+
+    async function loadQuestions(course) {
+      const listEl = document.getElementById('questions-list');
+      listEl.innerHTML = '<div class="item">Carregando perguntas...</div>';
+
+      try {
+        const res = await fetch(`${API_BASE}/questions/course/${encodeURIComponent(course)}`, {
+          headers: { 'x-user-email': userEmail }
+        });
+        if (!res.ok) throw new Error('Falha ao carregar perguntas');
+
+        cachedQuestions = await res.json();
+        renderQuestionsList();
+      } catch (err) {
+        console.error(err);
+        listEl.innerHTML = '<div class="item">Erro ao carregar perguntas.</div>';
+      }
+    }
+
+    function renderQuestionsList() {
+      const listEl = document.getElementById('questions-list');
+      const search = document.getElementById('questions-search').value.trim().toLowerCase();
+      const selectedType = document.getElementById('questions-type-filter').value;
+
+      const filtered = cachedQuestions.filter((q) => {
+        const matchesType = selectedType === 'all' || q.question_type === selectedType;
+        const haystack = `${q.title || ''} ${q.description || ''}`.toLowerCase();
+        const matchesSearch = !search || haystack.includes(search);
+        return matchesType && matchesSearch;
+      });
+
+      document.getElementById('questions-count').textContent = `${filtered.length} pergunta(s)`;
+
+      if (!filtered.length) {
+        listEl.innerHTML = '<div class="item">Nenhuma pergunta encontrada com os filtros atuais.</div>';
+        return;
+      }
+
+      listEl.innerHTML = filtered.map((q) => {
+        const state = questionState[String(q.id)] || { open: false };
+        return `
+          <div class="item ${state.open ? 'open' : ''}" data-q-id="${q.id}">
+            <div class="item__head" data-expand-q-id="${q.id}">
+              <div class="item__head-left">
+                <h4 class="item__title">${escapeHtml(q.title)}</h4>
+                <p class="item__meta">Tipo: ${escapeHtml(q.question_type)} | ID: ${q.id}</p>
+                <span class="type-pill">${escapeHtml(q.question_type)}</span>
+              </div>
+              <span class="item__chevron">▶</span>
+            </div>
+            <div class="item__body">
+              <p class="item__desc">${escapeHtml(q.description || 'Sem descricao')}</p>
+              <div class="item__footer">
+                <button class="btn-danger" type="button" data-delete-question="${q.id}">Excluir</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      listEl.querySelectorAll('[data-expand-q-id]').forEach((head) => {
+        head.addEventListener('click', () => {
+          const qId = head.getAttribute('data-expand-q-id');
+          const item = listEl.querySelector(`.item[data-q-id="${qId}"]`);
+          const nowOpen = !item.classList.contains('open');
+          item.classList.toggle('open', nowOpen);
+          questionState[qId] = { open: nowOpen };
+        });
+      });
+
+        listEl.querySelectorAll('[data-delete-question]').forEach((btn) => {
+          btn.addEventListener('click', async () => {
+            const id = btn.getAttribute('data-delete-question');
+            if (!confirm('Deseja excluir esta pergunta?')) return;
+            await deleteQuestion(id);
+          });
+        });
+    }
+
+    async function createQuestion(payload) {
+      const res = await fetch(`${API_BASE}/questions`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Falha ao salvar pergunta');
+      }
+    }
+
+    async function deleteQuestion(id) {
+      const res = await fetch(`${API_BASE}/questions/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-user-email': userEmail }
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'Falha ao excluir pergunta');
+      }
+      notify.success('Pergunta excluida com sucesso');
+      await loadQuestions(selectedCourse);
+    }
+
+    function initSidebarMenus() {
+      document.querySelectorAll('.sidebar__menu-toggle').forEach((toggle) => {
+        const menuId = toggle.getAttribute('data-expand');
+        const menu = menuId ? document.getElementById(menuId) : null;
+        if (!menu) return;
+
+        const isOpen = menu.classList.contains('open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+        toggle.addEventListener('click', () => {
+          const nowOpen = !menu.classList.contains('open');
+          menu.classList.toggle('open', nowOpen);
+          toggle.setAttribute('aria-expanded', nowOpen ? 'true' : 'false');
+          toggle.classList.toggle('sidebar__menu-toggle--active', nowOpen);
+        });
+      });
+    }
+
+    function bindEvents() {
+      document.getElementById('question-type').addEventListener('change', (e) => {
+        const wrap = document.getElementById('multiple-options-wrap');
+        wrap.classList.toggle('hidden', e.target.value !== 'multipla_escolha');
+      });
+
+      document.getElementById('question-course').addEventListener('change', async (e) => {
+        selectedCourse = e.target.value;
+        await loadQuestions(selectedCourse);
+      });
+
+      document.getElementById('btn-refresh-questions').addEventListener('click', async () => {
+        await loadQuestions(selectedCourse);
+      });
+
+      document.getElementById('questions-search').addEventListener('input', () => {
+        renderQuestionsList();
+      });
+
+      document.getElementById('questions-type-filter').addEventListener('change', () => {
+        renderQuestionsList();
+      });
+
+      document.getElementById('form-question').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        try {
+          const type = document.getElementById('question-type').value;
+          const optionsRaw = document.getElementById('question-options').value;
+          const options = optionsRaw
+            .split(';')
+            .map((item) => item.trim())
+            .filter(Boolean);
+
+          const payload = {
+            title: document.getElementById('question-title').value.trim(),
+            description: document.getElementById('question-description').value.trim(),
+            question_type: type,
+            course: document.getElementById('question-course').value,
+            options: type === 'multipla_escolha' ? options : undefined
+          };
+
+          await createQuestion(payload);
+          notify.success('Pergunta criada com sucesso');
+          e.target.reset();
+          document.getElementById('question-type').value = 'texto_livre';
+          document.getElementById('multiple-options-wrap').classList.add('hidden');
+          document.getElementById('question-course').value = selectedCourse;
+          await loadQuestions(selectedCourse);
+        } catch (err) {
+          console.error(err);
+          notify.error(err.message || 'Erro ao salvar pergunta');
+        }
+      });
+    }
+
+    async function initPage() {
+      if (!userEmail) {
+        window.location.href = '../auth/login.html';
+        return;
+      }
+
+      const userAvatarEl = document.getElementById('user-avatar');
+      const dropdownAvatarEl = document.getElementById('dropdown-avatar');
+      const dropdownEmailEl = document.getElementById('dropdown-email');
+      const initials = userEmail.split('@')[0].substring(0, 2).toUpperCase();
+      userAvatarEl.textContent = initials;
+      dropdownAvatarEl.textContent = initials;
+      dropdownEmailEl.textContent = userEmail;
+
+      await loadProfileCourse();
+      initSidebarMenus();
+      fillCourseSelect();
+      bindEvents();
+      await loadQuestions(selectedCourse);
+    }
+
+    initPage();
+  </script>
+</body>
+</html>
+

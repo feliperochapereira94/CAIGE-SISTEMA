@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/css/notifications.css" />
+    <link rel="stylesheet" href="../../assets/css/user-menu.css" />
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="/assets/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link sidebar__link--active" href="#">
+            <span>🏠</span>
+            Dashboard
+          </a>          <a class="sidebar__link" href="../activities/activities.html">
+            <span>📋</span>
+            Atividades
+          </a>          <a class="sidebar__link" href="../patients/list.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="../patients/medical-records.html">
+                📋 Prontuários Cadastrados
+              </a>
+              <a class="sidebar__submenu-link" href="../patients/questions.html">
+                ❓ Cadastro de Perguntas
+              </a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="attendance-menu">
+              <a class="sidebar__submenu-link" href="../attendance/attendance.html">
+                ✋ Registrar Frequência
+              </a>
+              <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">
+                📄 Relatório Frequência
+              </a>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2>Bem-vindo(a), <span id="user-welcome">Usuário</span></h2>
+            <p>Aqui está um resumo das atividades do CAIGE</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <button class="user-dropdown__item" data-action="manage-users" style="display: none;" id="btn-manage-users">
+                  <span class="user-dropdown__item-icon">🔐</span>
+                  Gerenciar Usuários
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Modal Minha Conta -->
+        <div class="modal" id="modal-account">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Minha Conta</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <!-- Aba de Editar Perfil -->
+              <div id="account-tabs">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                  <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">
+                    👤 Perfil
+                  </button>
+                  <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">
+                    🔐 Senha
+                  </button>
+                </div>
+
+                <!-- Tab Perfil -->
+                <div id="tab-profile" class="account__tab">
+                  <form class="modal__form" id="form-profile">
+                    <div class="modal__form-group">
+                      <label for="account-name">Nome</label>
+                      <input type="text" id="account-name" placeholder="Seu nome" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="account-email">Email (não pode ser alterado)</label>
+                      <input type="email" id="account-email" placeholder="Seu email" disabled />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Tab Senha -->
+                <div id="tab-password" class="account__tab" style="display: none;">
+                  <form class="modal__form" id="form-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="section">
+          <h3>Estatísticas Gerais</h3>
+          <div class="cards" id="stats-cards"></div>
+        </section>
+
+        <section class="grid">
+          <div class="panel">
+            <div class="panel__header">
+              <h3>Atividades Recentes</h3>
+              <a href="../activities/activities.html" class="panel__link">Ver Todas</a>
+            </div>
+            <div style="max-height: 400px; overflow-y: auto;">
+              <div class="panel__table" id="activity-table"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const renderStatsFunction = (stats, statsCards) => {
+        statsCards.innerHTML = "";
+        stats.forEach((stat) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div class="card__top">
+              <span class="card__icon">${stat.icon}</span>
+              <span class="card__delta card__delta--${stat.deltaType}">${stat.delta}</span>
+            </div>
+            <div class="card__value">${stat.value}</div>
+            <div class="card__title">${stat.title}</div>
+            <div class="card__note">${stat.note}</div>
+          `;
+          statsCards.appendChild(card);
+        });
+        statsCards.style.display = stats.length ? "grid" : "none";
+      };
+
+      const getActivityTypeClass = (type) => {
+        const typeMap = {
+          'Novo Cadastro': 'cadastro',
+          'Edição': 'edicao',
+          'Deleção': 'delecao',
+          'Frequência': 'frequencia'
+        };
+        return typeMap[type] || 'frequencia';
+      };
+
+      const renderActivitiesFunction = (activities, activityTable) => {
+        const limitedActivities = activities.slice(0, 5);
+        
+        if (!limitedActivities.length) {
+          activityTable.innerHTML = "<p style='padding: 20px; text-align: center; color: #9ca3af;'>Nenhuma atividade registrada</p>";
+          return;
+        }
+        const header = `
+          <div class="table-row table-row--header">
+            <span>Data/Hora</span>
+            <span>Tipo</span>
+            <span>Descrição</span>
+            <span>Responsável</span>
+          </div>
+        `;
+        const rows = limitedActivities
+          .map(
+            (activity) => `
+            <div class="table-row">
+              <span>${activity.date}</span>
+              <span class="table-tag ${getActivityTypeClass(activity.type)}">${activity.type}</span>
+              <span>${activity.description}</span>
+              <span>${activity.responsible}</span>
+            </div>
+          `
+          )
+          .join("");
+        activityTable.innerHTML = header + rows;
+      };
+
+      const loadDashboardData = async (statsCards, activityTable) => {
+        try {
+          const dashboardResponse = await fetch("http://localhost:3000/dashboard-data");
+          
+          if (!dashboardResponse.ok) {
+            console.error("Erro na resposta do servidor:", dashboardResponse.status);
+            renderStatsFunction([], statsCards);
+            renderActivitiesFunction([], activityTable);
+            return;
+          }
+          
+          const dashboardData = await dashboardResponse.json();
+          
+          console.log("Dados do Dashboard:", dashboardData);
+          
+          if (dashboardData.stats && dashboardData.stats.length > 0) {
+            renderStatsFunction(dashboardData.stats, statsCards);
+          } else {
+            renderStatsFunction([], statsCards);
+          }
+          
+          if (dashboardData.activities && dashboardData.activities.length > 0) {
+            renderActivitiesFunction(dashboardData.activities, activityTable);
+          } else {
+            renderActivitiesFunction([], activityTable);
+          }
+
+        } catch (error) {
+          console.error("Erro ao carregar dashboard:", error);
+          renderStatsFunction([], statsCards);
+          renderActivitiesFunction([], activityTable);
+        }
+      };
+    </script>
+
+    <script src="../../assets/js/notifications.js"></script>
+    <script src="../../assets/js/user-menu.js"></script>
+    <script src="../../assets/js/access-control.js"></script>
+    <script>
+      // Tabs no modal de conta
+      document.querySelectorAll('.account-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.account__tab').forEach(t => t.style.display = 'none');
+          document.getElementById('tab-' + tab).style.display = 'block';
+          document.querySelectorAll('.account-tab-btn').forEach(b => {
+            b.style.color = '#999';
+            b.style.borderBottom = 'none';
+          });
+          btn.style.color = '#1f60e8';
+          btn.style.borderBottom = '3px solid #1f60e8';
+        });
+      });
+
+      // Mostrar botão de gerenciar usuários se for SUPERVISOR
+      async function checkUserRole() {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch('http://localhost:3000/profile', {
+            headers: { 'x-user-email': userEmail }
+          });
+          if (response.ok) {
+            const profile = await response.json();
+            const btnManageUsers = document.getElementById('btn-manage-users');
+            if (btnManageUsers && profile.role === 'SUPERVISOR') {
+              btnManageUsers.style.display = 'block';
+            }
+          }
+        } catch (error) {
+          console.error('Erro ao verificar role:', error);
+        }
+      }
+      
+      checkUserRole();
+    </script>
+    <script>
+      // Inicializar quando o documento estiver pronto
+      document.addEventListener('DOMContentLoaded', async () => {
+        // Verificar autenticação
+        const userEmail = localStorage.getItem('userEmail');
+        
+        if (!userEmail) {
+          console.warn('Usuário não autenticado. Redirecionando para login...');
+          setTimeout(() => {
+            window.location.href = '../auth/login.html';
+          }, 500);
+          return;
+        }
+
+        // Atualizar dados do usuário
+        const initials = userEmail.split('@')[0].substring(0, 2).toUpperCase();
+
+        document.getElementById('user-welcome').textContent = userEmail.split('@')[0];
+        document.getElementById('user-avatar').textContent = initials;
+        document.getElementById('dropdown-avatar').textContent = initials;
+        document.getElementById('dropdown-email').textContent = userEmail;
+
+        // Formatar hora
+        const now = new Date();
+        const timeString = now.toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+
+        // Carregar dados do dashboard
+        const statsCards = document.getElementById("stats-cards");
+        const activityTable = document.getElementById("activity-table");
+        loadDashboardData(statsCards, activityTable);
+
+        // Alterar Senha
+        const btnChangePassword = document.getElementById('btn-change-password');
+        const formChangePassword = document.getElementById('form-change-password');
+
+        if (btnChangePassword) {
+          btnChangePassword.addEventListener('click', async () => {
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+              notify.error('Por favor, preencha todos os campos');
+              return;
+            }
+
+            if (newPassword !== confirmPassword) {
+              notify.error('As senhas não conferem');
+              return;
+          }
+
+          if (newPassword.length < 6) {
+            notify.error('A nova senha deve ter no mínimo 6 caracteres');
+            return;
+          }
+
+          try {
+            btnChangePassword.disabled = true;
+            btnChangePassword.textContent = 'Alterando...';
+
+            const response = await fetch('http://localhost:3000/change-password', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                email: userEmail,
+                currentPassword,
+                newPassword
+              })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+              notify.success('Senha alterada com sucesso!');
+              formChangePassword.reset();
+              setTimeout(() => {
+                document.querySelector('.modal').classList.remove('active');
+              }, 1500);
+            } else {
+              notify.error(data.message || 'Erro ao alterar senha');
+            }
+
+            btnChangePassword.disabled = false;
+            btnChangePassword.textContent = 'Alterar Senha';
+          } catch (error) {
+            console.error('Erro:', error);
+            notify.error('Erro ao conectar com o servidor');
+            btnChangePassword.disabled = false;
+            btnChangePassword.textContent = 'Alterar Senha';
+          }
+          });
+        }
+
+        // Menu Toggle
+        const menuToggles = document.querySelectorAll('.sidebar__menu-toggle');
+        menuToggles.forEach(toggle => {
+          toggle.addEventListener('click', () => {
+            const menuId = toggle.getAttribute('data-expand');
+            const submenu = document.getElementById(menuId);
+            const isOpen = submenu.classList.contains('open');
+            
+            // Fechar todos os outros submenus
+            document.querySelectorAll('.sidebar__submenu').forEach(menu => {
+              if (menu.id !== menuId) {
+                menu.classList.remove('open');
+              }
+            });
+            
+            // Fechar/abrir o submenu clicado
+            if (isOpen) {
+              submenu.classList.remove('open');
+              toggle.setAttribute('aria-expanded', 'false');
+            } else {
+              submenu.classList.add('open');
+              toggle.setAttribute('aria-expanded', 'true');
+            }
+          });
+        });
+
+        // Prontuários - Em desenvolvimento
+        document.querySelectorAll('.sidebar__submenu-link[href="#"]').forEach(link => {
+          if (link.textContent.includes('Prontuários')) {
+            link.addEventListener('click', (e) => {
+              e.preventDefault();
+              notify.info('📋 Funcionalidade de Prontuários em desenvolvimento');
+            });
+          }
+        });
+        
+        // DEBUG
+        console.log('=== DASHBOARD CARREGADO ===');
+        console.log('userEmail:', localStorage.getItem('userEmail'));
+        console.log('stats elements:', document.querySelectorAll('.stat').length);
+      });
+    </script>
+  </body>
+</html>
+

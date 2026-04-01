@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel de Gerenciamento - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/css/form.css" />
+    <link rel="stylesheet" href="../../assets/css/notifications.css" />
+    <link rel="stylesheet" href="../../assets/css/user-menu.css" />
+    <style>
+      .admin-tabs {
+        display: flex;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 28px;
+      }
+      .admin-tab-btn {
+        padding: 12px 28px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 600;
+        color: #6b7280;
+        font-family: inherit;
+        transition: color 0.2s;
+      }
+      .admin-tab-btn.active { color: #1f60e8; border-bottom-color: #1f60e8; }
+      .admin-tab-btn:hover:not(.active) { color: #374151; background: rgba(31,96,232,0.04); }
+
+      .card {
+        background: linear-gradient(135deg, white 0%, #fafbfd 100%);
+        border: 1px solid rgba(31, 96, 232, 0.1);
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(31,96,232,0.08), 0 4px 16px rgba(31,96,232,0.04);
+      }
+      .card h3 { font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 24px; }
+      .form-group { margin-bottom: 20px; }
+      .form-group label { display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px; }
+      .form-group input, .form-group select {
+        width: 100%; padding: 12px;
+        border: 1px solid rgba(31,96,232,0.2);
+        border-radius: 8px; font-size: 14px; font-family: inherit; box-sizing: border-box;
+      }
+      .form-group input:focus, .form-group select:focus {
+        outline: none; border-color: #1f60e8; box-shadow: 0 0 0 3px rgba(31,96,232,0.1);
+      }
+      .btn-create {
+        width: 100%; padding: 14px 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white; border: none; border-radius: 8px;
+        font-weight: 600; cursor: pointer; font-family: inherit;
+        transition: all 0.3s ease; margin-top: 8px;
+      }
+      .btn-create:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+      .btn-small {
+        padding: 7px 14px; border: 1px solid rgba(31,96,232,0.2);
+        border-radius: 6px; background: white; cursor: pointer;
+        font-size: 12px; font-family: inherit; transition: all 0.2s ease;
+      }
+      .btn-small:hover { background: rgba(31,96,232,0.05); border-color: #1f60e8; }
+      .btn-small-danger { color: #dc2626; border-color: rgba(220,38,38,0.2); }
+      .btn-small-danger:hover { background: rgba(220,38,38,0.05); border-color: #dc2626; }
+
+      .users-container { display: grid; grid-template-columns: 1fr 2fr; gap: 32px; margin-bottom: 32px; }
+      .users-list { max-height: 600px; overflow-y: auto; }
+      .user-item {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 16px; border: 1px solid rgba(31,96,232,0.1);
+        border-radius: 8px; margin-bottom: 12px;
+      }
+      .user-info { flex: 1; }
+      .user-email { font-weight: 500; color: #1f2937; margin-bottom: 4px; }
+      .user-role { font-size: 13px; color: #6b7280; }
+      .user-actions { display: flex; gap: 8px; }
+      .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+      .role-badge.supervisor { background: rgba(31,96,232,0.2); color: #1f60e8; }
+      .role-badge.professor { background: rgba(16,185,129,0.2); color: #047857; }
+
+      .courses-container { display: grid; grid-template-columns: 1fr 2fr; gap: 32px; margin-bottom: 32px; }
+      .courses-list { max-height: 600px; overflow-y: auto; }
+      .course-item {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 16px; border: 1px solid rgba(31,96,232,0.1);
+        border-radius: 8px; margin-bottom: 12px; transition: background 0.2s;
+      }
+      .course-item.inactive { opacity: 0.55; background: #f9fafb; }
+      .course-name { font-weight: 500; color: #1f2937; font-size: 15px; }
+      .course-status { font-size: 12px; margin-top: 4px; color: #6b7280; }
+      .course-actions { display: flex; gap: 8px; }
+      .status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+      .status-badge.active { background: rgba(16,185,129,0.15); color: #047857; }
+      .status-badge.inactive { background: rgba(156,163,175,0.2); color: #6b7280; }
+
+      .archive-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+      .archive-card {
+        background: #fff; border: 1px solid rgba(31,96,232,0.15);
+        border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(31,96,232,0.07);
+      }
+      .archive-card h3 { margin: 0 0 14px; color: #1f2937; font-size: 18px; }
+      .archive-list { max-height: 520px; overflow: auto; }
+      .archive-item { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin-bottom: 10px; background: #fafafa; }
+      .archive-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+      .archive-meta { margin-top: 4px; font-size: 12px; color: #6b7280; }
+      .archive-empty { color: #9ca3af; text-align: center; padding: 20px; }
+      .tag { display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; color: #1d4ed8; background: #dbeafe; }
+
+      @media (max-width: 768px) { .users-container, .courses-container { grid-template-columns: 1fr; } }
+      @media (max-width: 900px) { .archive-grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="/assets/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link" href="../dashboard/dashboard.html">
+            <span>🏠</span>
+            Dashboard
+          </a>
+          <a class="sidebar__link" href="../activities/activities.html">
+            <span>📋</span>
+            Atividades
+          </a>
+          <a class="sidebar__link" href="../patients/list.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="../patients/medical-records.html">📋 Prontuários Cadastrados</a>
+              <a class="sidebar__submenu-link" href="../patients/questions.html">❓ Cadastro de Perguntas</a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="attendance-menu">
+              <a class="sidebar__submenu-link" href="../attendance/attendance.html">✋ Registrar Frequência</a>
+              <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">📄 Relatório Frequência</a>
+            </div>
+          </div>
+          <a class="sidebar__link sidebar__link--active" href="../admin/users.html" data-require-role="SUPERVISOR">
+            <span>🛡️</span>
+            Painel de Gerenciamento
+          </a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2>Painel de Gerenciamento</h2>
+            <p>Gerencie usuários, cursos e arquivos do sistema</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="breadcrumb"><span>Gerenciamento</span></div>
+
+        <div class="admin-tabs">
+          <button class="admin-tab-btn" data-tab="usuarios">👤 Usuários</button>
+          <button class="admin-tab-btn" data-tab="cursos">🎓 Cursos</button>
+          <button class="admin-tab-btn" data-tab="arquivados">🗂️ Arquivados</button>
+        </div>
+
+        <!-- Tab: Usuários -->
+        <div id="tab-panel-usuarios" class="admin-tab-panel">
+          <div class="users-container">
+            <div class="card">
+              <h3>➕ Novo Usuário</h3>
+              <form id="create-user-form">
+                <div class="form-group">
+                  <label for="email">Email *</label>
+                  <input type="email" id="email" placeholder="usuario@univale.br" required />
+                </div>
+                <div class="form-group">
+                  <label for="password">Senha *</label>
+                  <input type="password" id="password" placeholder="Digite a senha" required />
+                </div>
+                <div class="form-group">
+                  <label for="role">Nível de Acesso *</label>
+                  <select id="role" required>
+                    <option value="">Selecione um nível</option>
+                    <option value="PROFESSOR">Professor</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="sector">Setor / Curso</label>
+                  <select id="sector">
+                    <option value="">Selecione um setor</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn-create">Criar Usuário</button>
+              </form>
+            </div>
+            <div class="card">
+              <h3>👤 Usuários Cadastrados</h3>
+              <div class="users-list" id="users-list">
+                <p style="color: #9ca3af; text-align: center; padding: 20px;">Carregando usuários...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Cursos -->
+        <div id="tab-panel-cursos" class="admin-tab-panel" style="display:none">
+          <div class="courses-container">
+            <div class="card">
+              <h3>➕ Novo Curso</h3>
+              <form id="create-course-form">
+                <div class="form-group">
+                  <label for="course-name">Nome do Curso *</label>
+                  <input type="text" id="course-name" placeholder="Ex: Fisioterapia" required />
+                </div>
+                <button type="submit" class="btn-create">Criar Curso</button>
+              </form>
+            </div>
+            <div class="card">
+              <h3>🎓 Cursos Cadastrados</h3>
+              <div class="courses-list" id="courses-list">
+                <p style="color: #9ca3af; text-align: center; padding: 20px;">Carregando cursos...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Arquivados -->
+        <div id="tab-panel-arquivados" class="admin-tab-panel" style="display:none">
+          <div class="archive-grid">
+            <section class="archive-card">
+              <h3>🧑 Pacientes Arquivados</h3>
+              <div id="patient-archived-list" class="archive-list">
+                <p class="archive-empty">Carregando...</p>
+              </div>
+            </section>
+            <section class="archive-card">
+              <h3>👤 Usuários Desabilitados</h3>
+              <div id="users-archived-list" class="archive-list">
+                <p class="archive-empty">Carregando...</p>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <!-- Modal: Minha Conta -->
+        <div class="modal" id="modal-account">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Minha Conta</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <div>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                  <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">👤 Perfil</button>
+                  <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">🔐 Senha</button>
+                </div>
+                <div id="tab-profile" class="account__tab">
+                  <form class="modal__form" id="form-profile">
+                    <div class="modal__form-group">
+                      <label for="account-name">Nome</label>
+                      <input type="text" id="account-name" placeholder="Seu nome" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="account-email">Email (não pode ser alterado)</label>
+                      <input type="email" id="account-email" disabled />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+                <div id="tab-password" class="account__tab" style="display: none;">
+                  <form class="modal__form" id="form-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal: Editar Usuário -->
+        <div class="modal" id="modal-edit-user">
+          <div class="modal__content" style="max-width: 500px;">
+            <div class="modal__header">
+              <h2 class="modal__title">Editar Usuário</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <form class="modal__form" id="form-edit-user">
+                <div class="modal__form-group">
+                  <label for="edit-email">Email</label>
+                  <input type="email" id="edit-email" placeholder="usuario@univale.br" required />
+                </div>
+                <div class="modal__form-group">
+                  <label for="edit-role">Nível de Acesso</label>
+                  <select id="edit-role" required>
+                    <option value="">Selecione um nível</option>
+                    <option value="SUPERVISOR">Supervisor</option>
+                    <option value="PROFESSOR">Professor</option>
+                  </select>
+                </div>
+                <div class="modal__form-group">
+                  <label for="edit-sector">Setor / Curso</label>
+                  <select id="edit-sector">
+                    <option value="">Sem setor</option>
+                  </select>
+                </div>
+                <div class="modal__form-group">
+                  <label style="display: flex; align-items: center; margin-bottom: 0;">
+                    <input type="checkbox" id="edit-is-active" style="width: auto; margin-right: 8px;" /> Usuário Ativo
+                  </label>
+                </div>
+                <div class="modal__form-actions">
+                  <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                  <button type="button" class="modal__btn modal__btn--secondary modal__close">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal: Editar Curso -->
+        <div class="modal" id="modal-edit-course" style="display:none;">
+          <div class="modal__content" style="max-width: 420px;">
+            <div class="modal__header">
+              <h2 class="modal__title">Editar Curso</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <form class="modal__form" id="form-edit-course">
+                <input type="hidden" id="edit-course-id" />
+                <div class="modal__form-group">
+                  <label for="edit-course-name">Nome do Curso</label>
+                  <input type="text" id="edit-course-name" required />
+                </div>
+                <div class="modal__form-group">
+                  <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 0; cursor: pointer;">
+                    <input type="checkbox" id="edit-course-active" style="width: auto;" />
+                    Curso ativo
+                  </label>
+                </div>
+                <div class="modal__form-actions">
+                  <button type="submit" class="modal__btn modal__btn--primary">Salvar</button>
+                  <button type="button" class="modal__btn modal__btn--secondary modal__close">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../../assets/js/notifications.js"></script>
+    <script src="../../assets/js/user-menu.js"></script>
+    <script src="../../assets/js/access-control.js"></script>
+    <script>
+      const API_URL = 'http://localhost:3000';
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) window.location.href = '../auth/login.html';
+      const initials = (userEmail || '').split('@')[0].substring(0, 2).toUpperCase();
+      document.getElementById('user-avatar').textContent = initials;
+      document.getElementById('dropdown-avatar').textContent = initials;
+      document.getElementById('dropdown-email').textContent = userEmail;
+
+      // Tab Navigation
+      let archivedLoaded = false;
+      function switchTab(name) {
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.tab === name);
+        });
+        document.querySelectorAll('.admin-tab-panel').forEach(panel => {
+          panel.style.display = panel.id === 'tab-panel-' + name ? 'block' : 'none';
+        });
+        if (name === 'arquivados' && !archivedLoaded) {
+          loadArchivedData();
+          archivedLoaded = true;
+        }
+        history.replaceState(null, '', '#' + name);
+      }
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+
+      // Account modal tabs
+      document.querySelectorAll('.account-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.account__tab').forEach(t => t.style.display = 'none');
+          document.getElementById('tab-' + tab).style.display = 'block';
+          document.querySelectorAll('.account-tab-btn').forEach(b => { b.style.color = '#999'; b.style.borderBottom = 'none'; });
+          btn.style.color = '#1f60e8';
+          btn.style.borderBottom = '3px solid #1f60e8';
+        });
+      });
+
+      // Sidebar submenus
+      document.querySelectorAll('.sidebar__menu-toggle').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const menuId = toggle.getAttribute('data-expand');
+          const submenu = document.getElementById(menuId);
+          const isOpen = submenu.classList.contains('open');
+          document.querySelectorAll('.sidebar__submenu').forEach(m => { if (m.id !== menuId) m.classList.remove('open'); });
+          if (isOpen) { submenu.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
+          else { submenu.classList.add('open'); toggle.setAttribute('aria-expanded', 'true'); }
+        });
+      });
+
+      // Modal close
+      let editingUserId = null;
+      document.querySelectorAll('.modal__close').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const modal = btn.closest('.modal');
+          if (modal) { modal.style.display = 'none'; editingUserId = null; }
+        });
+      });
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) { modal.style.display = 'none'; editingUserId = null; }
+        });
+      });
+
+      // -- USERS --
+      async function loadUsers() {
+        try {
+          const response = await fetch(`${API_URL}/api/users`, { headers: { 'x-user-email': userEmail } });
+          if (!response.ok) {
+            const errorData = await response.json();
+            if (response.status === 403) { notify.error('Você não tem permissão para gerenciar usuários'); return; }
+            if (response.status === 401) { notify.error('Sessão expirada. Faça login novamente'); window.location.href = '/Frontend/pages/auth/login.html'; return; }
+            notify.error(errorData.message || 'Erro ao carregar usuários');
+            return;
+          }
+          const users = await response.json();
+          const list = document.getElementById('users-list');
+          if (!users.length) { list.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:20px;">Nenhum usuário encontrado</p>'; return; }
+          list.innerHTML = users.map(user => `
+            <div class="user-item">
+              <div class="user-info">
+                <div class="user-email">${user.email}</div>
+                <div class="user-role">
+                  <span class="role-badge ${user.role.toLowerCase()}">${user.role}</span>
+                  ${user.sector ? ` - ${user.sector}` : ''}
+                </div>
+              </div>
+              <div class="user-actions">
+                <button class="btn-small" onclick="editUser(${user.id})">Editar</button>
+                <button class="btn-small btn-small-danger" onclick="deleteUser(${user.id})">Desabilitar</button>
+              </div>
+            </div>
+          `).join('');
+        } catch (error) {
+          notify.error('Erro ao carregar usuários - Verifique a conexão com o servidor');
+        }
+      }
+
+      document.getElementById('create-user-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const role = document.getElementById('role').value;
+        const sector = document.getElementById('sector').value;
+        if (!email || !password || !role) { notify.error('Preencha todos os campos obrigatórios'); return; }
+        try {
+          const response = await fetch(`${API_URL}/api/users`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-user-email': userEmail },
+            body: JSON.stringify({ email, password, role, sector: sector || null })
+          });
+          const data = await response.json();
+          if (response.ok) { notify.success('Usuário criado com sucesso!'); document.getElementById('create-user-form').reset(); loadUsers(); }
+          else { notify.error(data.message || 'Erro ao criar usuário'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+      });
+
+      async function deleteUser(userId) {
+        if (!confirm('Tem certeza que deseja desabilitar definitivamente este usuário?')) return;
+        try {
+          const response = await fetch(`${API_URL}/api/users/${userId}`, { method: 'DELETE', headers: { 'x-user-email': userEmail } });
+          if (response.ok) { notify.success('Usuário desabilitado com sucesso!'); loadUsers(); }
+          else { notify.error('Erro ao desabilitar usuário'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+      }
+
+      function editUser(userId) {
+        fetch(`${API_URL}/api/users`, { headers: { 'x-user-email': userEmail } })
+          .then(res => res.json())
+          .then(users => {
+            const user = users.find(u => u.id === userId);
+            if (!user) { notify.error('Usuário não encontrado'); return; }
+            editingUserId = userId;
+            document.getElementById('edit-email').value = user.email;
+            document.getElementById('edit-role').value = user.role;
+            document.getElementById('edit-sector').value = user.sector || '';
+            document.getElementById('edit-is-active').checked = user.is_active !== 0;
+            document.getElementById('modal-edit-user').style.display = 'flex';
+          })
+          .catch(() => notify.error('Erro ao carregar dados do usuário'));
+      }
+
+      document.getElementById('form-edit-user').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!editingUserId) { notify.error('Nenhum usuário selecionado'); return; }
+        const email = document.getElementById('edit-email').value;
+        const role = document.getElementById('edit-role').value;
+        const sector = document.getElementById('edit-sector').value;
+        const is_active = document.getElementById('edit-is-active').checked;
+        try {
+          const response = await fetch(`${API_URL}/api/users/${editingUserId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'x-user-email': userEmail },
+            body: JSON.stringify({ email, role, sector: sector || null, is_active })
+          });
+          const data = await response.json();
+          if (response.ok) {
+            notify.success('Usuário atualizado com sucesso!');
+            document.getElementById('modal-edit-user').style.display = 'none';
+            editingUserId = null;
+            loadUsers();
+          } else { notify.error(data.message || 'Erro ao atualizar usuário'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+      });
+
+      // -- COURSES --
+      async function loadCourses() {
+        try {
+          const response = await fetch(`${API_URL}/api/courses`, { headers: { 'x-user-email': userEmail } });
+          if (response.status === 403) { notify.error('Apenas supervisores podem gerenciar cursos'); return; }
+          const courses = await response.json();
+          renderCourses(courses);
+        } catch { notify.error('Erro ao carregar cursos'); }
+      }
+
+      function renderCourses(courses) {
+        const list = document.getElementById('courses-list');
+        if (!courses.length) { list.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:20px;">Nenhum curso cadastrado</p>'; return; }
+        list.innerHTML = courses.map(c => `
+          <div class="course-item ${c.is_active ? '' : 'inactive'}" id="course-row-${c.id}">
+            <div>
+              <div class="course-name">${c.name}</div>
+              <div class="course-status"><span class="status-badge ${c.is_active ? 'active' : 'inactive'}">${c.is_active ? 'Ativo' : 'Inativo'}</span></div>
+            </div>
+            <div class="course-actions">
+              <button class="btn-small" onclick="openEditCourse(${c.id}, '${c.name.replace(/'/g, "\\'")}', ${c.is_active})">Editar</button>
+              <button class="btn-small btn-small-danger" onclick="deleteCourse(${c.id}, '${c.name.replace(/'/g, "\\'")}')">Remover</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('create-course-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const name = document.getElementById('course-name').value.trim();
+        if (!name) return;
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true; btn.textContent = 'Criando...';
+        try {
+          const res = await fetch(`${API_URL}/api/courses`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-user-email': userEmail },
+            body: JSON.stringify({ name })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            notify.success(`Curso "${name}" criado com sucesso!`);
+            document.getElementById('course-name').value = '';
+            loadCourses(); loadCoursesIntoSelects();
+          } else { notify.error(data.message || 'Erro ao criar curso'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+        finally { btn.disabled = false; btn.textContent = 'Criar Curso'; }
+      });
+
+      function openEditCourse(id, name, isActive) {
+        document.getElementById('edit-course-id').value = id;
+        document.getElementById('edit-course-name').value = name;
+        document.getElementById('edit-course-active').checked = isActive;
+        document.getElementById('modal-edit-course').style.display = 'flex';
+      }
+
+      document.getElementById('form-edit-course').addEventListener('submit', async e => {
+        e.preventDefault();
+        const id = document.getElementById('edit-course-id').value;
+        const name = document.getElementById('edit-course-name').value.trim();
+        const is_active = document.getElementById('edit-course-active').checked;
+        if (!name) return;
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true; btn.textContent = 'Salvando...';
+        try {
+          const res = await fetch(`${API_URL}/api/courses/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'x-user-email': userEmail },
+            body: JSON.stringify({ name, is_active })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            notify.success('Curso atualizado com sucesso!');
+            document.getElementById('modal-edit-course').style.display = 'none';
+            loadCourses(); loadCoursesIntoSelects();
+          } else { notify.error(data.message || 'Erro ao atualizar curso'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+        finally { btn.disabled = false; btn.textContent = 'Salvar'; }
+      });
+
+      async function deleteCourse(id, name) {
+        if (!confirm(`Remover o curso "${name}"?\n\nIsto só é possível se não houver usuários vinculados.`)) return;
+        try {
+          const res = await fetch(`${API_URL}/api/courses/${id}`, { method: 'DELETE', headers: { 'x-user-email': userEmail } });
+          const data = await res.json();
+          if (res.ok) { notify.success(`Curso "${name}" removido`); loadCourses(); loadCoursesIntoSelects(); }
+          else { notify.error(data.message || 'Erro ao remover curso'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+      }
+
+      // -- ARCHIVED --
+      function renderArchivedPatients(items) {
+        const container = document.getElementById('patient-archived-list');
+        if (!Array.isArray(items) || !items.length) { container.innerHTML = '<p class="archive-empty">Nenhum paciente arquivado.</p>'; return; }
+        container.innerHTML = items.map(item => `
+          <article class="archive-item">
+            <div class="archive-title">${item.name || 'Sem nome'} <span class="tag">${item.status || 'archived'}</span></div>
+            <div class="archive-meta">CPF: ${item.cpf || '-'} | Contato: ${item.phone || item.phone2 || '-'}</div>
+            <div class="archive-meta">Criado em: ${item.created_at || '-'}</div>
+          </article>
+        `).join('');
+      }
+
+      function renderArchivedUsers(items) {
+        const container = document.getElementById('users-archived-list');
+        if (!Array.isArray(items) || !items.length) { container.innerHTML = '<p class="archive-empty">Nenhum usuário desabilitado definitivamente.</p>'; return; }
+        container.innerHTML = items.map(item => `
+          <article class="archive-item">
+            <div class="archive-title">${item.email || 'Sem email'} <span class="tag">${item.role || '-'}</span></div>
+            <div class="archive-meta">Setor: ${item.sector || '-'} | Ativo: ${item.is_active ? 'Sim' : 'Não'} | Oculto: ${item.is_hidden ? 'Sim' : 'Não'}</div>
+            <div class="archive-meta">Criado em: ${item.created_at || '-'}</div>
+          </article>
+        `).join('');
+      }
+
+      async function loadArchivedData() {
+        document.getElementById('patient-archived-list').innerHTML = '<p class="archive-empty">Carregando...</p>';
+        document.getElementById('users-archived-list').innerHTML = '<p class="archive-empty">Carregando...</p>';
+        try {
+          const [patientsResponse, usersResponse] = await Promise.all([
+            fetch(`${API_URL}/api/archive/patients`, { headers: { 'x-user-email': userEmail } }),
+            fetch(`${API_URL}/api/archive/users`, { headers: { 'x-user-email': userEmail } })
+          ]);
+          const patientsData = await patientsResponse.json();
+          const usersData = await usersResponse.json();
+          if (!patientsResponse.ok || !usersResponse.ok) { notify.error('Erro ao carregar registros arquivados.'); return; }
+          renderArchivedPatients(patientsData.archived_patients || []);
+          renderArchivedUsers(usersData.archived_users || []);
+        } catch { notify.error('Erro de conexão ao buscar arquivados.'); }
+      }
+
+      // -- SECTOR SELECTS --
+      async function loadCoursesIntoSelects() {
+        try {
+          const res = await fetch(`${API_URL}/api/courses`, { headers: { 'x-user-email': userEmail } });
+          if (!res.ok) return;
+          const courses = await res.json();
+          const activeCourses = courses.filter(c => c.is_active);
+          const makeOptions = (includeEmpty, emptyLabel) => {
+            const empty = includeEmpty ? `<option value="">${emptyLabel}</option>` : '';
+            return empty + activeCourses.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+          };
+          document.getElementById('sector').innerHTML = makeOptions(true, 'Selecione um setor');
+          document.getElementById('edit-sector').innerHTML = makeOptions(true, 'Sem setor');
+        } catch (err) { console.error('Erro ao carregar cursos para selects:', err); }
+      }
+
+      // Initialize
+      const hash = window.location.hash.substring(1);
+      switchTab(['usuarios', 'cursos', 'arquivados'].includes(hash) ? hash : 'usuarios');
+      loadUsers();
+      loadCourses();
+      loadCoursesIntoSelects();
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registrar Frequência - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/css/form.css" />
+    <link rel="stylesheet" href="../../assets/css/notifications.css" />
+    <link rel="stylesheet" href="../../assets/css/user-menu.css" />
+    <style>
+      .attendance-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 32px;
+        margin-bottom: 32px;
+      }
+
+      .attendance-card {
+        background: linear-gradient(135deg, white 0%, #fafbfd 100%);
+        border: 1px solid rgba(31, 96, 232, 0.1);
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(31, 96, 232, 0.08), 0 4px 16px rgba(31, 96, 232, 0.04);
+      }
+
+      .attendance-card h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 24px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 8px;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid rgba(31, 96, 232, 0.2);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #1f60e8;
+        box-shadow: 0 0 0 3px rgba(31, 96, 232, 0.1);
+      }
+
+      .search-results {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        border: 1px solid rgba(31, 96, 232, 0.2);
+        border-radius: 8px;
+        background: #fff;
+        max-height: 220px;
+        overflow-y: auto;
+        z-index: 30;
+      }
+
+      .search-result-item {
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(31, 96, 232, 0.08);
+        cursor: pointer;
+        font-size: 14px;
+        color: #1f2937;
+      }
+
+      .search-result-item:last-child {
+        border-bottom: none;
+      }
+
+      .search-result-item:hover,
+      .search-result-item.active {
+        background: rgba(31, 96, 232, 0.08);
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      .btn-check-in {
+        flex: 1;
+        padding: 14px 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 15px;
+      }
+
+      .btn-check-in:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-check-in:disabled,
+      .btn-check-in:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .status-card {
+        background: linear-gradient(135deg, white 0%, #fafbfd 100%);
+        border: 1px solid rgba(31, 96, 232, 0.1);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 8px rgba(31, 96, 232, 0.08), 0 4px 16px rgba(31, 96, 232, 0.04);
+      }
+
+      .status-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 2px solid rgba(31, 96, 232, 0.1);
+        padding-bottom: 16px;
+      }
+
+      .status-header h4 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1f2937;
+        margin: 0;
+      }
+
+      .status-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .stat-box {
+        text-align: center;
+        padding: 12px;
+        background: rgba(31, 96, 232, 0.05);
+        border-radius: 8px;
+      }
+
+      .stat-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1f60e8;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 4px;
+      }
+
+      .attendance-list {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .attendance-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        border-bottom: 1px solid rgba(31, 96, 232, 0.1);
+        font-size: 14px;
+      }
+
+      .attendance-item:last-child {
+        border-bottom: none;
+      }
+
+      .attendance-name {
+        font-weight: 500;
+        color: #1f2937;
+      }
+
+      .attendance-time {
+        color: #6b7280;
+        font-size: 13px;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .status-badge.inside {
+        background: rgba(16, 185, 129, 0.2);
+        color: #047857;
+      }
+
+      .status-badge.outside {
+        background: rgba(239, 68, 68, 0.2);
+        color: #991b1b;
+      }
+
+      @media (max-width: 768px) {
+        .attendance-container {
+          grid-template-columns: 1fr;
+        }
+
+        .status-stats {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="/assets/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link" href="../dashboard/dashboard.html">
+            <span>🏠</span>
+            Dashboard
+          </a>          <a class="sidebar__link" href="../activities/activities.html">
+            <span>📋</span>
+            Atividades
+          </a>          <a class="sidebar__link" href="../patients/list.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="../patients/medical-records.html">
+                📋 Prontuários Cadastrados
+              </a>
+              <a class="sidebar__submenu-link" href="../patients/questions.html">
+                ❓ Cadastro de Perguntas
+              </a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle sidebar__menu-toggle--active" data-expand="attendance-menu" aria-expanded="true">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu open" id="attendance-menu">
+              <a class="sidebar__submenu-link sidebar__submenu-link--active" href="./attendance.html">
+                ✋ Registrar Frequência
+              </a>
+              <a class="sidebar__submenu-link" href="./frequency-report.html">
+                📄 Relatório Frequência
+              </a>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2>Registrar Frequência</h2>
+            <p>Registro simples de presença diária</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <button class="user-dropdown__item" data-action="manage-users" style="display: none;" id="btn-manage-users">
+                  <span class="user-dropdown__item-icon">🔐</span>
+                  Gerenciar Usuários
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="breadcrumb">
+          <span>Frequência</span>
+        </div>
+
+        <div class="attendance-container">
+          <!-- Seção de Registro de Presença -->
+          <div class="attendance-card">
+            <h3>✋ Registrar Presença</h3>
+            <form id="attendance-form">
+              <div class="form-group">
+                <label for="patient-search">Pesquisar Paciente *</label>
+                <input id="patient-search" type="text" placeholder="Digite o nome do paciente" autocomplete="off" required />
+                <input id="patient-id" type="hidden" />
+                <div id="patient-results" class="search-results" style="display: none;"></div>
+              </div>
+              <div class="form-group">
+                <label for="setor-select">Setor *</label>
+                <select id="setor-select" required>
+                  <option value="">Selecione um setor</option>
+                  <option value="Fisioterapia">Fisioterapia</option>
+                  <option value="Educação Física">Educação Física</option>
+                  <option value="Agronomia">Agronomia</option>
+                  <option value="Farmácia">Farmácia</option>
+                  <option value="Enfermagem">Enfermagem</option>
+                  <option value="Medicina">Medicina</option>
+                  <option value="Estética e Cosmética">Estética e Cosmética</option>
+                  <option value="Fonoaudiologia">Fonoaudiologia</option>
+                  <option value="Nutrição">Nutrição</option>
+                </select>
+              </div>
+              <div style="text-align: right;">
+                <button type="submit" class="btn-check-in">🟢 Registrar Presença</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Histórico de Presenças -->
+        <section class="grid">
+          <div class="status-card">
+            <div class="status-header">
+              <h4>📋 Presenças do Dia</h4>
+              <input type="date" id="filter-date" style="padding: 8px 12px; border: 1px solid rgba(31, 96, 232, 0.2); border-radius: 8px; font-size: 14px; color: #6b7280;" />
+            </div>
+
+            <div class="attendance-list" id="attendance-list">
+              <p style="color: #9ca3af; text-align: center; padding: 20px;">Carregando...</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Modal Minha Conta -->
+        <div class="modal" id="modal-account">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Minha Conta</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <!-- Aba de Editar Perfil -->
+              <div id="account-tabs">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                  <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">
+                    👤 Perfil
+                  </button>
+                  <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">
+                    🔐 Senha
+                  </button>
+                </div>
+
+                <!-- Tab Perfil -->
+                <div id="tab-profile" class="account__tab">
+                  <form class="modal__form" id="form-profile">
+                    <div class="modal__form-group">
+                      <label for="account-name">Nome</label>
+                      <input type="text" id="account-name" placeholder="Seu nome" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="account-email">Email (não pode ser alterado)</label>
+                      <input type="email" id="account-email" placeholder="Seu email" disabled />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Tab Senha -->
+                <div id="tab-password" class="account__tab" style="display: none;">
+                  <form class="modal__form" id="form-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../../assets/js/notifications.js"></script>
+    <script src="../../assets/js/user-menu.js"></script>
+    <script>
+      // Tabs no modal de conta
+      document.querySelectorAll('.account-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.account__tab').forEach(t => t.style.display = 'none');
+          document.getElementById('tab-' + tab).style.display = 'block';
+          document.querySelectorAll('.account-tab-btn').forEach(b => {
+            b.style.color = '#999';
+            b.style.borderBottom = 'none';
+          });
+          btn.style.color = '#1f60e8';
+          btn.style.borderBottom = '3px solid #1f60e8';
+        });
+      });
+
+      // Mostrar botão de gerenciar usuários se for SUPERVISOR
+      async function checkUserRole() {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch('http://localhost:3000/profile', {
+            headers: { 'x-user-email': userEmail }
+          });
+          if (response.ok) {
+            const profile = await response.json();
+            const btnManageUsers = document.getElementById('btn-manage-users');
+            if (btnManageUsers && profile.role === 'SUPERVISOR') {
+              btnManageUsers.style.display = 'block';
+            }
+          }
+        } catch (error) {
+          console.error('Erro ao verificar role:', error);
+        }
+      }
+      
+      checkUserRole();
+    </script>
+    <script>
+      const API_URL = 'http://localhost:3000';
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) { window.location.href = '../auth/login.html'; }
+      const initials = (userEmail || '').split('@')[0].substring(0, 2).toUpperCase();
+
+      // Atualizar avatar
+      document.getElementById('user-avatar').textContent = initials;
+      document.getElementById('dropdown-avatar').textContent = initials;
+      document.getElementById('dropdown-email').textContent = userEmail;
+
+      // Formatar hora do último acesso
+      const now = new Date();
+      const timeString = now.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      let patientCache = [];
+      let selectedPatientId = null;
+
+      function renderPatientResults(filteredList) {
+        const results = document.getElementById('patient-results');
+
+        if (!Array.isArray(filteredList) || filteredList.length === 0) {
+          results.style.display = 'none';
+          results.innerHTML = '';
+          return;
+        }
+
+        results.innerHTML = filteredList.map(item => `
+          <div class="search-result-item" data-id="${item.id}" data-name="${item.name}" data-phone="${item.phone || ''}">
+            <div style="font-weight: 600;">${item.name}</div>
+            <div style="font-size: 12px; color: #64748b; margin-top: 2px;">${item.phone || 'Sem telefone cadastrado'}</div>
+          </div>
+        `).join('');
+
+        results.style.display = 'block';
+      }
+
+      function selectPatient(item) {
+        selectedPatientId = Number(item.id);
+        document.getElementById('patient-id').value = String(item.id);
+        document.getElementById('patient-search').value = item.name;
+        document.getElementById('patient-results').style.display = 'none';
+      }
+
+      // Carregar pacientes
+      async function loadPatients() {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch(`${API_URL}/api/patients`, {
+            headers: {
+              'x-user-email': userEmail
+            }
+          });
+          const patients = await response.json();
+
+          patientCache = Array.isArray(patients) ? patients : [];
+          document.getElementById('patient-results').style.display = 'none';
+        } catch (error) {
+          console.error('Erro ao carregar pacientes:', error);
+          notify.error('Erro ao carregar lista de pacientes');
+        }
+      }
+
+      const patientSearchInput = document.getElementById('patient-search');
+      patientSearchInput.addEventListener('input', () => {
+        const query = patientSearchInput.value.trim().toLowerCase();
+
+        if (!query) {
+          selectedPatientId = null;
+          document.getElementById('patient-id').value = '';
+          document.getElementById('patient-results').style.display = 'none';
+          document.getElementById('patient-results').innerHTML = '';
+          return;
+        }
+
+        const filtered = patientCache
+          .filter(item => item.name.toLowerCase().includes(query))
+          .slice(0, 20);
+
+        selectedPatientId = null;
+        document.getElementById('patient-id').value = '';
+        renderPatientResults(filtered);
+      });
+
+      document.getElementById('patient-results').addEventListener('click', (event) => {
+        const row = event.target.closest('.search-result-item');
+        if (!row) return;
+
+        selectPatient({
+          id: row.dataset.id,
+          name: row.dataset.name,
+          phone: row.dataset.phone
+        });
+      });
+
+      document.addEventListener('click', (event) => {
+        const container = document.getElementById('patient-results');
+        if (!container.contains(event.target) && event.target !== patientSearchInput) {
+          container.style.display = 'none';
+        }
+      });
+
+      // Registrar presença
+      document.getElementById('attendance-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const patientId = selectedPatientId || Number(document.getElementById('patient-id').value);
+        const setor = document.getElementById('setor-select').value;
+
+        if (!patientId) {
+          notify.error('Selecione um paciente');
+          return;
+        }
+
+        if (!setor) {
+          notify.error('Selecione um setor');
+          return;
+        }
+
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch(`${API_URL}/api/attendance/register`, {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'x-user-email': userEmail
+            },
+            body: JSON.stringify({
+              patient_id: parseInt(patientId),
+              notes: setor
+            })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            notify.success('✅ Presença registrada com sucesso!');
+            document.getElementById('attendance-form').reset();
+            selectedPatientId = null;
+            document.getElementById('patient-id').value = '';
+            setTimeout(() => {
+              loadTodayStatus();
+            }, 1000);
+          } else {
+            notify.error(data.message || 'Erro ao registrar presença');
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+          notify.error('Erro ao conectar com o servidor');
+        }
+      });
+
+      // Carregar presenças do dia selecionado
+      async function loadTodayStatus(filterDate = null) {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const selectedDate = filterDate || new Date().toISOString().split('T')[0];
+          const response = await fetch(`${API_URL}/api/attendance/history?start_date=${selectedDate}&end_date=${selectedDate}&limit=200`, {
+            headers: {
+              'x-user-email': userEmail
+            }
+          });
+          const data = await response.json();
+
+          const attendanceData = Array.isArray(data.data) ? data.data : [];
+
+          const list = document.getElementById('attendance-list');
+          if (attendanceData.length === 0) {
+            const dateDisplay = new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR');
+            list.innerHTML = `<p style="color: #9ca3af; text-align: center; padding: 20px;">Nenhum registro para ${dateDisplay}</p>`;
+            return;
+          }
+
+          list.innerHTML = attendanceData.map(a => `
+            <div class="attendance-item">
+              <div>
+                <div class="attendance-name">${a.name}</div>
+                <div class="attendance-time">
+                  Presença registrada em ${new Date(a.check_in_time).toLocaleDateString('pt-BR')} às ${new Date(a.check_in_time).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                  ${a.notes ? ` | Setor: ${a.notes}` : ''}
+                </div>
+              </div>
+              <span class="status-badge inside">
+                🟢 Presente
+              </span>
+            </div>
+          `).join('');
+        } catch (error) {
+          console.error('Erro ao carregar status:', error);
+        }
+      }
+
+      // Menu Toggle
+      const menuToggles = document.querySelectorAll('.sidebar__menu-toggle');
+      menuToggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const menuId = toggle.getAttribute('data-expand');
+          const submenu = document.getElementById(menuId);
+          const isOpen = submenu.classList.contains('open');
+          
+          document.querySelectorAll('.sidebar__submenu').forEach(menu => {
+            if (menu.id !== menuId) {
+              menu.classList.remove('open');
+            }
+          });
+          
+          if (isOpen) {
+            submenu.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+          } else {
+            submenu.classList.add('open');
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      document.querySelectorAll('.sidebar__submenu-link[href="#"]').forEach(link => {
+        if (link.textContent.includes('Prontuários')) {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            notify.info('📋 Funcionalidade de Prontuários em desenvolvimento');
+          });
+        }
+      });
+
+      // Inicializar
+      document.getElementById('filter-date').value = new Date().toISOString().split('T')[0];
+      loadPatients();
+      loadTodayStatus(document.getElementById('filter-date').value);
+
+      // Filtro por data
+      document.getElementById('filter-date').addEventListener('change', (e) => {
+        const selectedDate = e.target.value;
+        loadTodayStatus(selectedDate);
+      });
+
+      // Atualizar a cada 30 segundos
+      setInterval(() => {
+        loadTodayStatus(document.getElementById('filter-date').value || null);
+      }, 30000);
+    </script>
+  </body>
+</html>
+

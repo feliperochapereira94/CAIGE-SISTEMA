@@ -1,0 +1,747 @@
+/* ==================== QUESTIONNAIRE SECTION ==================== */
+
+.questionnaire-section {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 2px solid #e0e0e0;
+}
+
+.questionnaire-section__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.questionnaire-section__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2a2e;
+  margin: 0;
+}
+
+.questionnaire-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.questionnaire-tab-btn {
+  padding: 10px 16px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  transition: all 0.2s;
+}
+
+.questionnaire-tab-btn:hover {
+  background: #e0e0e0;
+}
+
+.questionnaire-tab-btn.active {
+  background: #1d6b73;
+  color: white;
+}
+
+.questionnaire-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.questionnaire-card {
+  background: #f9f9f9;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.questionnaire-card:hover {
+  border-color: #1d6b73;
+  box-shadow: 0 2px 8px rgba(29, 107, 115, 0.1);
+  transform: translateY(-1px);
+}
+
+.questionnaire-card__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2a2e;
+  margin: 0 0 8px;
+}
+
+.questionnaire-card__info {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 12px;
+}
+
+.questionnaire-card__info-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.questionnaire-card__button {
+  width: 100%;
+  padding: 10px;
+  background: #1d6b73;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.questionnaire-card__button:hover {
+  background: #155561;
+}
+
+.questionnaire-form {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.questionnaire-form__header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.questionnaire-form__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2a2e;
+  margin: 0;
+}
+
+.questionnaire-form__description {
+  font-size: 13px;
+  color: #666;
+  margin-top: 6px;
+}
+
+.questionnaire-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.questionnaire-question {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.questionnaire-question__label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.questionnaire-question__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2a2e;
+  display: block;
+}
+
+.questionnaire-question__description {
+  font-size: 12px;
+  color: #999;
+  margin: 0;
+}
+
+.questionnaire-question__input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.questionnaire-question__input:focus {
+  outline: none;
+  border-color: #1d6b73;
+  box-shadow: 0 0 0 2px rgba(29, 107, 115, 0.1);
+}
+
+.questionnaire-question__options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.questionnaire-question__option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.questionnaire-question__option:hover {
+  background: #f5f5f5;
+}
+
+.questionnaire-question__option input {
+  cursor: pointer;
+  accent-color: #1d6b73;
+}
+
+.questionnaire-question__option span {
+  font-size: 13px;
+  color: #1f2a2e;
+}
+
+.questionnaire-question__scale {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.questionnaire-question__scale-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.questionnaire-question__scale-item input {
+  cursor: pointer;
+  accent-color: #1d6b73;
+}
+
+.questionnaire-question__scale-item span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2a2e;
+}
+
+.questionnaire-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 24px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.questionnaire-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.questionnaire-btn--cancel {
+  background: #f0f0f0;
+  color: #666;
+}
+
+.questionnaire-btn--cancel:hover {
+  background: #e0e0e0;
+}
+
+.questionnaire-btn--submit {
+  background: #1d6b73;
+  color: white;
+}
+
+.questionnaire-btn--submit:hover {
+  background: #155561;
+  transform: translateY(-1px);
+}
+
+.questionnaire-btn--submit:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.questionnaire-history {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.questionnaire-history-item {
+  background: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.questionnaire-history-item:hover {
+  border-color: #1d6b73;
+  box-shadow: 0 2px 8px rgba(29, 107, 115, 0.1);
+}
+
+.questionnaire-history-item__date {
+  font-size: 12px;
+  color: #999;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.questionnaire-history-item__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2a2e;
+  margin: 0;
+}
+
+.questionnaire-empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: #999;
+}
+
+.questionnaire-empty__icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.questionnaire-empty__text {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.questionnaire-empty__subtext {
+  font-size: 13px;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #1d6b73;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .questionnaire-section {
+    padding: 16px;
+  }
+
+  .questionnaire-form {
+    padding: 16px;
+  }
+
+  .questionnaire-list {
+    grid-template-columns: 1fr;
+  }
+
+  .questionnaire-question__scale {
+    gap: 8px;
+  }
+
+  .questionnaire-actions {
+    flex-direction: column;
+  }
+
+  .questionnaire-btn {
+    width: 100%;
+  }
+}
+
+/* ==================== COURSE ACCORDION ==================== */
+
+.course-accordion {
+  border: 1px solid #e0e5ea;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.course-accordion__header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  background: #f7f9fb;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s;
+}
+
+.course-accordion__header:hover {
+  background: #eef2f5;
+}
+
+.course-accordion.open > .course-accordion__header {
+  background: #e4f0f1;
+  border-bottom: 1px solid #c4d9db;
+}
+
+.course-accordion__title {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2a2e;
+}
+
+.course-accordion__badge {
+  background: #1d6b73;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+}
+
+.course-accordion__chevron {
+  font-size: 10px;
+  color: #67757f;
+  transition: transform 0.2s;
+}
+
+.course-accordion.open .course-accordion__chevron {
+  transform: rotate(90deg);
+}
+
+.course-accordion__body {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.course-accordion.open .course-accordion__body {
+  display: flex;
+}
+
+/* Questionnaire item inside accordion */
+
+.q-item {
+  border: 1px solid #e3e7ec;
+  border-radius: 8px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.q-item__toggle {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  background: #fff;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.q-item__toggle:hover {
+  background: #f8fbfc;
+}
+
+.q-item__info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.q-item__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f2a2e;
+}
+
+.q-item__desc {
+  font-size: 12px;
+  color: #67757f;
+}
+
+.q-item__meta {
+  font-size: 11px;
+  color: #95a3ab;
+}
+
+.q-item__chevron {
+  font-size: 10px;
+  color: #67757f;
+  transition: transform 0.2s;
+  padding-top: 4px;
+}
+
+.q-item.open .q-item__chevron {
+  transform: rotate(90deg);
+}
+
+.q-item__body {
+  display: none;
+  border-top: 1px solid #eef0f2;
+  background: #f9fafc;
+}
+
+.q-item.open .q-item__body {
+  display: block;
+}
+
+.q-item__actions {
+  padding: 12px 12px 0;
+}
+
+.btn-novo-resposta {
+  flex-shrink: 0;
+  background: #1d6b73;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-novo-resposta:hover {
+  background: #155561;
+}
+
+/* Response history inside each q-item */
+
+.q-item__history {
+  padding: 8px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.q-item__history-loading,
+.q-item__history-empty {
+  font-size: 12px;
+  color: #95a3ab;
+  padding: 2px 0;
+}
+
+.history-entry {
+  border: 1px solid #e0e5ea;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.history-entry__toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.history-entry__toggle:hover {
+  background: #f5f7f9;
+}
+
+.history-entry__date {
+  font-size: 12px;
+  color: #48535b;
+  font-weight: 600;
+}
+
+.history-entry__action {
+  font-size: 11px;
+  color: #1d6b73;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.history-entry__body {
+  padding: 10px 12px;
+  border-top: 1px solid #eef0f2;
+}
+
+.response-answer {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 7px 0;
+  border-bottom: 1px dashed #eef0f2;
+}
+
+.response-answer:last-child {
+  border-bottom: none;
+}
+
+.response-answer__question {
+  font-size: 11px;
+  font-weight: 700;
+  color: #48535b;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.response-answer__value {
+  font-size: 13px;
+  color: #1f2a2e;
+}
+
+/* ==================== CLINICAL SUMMARY ==================== */
+
+.clinical-summary {
+  background: #fff;
+  border: 1px solid #dfe4ea;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 0;
+}
+
+.clinical-summary__header {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2a2e;
+  margin-bottom: 14px;
+}
+
+.clinical-summary__block {
+  margin-bottom: 12px;
+}
+
+.clinical-summary__label {
+  font-size: 11px;
+  color: #8a95a1;
+  margin-bottom: 3px;
+}
+
+.clinical-summary__value {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1f2a2e;
+}
+
+.clinical-summary__imc-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.clinical-summary__imc-value {
+  font-size: 30px;
+  line-height: 1;
+  font-weight: 800;
+  color: #f59e0b;
+}
+
+.clinical-summary__imc-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.clinical-summary__imc-badge--neutral {
+  background: #eef2f7;
+  color: #64748b;
+}
+
+.clinical-summary__imc-badge--low {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.clinical-summary__imc-badge--ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.clinical-summary__imc-badge--warn {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.clinical-summary__imc-badge--high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.clinical-summary__divider {
+  height: 1px;
+  background: #e7ebf0;
+  margin: 12px 0;
+}
+
+.clinical-summary__subhead {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.clinical-summary__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.clinical-chip {
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  background: #edf1f6;
+  color: #334155;
+}
+
+.clinical-chip--danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.clinical-summary__list {
+  margin: 0;
+  padding-left: 18px;
+  color: #1f2a2e;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.clinical-summary__empty {
+  color: #94a3b8;
+  font-size: 12px;
+}
+

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pacientes Cadastrados - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/css/patient.css" />
+    <link rel="stylesheet" href="../../assets/css/notifications.css" />
+    <link rel="stylesheet" href="../../assets/css/user-menu.css" />
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="/assets/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link" href="../dashboard/dashboard.html">
+            <span>🏠</span>
+            Dashboard
+          </a>          <a class="sidebar__link" href="../activities/activities.html">
+            <span>📋</span>
+            Atividades
+          </a>          <a class="sidebar__link sidebar__link--active" href="./list.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="./medical-records.html">
+                📋 Prontuários Cadastrados
+              </a>
+              <a class="sidebar__submenu-link" href="./questions.html">
+                ❓ Cadastro de Perguntas
+              </a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="attendance-menu">
+              <a class="sidebar__submenu-link" href="../attendance/attendance.html">
+                ✋ Registrar Frequência
+              </a>
+              <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">
+                📄 Relatório Frequência
+              </a>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2>Pacientes Cadastrados</h2>
+            <p>Gerencie e visualize os dados cadastrais dos pacientes</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <button class="user-dropdown__item" data-action="manage-users" style="display: none;" id="btn-manage-users">
+                  <span class="user-dropdown__item-icon">🔐</span>
+                  Gerenciar Usuários
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <section class="section">
+          <div class="section__header">
+            <div>
+              <h3>Todos os pacientes</h3>
+              <p id="patient-count">0 pacientes cadastrados</p>
+            </div>
+            <a href="./new.html" class="btn btn--primary">+ Cadastrar Paciente</a>
+          </div>
+
+          <div class="filters">
+            <div class="search-box">
+              <input 
+                type="text" 
+                id="search-input" 
+                placeholder="Buscar por nome..." 
+                class="search-box__input"
+              />
+              <span class="search-box__icon">🔍</span>
+            </div>
+            <select class="filter-select" id="filter-status">
+              <option value="">Filtrar por status</option>
+              <option value="ativo" selected>Ativo</option>
+              <option value="inativo">Inativo</option>
+            </select>
+            <select class="filter-select" id="sort-order">
+              <option value="asc">Ordenar A-Z</option>
+              <option value="desc">Ordenar Z-A</option>
+              <option value="newest">Mais recentes</option>
+              <option value="oldest">Mais antigos</option>
+            </select>
+          </div>
+
+          <div class="list-shell">
+            <div class="list-meta">
+              <span id="visible-count">0 exibidos</span>
+            </div>
+            <div class="table-wrap">
+              <table class="patient-table">
+                <thead>
+                  <tr>
+                    <th>Nome</th>
+                    <th>Idade</th>
+                    <th>Telefone</th>
+                    <th>Status</th>
+                    <th class="table-actions-col">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="patient-table-body">
+                  <!-- Linhas serão adicionadas via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination" id="pagination"></div>
+          </div>
+        </section>
+
+        <!-- Modal Minha Conta -->
+        <div class="modal" id="modal-account">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Minha Conta</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <!-- Aba de Editar Perfil -->
+              <div id="account-tabs">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                  <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">
+                    👤 Perfil
+                  </button>
+                  <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">
+                    🔐 Senha
+                  </button>
+                </div>
+
+                <!-- Tab Perfil -->
+                <div id="tab-profile" class="account__tab">
+                  <form class="modal__form" id="form-profile">
+                    <div class="modal__form-group">
+                      <label for="account-name">Nome</label>
+                      <input type="text" id="account-name" placeholder="Seu nome" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="account-email">Email (não pode ser alterado)</label>
+                      <input type="email" id="account-email" placeholder="Seu email" disabled />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Tab Senha -->
+                <div id="tab-password" class="account__tab" style="display: none;">
+                  <form class="modal__form" id="form-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../../assets/js/notifications.js"></script>
+    <script src="../../assets/js/user-menu.js"></script>
+    <script>
+      // Tabs no modal de conta
+      document.querySelectorAll('.account-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.account__tab').forEach(t => t.style.display = 'none');
+          document.getElementById('tab-' + tab).style.display = 'block';
+          document.querySelectorAll('.account-tab-btn').forEach(b => {
+            b.style.color = '#999';
+            b.style.borderBottom = 'none';
+          });
+          btn.style.color = '#1f60e8';
+          btn.style.borderBottom = '3px solid #1f60e8';
+        });
+      });
+
+      // Mostrar botão de gerenciar usuários se for SUPERVISOR
+      async function checkUserRole() {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch('http://localhost:3000/profile', {
+            headers: { 'x-user-email': userEmail }
+          });
+          if (response.ok) {
+            const profile = await response.json();
+            const btnManageUsers = document.getElementById('btn-manage-users');
+            if (btnManageUsers && profile.role === 'SUPERVISOR') {
+              btnManageUsers.style.display = 'block';
+            }
+          }
+        } catch (error) {
+          console.error('Erro ao verificar role:', error);
+        }
+      }
+      
+      checkUserRole();
+    </script>
+    <script>
+      const API_URL = 'http://localhost:3000';
+      const patientTableBody = document.getElementById('patient-table-body');
+      const visibleCount = document.getElementById('visible-count');
+      const pagination = document.getElementById('pagination');
+      const searchInput = document.getElementById('search-input');
+      const filterStatus = document.getElementById('filter-status');
+      const sortOrder = document.getElementById('sort-order');
+      const patientCount = document.getElementById('patient-count');
+      const userAvatar = document.getElementById('user-avatar');
+
+      // Garante filtro padrão em "ativo" ao abrir a tela.
+      filterStatus.value = 'ativo';
+
+      let allPatients = [];
+      let filteredPatients = [];
+      let currentPage = 1;
+      const pageSize = 20;
+
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) { window.location.href = '../auth/login.html'; }
+      const userAvatarInitials = (userEmail || '').split('@')[0].substring(0, 2).toUpperCase();
+      userAvatar.textContent = userAvatarInitials;
+
+      // Atualizar dropdown
+      document.getElementById('dropdown-avatar').textContent = userAvatarInitials;
+      document.getElementById('dropdown-email').textContent = userEmail;
+
+      // Formatar hora do último acesso
+      const now = new Date();
+      const timeString = now.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      // Carregar pacientes do backend
+      async function loadPatients() {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch(`${API_URL}/api/patients`, {
+            headers: {
+              'x-user-email': userEmail
+            }
+          });
+          if (response.ok) {
+            allPatients = await response.json();
+            filterPatients();
+          } else {
+            // Dados de demo se não conseguir do backend
+            loadDemoData();
+          }
+        } catch (error) {
+          console.error('Erro ao carregar pacientes:', error);
+          loadDemoData();
+        }
+      }
+
+      function loadDemoData() {
+        allPatients = [];
+        displayPatients(allPatients);
+      }
+
+      function getStatusBadge(status) {
+        const normalized = String(status || '').toLowerCase();
+        const isActive = normalized === 'ativo';
+
+        return `<span class="status-pill ${isActive ? 'status-pill--active' : 'status-pill--inactive'}">${isActive ? 'Ativo' : 'Inativo'}</span>`;
+      }
+
+      function normalizeStatus(status) {
+        return String(status || '').trim().toLowerCase();
+      }
+
+      function renderPagination(totalItems) {
+        const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+        currentPage = Math.min(currentPage, totalPages);
+
+        if (totalItems <= pageSize) {
+          pagination.innerHTML = '';
+          return;
+        }
+
+        pagination.innerHTML = `
+          <button class="page-btn" data-action="prev" ${currentPage === 1 ? 'disabled' : ''}>Anterior</button>
+          <span class="page-indicator">Página ${currentPage} de ${totalPages}</span>
+          <button class="page-btn" data-action="next" ${currentPage === totalPages ? 'disabled' : ''}>Próxima</button>
+        `;
+      }
+
+      function displayPatients(patients) {
+        filteredPatients = Array.isArray(patients) ? patients : [];
+        
+        if (filteredPatients.length === 0) {
+          patientTableBody.innerHTML = '<tr><td colspan="5" class="table-empty">Nenhum paciente encontrado</td></tr>';
+          patientCount.textContent = `${allPatients.length} pacientes cadastrados`;
+          visibleCount.textContent = '0 exibidos';
+          pagination.innerHTML = '';
+          return;
+        }
+
+        const totalPages = Math.max(1, Math.ceil(filteredPatients.length / pageSize));
+        currentPage = Math.min(currentPage, totalPages);
+
+        const startIndex = (currentPage - 1) * pageSize;
+        const pageItems = filteredPatients.slice(startIndex, startIndex + pageSize);
+
+        patientTableBody.innerHTML = pageItems.map((person) => `
+          <tr data-id="${person.id}" class="patient-row">
+            <td>
+              <div class="person-cell">
+                <div class="person-avatar">${person.initials || (person.name || '?').slice(0, 2).toUpperCase()}</div>
+                <div>
+                  <div class="person-name">${person.name || 'Sem nome'}</div>
+                  <div class="person-sub">${person.location || 'Localização não informada'}</div>
+                </div>
+              </div>
+            </td>
+            <td>${person.age || '-'}</td>
+            <td>${person.phone || '-'}</td>
+            <td>${getStatusBadge(person.status)}</td>
+            <td class="table-actions-col">
+              <button class="table-action-btn" data-action="view" data-id="${person.id}">Ver perfil</button>
+            </td>
+          </tr>
+        `).join('');
+
+        patientCount.textContent = `${allPatients.length} paciente${allPatients.length !== 1 ? 's' : ''} cadastrado${allPatients.length !== 1 ? 's' : ''}`;
+        visibleCount.textContent = `${filteredPatients.length} exibido${filteredPatients.length !== 1 ? 's' : ''}`;
+        renderPagination(filteredPatients.length);
+      }
+
+      function sortPatients(data) {
+        const sortValue = sortOrder.value;
+        const sorted = [...data];
+
+        switch(sortValue) {
+          case 'asc':
+            // A-Z
+            sorted.sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+            break;
+          case 'desc':
+            // Z-A
+            sorted.sort((a, b) => b.name.localeCompare(a.name, 'pt-BR'));
+            break;
+          case 'newest':
+            // Mais recentes (id decrescente)
+            sorted.sort((a, b) => b.id - a.id);
+            break;
+          case 'oldest':
+            // Mais antigos (id crescente)
+            sorted.sort((a, b) => a.id - b.id);
+            break;
+        }
+
+        return sorted;
+      }
+
+      function filterPatients() {
+        let filtered = allPatients;
+
+        const searchTerm = searchInput.value.toLowerCase();
+        if (searchTerm) {
+          filtered = filtered.filter(person => 
+            person.name.toLowerCase().includes(searchTerm)
+          );
+        }
+
+        const statusTerm = normalizeStatus(filterStatus.value);
+        if (statusTerm) {
+          filtered = filtered.filter(person => normalizeStatus(person.status) === statusTerm);
+        }
+
+        // Aplicar ordenação
+        filtered = sortPatients(filtered);
+        currentPage = 1;
+        displayPatients(filtered);
+      }
+
+      patientTableBody.addEventListener('click', (event) => {
+        const viewButton = event.target.closest('[data-action="view"]');
+        const row = event.target.closest('.patient-row');
+        const patientId = viewButton?.dataset.id || row?.dataset.id;
+
+        if (!patientId) return;
+        window.location.href = `./view.html?id=${patientId}`;
+      });
+
+      pagination.addEventListener('click', (event) => {
+        const action = event.target.dataset.action;
+        if (!action) return;
+
+        const totalPages = Math.max(1, Math.ceil(filteredPatients.length / pageSize));
+
+        if (action === 'prev' && currentPage > 1) {
+          currentPage -= 1;
+          displayPatients(filteredPatients);
+        }
+
+        if (action === 'next' && currentPage < totalPages) {
+          currentPage += 1;
+          displayPatients(filteredPatients);
+        }
+      });
+
+      // Event listeners
+      searchInput.addEventListener('input', filterPatients);
+      filterStatus.addEventListener('change', filterPatients);
+      sortOrder.addEventListener('change', filterPatients);
+
+      // Carregar dados ao iniciar
+      loadPatients();
+
+      // Menu Toggle
+      const menuToggles = document.querySelectorAll('.sidebar__menu-toggle');
+      menuToggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const menuId = toggle.getAttribute('data-expand');
+          const submenu = document.getElementById(menuId);
+          const isOpen = submenu.classList.contains('open');
+          
+          // Fechar todos os outros submenus
+          document.querySelectorAll('.sidebar__submenu').forEach(menu => {
+            if (menu.id !== menuId) {
+              menu.classList.remove('open');
+            }
+          });
+          
+          // Fechar/abrir o submenu clicado
+          if (isOpen) {
+            submenu.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+          } else {
+            submenu.classList.add('open');
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+
+    </script>
+  </body>
+</html>

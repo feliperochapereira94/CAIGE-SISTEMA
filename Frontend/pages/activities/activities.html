@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atividades Recentes - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/css/notifications.css" />
+    <link rel="stylesheet" href="../../assets/css/user-menu.css" />
+    <style>
+        .activities-page {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+
+        .activities-content {
+            padding: 32px 40px 40px 40px;
+        }
+
+        .activities-filters {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .filter-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            color: var(--gray-900);
+            transition: all 0.3s ease;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--blue-500);
+            box-shadow: 0 0 0 3px var(--blue-100);
+        }
+
+        .filter-group select {
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        .btn-filter {
+            background: var(--blue-600);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .btn-filter:hover {
+            background: var(--blue-500);
+            transform: translateY(-1px);
+        }
+
+        .btn-filter-clear {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-filter-clear:hover {
+            background: var(--gray-300);
+        }
+
+        .activities-table {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .activities-table-header {
+            display: grid;
+            grid-template-columns: 150px 140px 1fr 150px 120px;
+            gap: 24px;
+            padding: 18px 24px;
+            background: #f9fafb;
+            border-bottom: 2px solid var(--gray-200);
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .activities-table-body {
+            display: flex;
+            flex-direction: column;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .activities-row {
+            display: grid;
+            grid-template-columns: 150px 140px 1fr 150px 120px;
+            gap: 24px;
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--gray-100);
+            align-items: center;
+            font-size: 14px;
+            color: var(--gray-900);
+            transition: all 0.2s ease;
+        }
+
+        .activities-row:hover {
+            background: #f9fafb;
+        }
+
+        .activities-row:last-child {
+            border-bottom: none;
+        }
+
+        .activity-date {
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+
+        .activity-type {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .activity-type.cadastro {
+            background: #dbeafe;
+            color: #0284c7;
+        }
+
+        .activity-type.edicao {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .activity-type.delecao {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .activity-type.frequencia {
+          background: #dbeafe;
+          color: #1d4ed8;
+        }
+
+        .activity-type.inativacao {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .activity-type.reativacao {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .activity-type.avaliacao {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .activity-type.anexo {
+            background: #d1d5db;
+            color: #374151;
+        }
+
+        .activity-description {
+            line-height: 1.5;
+            color: var(--gray-600);
+        }
+
+        .activity-responsible {
+            text-align: right;
+            font-size: 13px;
+            color: var(--gray-700);
+        }
+
+        .activity-action {
+            text-align: center;
+        }
+
+        .activity-action button {
+            background: none;
+            border: none;
+            color: var(--blue-600);
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            padding: 4px 8px;
+        }
+
+        .activity-action button:hover {
+            transform: scale(1.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 32px;
+            color: var(--blue-600);
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 13px;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="activities-page">
+        <aside class="sidebar">
+            <div class="sidebar__brand">
+              <img src="/assets/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+              <div>
+                <h1>CAIGE</h1>
+                <span>Univale</span>
+              </div>
+            </div>
+            <nav class="sidebar__nav">
+                <a class="sidebar__link" href="../dashboard/dashboard.html">
+                    <span>🏠</span>
+                    Dashboard
+                </a>
+                <a class="sidebar__link sidebar__link--active" href="#">
+                    <span>📋</span>
+                    Atividades
+                </a>
+                <a class="sidebar__link" href="../patients/list.html">
+                    <span>👥</span>
+                    Pacientes
+                </a>
+                <div class="sidebar__menu-item">
+                    <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+                        <span>📄</span>
+                        <span>Prontuários</span>
+                        <span class="sidebar__menu-icon">+</span>
+                    </button>
+                    <div class="sidebar__submenu" id="prontuarios-menu">
+                        <a class="sidebar__submenu-link" href="../patients/medical-records.html">
+                            📋 Prontuários Cadastrados
+                        </a>
+                        <a class="sidebar__submenu-link" href="../patients/questions.html">
+                            ❓ Cadastro de Perguntas
+                        </a>
+                    </div>
+                </div>
+                <div class="sidebar__menu-item">
+                    <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+                        <span>📊</span>
+                        <span>Frequência</span>
+                        <span class="sidebar__menu-icon">+</span>
+                    </button>
+                    <div class="sidebar__submenu" id="attendance-menu">
+                        <a class="sidebar__submenu-link" href="../attendance/attendance.html">
+                            ✋ Registrar Frequência
+                        </a>
+                        <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">
+                            📄 Relatório Frequência
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="activities-content">
+            <header class="content__header">
+              <div>
+                <h2>Atividades Recentes</h2>
+                <p>Histórico completo de operações no sistema</p>
+              </div>
+              <div class="user-menu">
+                <button class="user-avatar-btn" id="user-avatar-btn">
+                  <span class="content__user-avatar" id="user-avatar">SC</span>
+                </button>
+                <div class="user-dropdown">
+                  <div class="user-dropdown__header">
+                    <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                    <div style="flex: 1;">
+                      <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                      <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                    </div>
+                  </div>
+                  <div class="user-dropdown__body">
+                    <button class="user-dropdown__item" data-modal="account">
+                      <span class="user-dropdown__item-icon">👤</span>
+                      Minha Conta
+                    </button>
+                    <button class="user-dropdown__item" data-action="manage-users" style="display: none;" id="btn-manage-users">
+                      <span class="user-dropdown__item-icon">🔐</span>
+                      Gerenciar Usuários
+                    </button>
+                    <div class="user-dropdown__divider"></div>
+                    <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                      <span class="user-dropdown__item-icon">🚪</span>
+                      Sair
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <!-- Estatísticas Rápidas -->
+            <div class="stats-summary" id="stats-summary"></div>
+
+            <!-- Filtros -->
+            <div class="activities-filters">
+                <div class="filter-group">
+                    <label for="filter-date">Data</label>
+                    <input type="date" id="filter-date" />
+                </div>
+                <div class="filter-group">
+                    <label for="filter-type">Tipo</label>
+                    <select id="filter-type">
+                        <option value="">Todos os tipos</option>
+                        <option value="Novo Cadastro">Novo Cadastro</option>
+                        <option value="Edição">Edição</option>
+                        <option value="Inativação">Inativação</option>
+                        <option value="Reativação">Reativação</option>
+                        <option value="Deleção">Deleção</option>
+                      <option value="Frequência">Frequência</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-responsible">Responsável</label>
+                    <input type="text" id="filter-responsible" placeholder="Buscar..." />
+                </div>
+                <button class="btn-filter" id="btn-apply-filters">🔍 Filtrar</button>
+                <button class="btn-filter btn-filter-clear" id="btn-clear-filters">✕ Limpar</button>
+            </div>
+
+            <!-- Tabela de Atividades -->
+            <div class="activities-table">
+                <div class="activities-table-header">
+                    <span>Data/Hora</span>
+                    <span>Tipo</span>
+                    <span>Descrição</span>
+                    <span>Responsável</span>
+                    <span>Ações</span>
+                </div>
+                <div class="activities-table-body" id="activities-list"></div>
+            </div>
+
+            <!-- Modal Minha Conta -->
+            <div class="modal" id="modal-account">
+              <div class="modal__content">
+                <div class="modal__header">
+                  <h2 class="modal__title">Minha Conta</h2>
+                  <button class="modal__close">×</button>
+                </div>
+                <div class="modal__body">
+                  <!-- Aba de Editar Perfil -->
+                  <div id="account-tabs">
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                      <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">
+                        👤 Perfil
+                      </button>
+                      <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">
+                        🔐 Senha
+                      </button>
+                    </div>
+
+                    <!-- Tab Perfil -->
+                    <div id="tab-profile" class="account__tab">
+                      <form class="modal__form" id="form-profile">
+                        <div class="modal__form-group">
+                          <label for="account-name">Nome</label>
+                          <input type="text" id="account-name" placeholder="Seu nome" required />
+                        </div>
+                        <div class="modal__form-group">
+                          <label for="account-email">Email (não pode ser alterado)</label>
+                          <input type="email" id="account-email" placeholder="Seu email" disabled />
+                        </div>
+                        <div class="modal__form-actions">
+                          <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                          <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                        </div>
+                      </form>
+                    </div>
+
+                    <!-- Tab Senha -->
+                    <div id="tab-password" class="account__tab" style="display: none;">
+                      <form class="modal__form" id="form-password">
+                        <div class="modal__form-group">
+                          <label for="current-password">Senha Atual</label>
+                          <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                        </div>
+                        <div class="modal__form-group">
+                          <label for="new-password">Nova Senha</label>
+                          <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                        </div>
+                        <div class="modal__form-group">
+                          <label for="confirm-password">Confirmar Nova Senha</label>
+                          <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                        </div>
+                        <div class="modal__form-actions">
+                          <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                          <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modal Alterar Senha -->
+            <div class="modal" id="modal-password" style="display: none;">
+              <div class="modal__content">
+                <div class="modal__header">
+                  <h2 class="modal__title">Alterar Senha</h2>
+                  <button class="modal__close">×</button>
+                </div>
+                <div class="modal__body">
+                  <form class="modal__form" id="form-change-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--secondary modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+      // Tabs no modal de conta
+      document.querySelectorAll('.account-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.account__tab').forEach(t => t.style.display = 'none');
+          document.getElementById('tab-' + tab).style.display = 'block';
+          document.querySelectorAll('.account-tab-btn').forEach(b => {
+            b.style.color = '#999';
+            b.style.borderBottom = 'none';
+          });
+          btn.style.color = '#1f60e8';
+          btn.style.borderBottom = '3px solid #1f60e8';
+        });
+      });
+
+      // Mostrar botão de gerenciar usuários se for SUPERVISOR
+      async function checkUserRole() {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch('http://localhost:3000/profile', {
+            headers: { 'x-user-email': userEmail }
+          });
+          if (response.ok) {
+            const profile = await response.json();
+            const btnManageUsers = document.getElementById('btn-manage-users');
+            if (btnManageUsers && profile.role === 'SUPERVISOR') {
+              btnManageUsers.style.display = 'block';
+            }
+          }
+        } catch (error) {
+          console.error('Erro ao verificar role:', error);
+        }
+      }
+      
+      checkUserRole();
+    </script>
+
+    <script>
+        const statsSummary = document.getElementById('stats-summary');
+        const activitiesList = document.getElementById('activities-list');
+        const filterDate = document.getElementById('filter-date');
+        const filterType = document.getElementById('filter-type');
+        const filterResponsible = document.getElementById('filter-responsible');
+        const btnApplyFilters = document.getElementById('btn-apply-filters');
+        const btnClearFilters = document.getElementById('btn-clear-filters');
+
+        let allActivities = [];
+
+        const getActivityClass = (type) => {
+            const typeMap = {
+                'Novo Cadastro': 'cadastro',
+                'Edição': 'edicao',
+            'Inativação': 'inativacao',
+            'Reativação': 'reativacao',
+                'Deleção': 'delecao',
+            'Frequência': 'frequencia'
+            };
+          return typeMap[type] || 'frequencia';
+        };
+
+        const getActivityDateKey = (activityDate) => {
+          const raw = String(activityDate || '').trim();
+          const brDateMatch = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+
+          if (brDateMatch) {
+            const [, day, month, year] = brDateMatch;
+            return `${year}-${month}-${day}`;
+          }
+
+          const parsed = new Date(raw);
+          if (Number.isNaN(parsed.getTime())) {
+            return '';
+          }
+
+          const year = parsed.getFullYear();
+          const month = String(parsed.getMonth() + 1).padStart(2, '0');
+          const day = String(parsed.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+
+        const getTodayDateKey = () => {
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const day = String(now.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+
+        const renderActivities = (activities) => {
+            activitiesList.innerHTML = '';
+
+            if (activities.length === 0) {
+                activitiesList.innerHTML = `
+                    <div class="empty-state" style="padding: 80px 20px;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📭</div>
+                        <p>Nenhuma atividade encontrada com esses filtros.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            activities.forEach(activity => {
+                const row = document.createElement('div');
+                row.className = 'activities-row';
+                row.innerHTML = `
+                    <span class="activity-date">${activity.date}</span>
+                    <span class="activity-type ${getActivityClass(activity.type)}">${activity.type}</span>
+                    <span class="activity-description">${activity.description}</span>
+                    <span class="activity-responsible">${activity.responsible}</span>
+                    <div class="activity-action">
+                        <button title="Detalhes">...</button>
+                    </div>
+                `;
+                activitiesList.appendChild(row);
+            });
+        };
+
+        const renderStats = (activities) => {
+            const stats = [
+                {
+                    title: 'Total de Atividades',
+                    value: activities.length,
+                    icon: '📊'
+                },
+                {
+                    title: 'Cadastros',
+                    value: activities.filter(a => a.type === 'Novo Cadastro').length,
+                    icon: '➕'
+                },
+                {
+                    title: 'Edições',
+                  value: activities.filter(a => ['Edição', 'Inativação', 'Reativação'].includes(a.type)).length,
+                    icon: '✏️'
+                },
+                {
+                    title: 'Hoje',
+                    value: activities.filter(a => {
+                    return getActivityDateKey(a.date) === getTodayDateKey();
+                    }).length,
+                    icon: '📅'
+                }
+            ];
+
+            statsSummary.innerHTML = stats.map(stat => `
+                <div class="stat-card">
+                    <div class="activity-date" style="font-size: 24px; margin-bottom: 5px;">${stat.icon}</div>
+                    <h3>${stat.value}</h3>
+                    <p>${stat.title}</p>
+                </div>
+            `).join('');
+        };
+
+        const applyFilters = () => {
+            let filtered = allActivities;
+
+            if (filterDate.value) {
+            const selectedDateKey = filterDate.value;
+            filtered = filtered.filter(a => getActivityDateKey(a.date) === selectedDateKey);
+            }
+
+            if (filterType.value) {
+                filtered = filtered.filter(a => a.type === filterType.value);
+            }
+
+            if (filterResponsible.value) {
+                filtered = filtered.filter(a => 
+                    a.responsible.toLowerCase().includes(filterResponsible.value.toLowerCase())
+                );
+            }
+
+            renderActivities(filtered);
+        };
+
+        const clearFilters = () => {
+            filterDate.value = '';
+            filterType.value = '';
+            filterResponsible.value = '';
+            renderActivities(allActivities);
+        };
+
+        const loadActivities = async () => {
+            try {
+                // Buscar todas as atividades
+                const userEmail = localStorage.getItem('userEmail');
+                const response = await fetch('http://localhost:3000/api/activities?limit=1000', {
+                    headers: {
+                        'x-user-email': userEmail
+                    }
+                });
+                const data = await response.json();
+                
+                allActivities = data.activities || [];
+                
+                renderActivities(allActivities);
+                renderStats(allActivities);
+
+            } catch (error) {
+                console.error('Erro ao carregar atividades:', error);
+                activitiesList.innerHTML = `
+                    <div class="empty-state">
+                        <p>⚠️ Erro ao carregar atividades</p>
+                    </div>
+                `;
+            }
+        };
+
+        // Event listeners
+        btnApplyFilters.addEventListener('click', applyFilters);
+        btnClearFilters.addEventListener('click', clearFilters);
+        filterDate.addEventListener('change', applyFilters);
+        filterType.addEventListener('change', applyFilters);
+
+        // User menu
+        const userEmail = localStorage.getItem('userEmail');
+        if (!userEmail) { window.location.href = '../auth/login.html'; }
+        const initials = (userEmail || '').split('@')[0].substring(0, 2).toUpperCase();
+        document.getElementById('user-avatar').textContent = initials;
+        document.getElementById('dropdown-avatar').textContent = initials;
+        document.getElementById('dropdown-email').textContent = userEmail;
+
+                    // Formatar hora do último acesso
+                    const now = new Date();
+                    const timeString = now.toLocaleString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+        // Menu Toggle
+        const menuToggles = document.querySelectorAll('.sidebar__menu-toggle');
+        menuToggles.forEach(toggle => {
+          toggle.addEventListener('click', () => {
+            const menuId = toggle.getAttribute('data-expand');
+            const submenu = document.getElementById(menuId);
+            const isOpen = submenu.classList.contains('open');
+            
+            // Fechar todos os outros submenus
+            document.querySelectorAll('.sidebar__submenu').forEach(menu => {
+              if (menu.id !== menuId) {
+                menu.classList.remove('open');
+              }
+            });
+            
+            // Fechar/abrir o submenu clicado
+            if (isOpen) {
+              submenu.classList.remove('open');
+              toggle.setAttribute('aria-expanded', 'false');
+            } else {
+              submenu.classList.add('open');
+              toggle.setAttribute('aria-expanded', 'true');
+            }
+          });
+        });
+
+        // Carregar atividades ao abrir a página
+        loadActivities();
+    </script>
+
+    <script src="../../assets/js/notifications.js"></script>
+    <script src="../../assets/js/user-menu.js"></script>
+</body>
+</html>
+

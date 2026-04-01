@@ -1,0 +1,23 @@
+﻿{
+  "name": "caige-login",
+  "version": "1.0.0",
+  "description": "Backend simples para login CAIGE com validaÃ§Ã£o de email institucional",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "migrate:rename-patients": "node migrate-rename-patients.js",
+    "migrate:attendance-frequency": "node migrate-attendance-frequency.js",
+    "migrate:normalize-phones": "node migrate-normalize-phones.js",
+    "migrate:questionnaires": "node create-questionnaire-tables.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.11.0"
+  }
+}
+

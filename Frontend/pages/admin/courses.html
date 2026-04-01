@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciar Cursos - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/css/form.css" />
+    <link rel="stylesheet" href="../../assets/css/notifications.css" />
+    <link rel="stylesheet" href="../../assets/css/user-menu.css" />
+    <style>
+      .courses-container {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 32px;
+        margin-bottom: 32px;
+      }
+
+      .card {
+        background: linear-gradient(135deg, white 0%, #fafbfd 100%);
+        border: 1px solid rgba(31, 96, 232, 0.1);
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(31, 96, 232, 0.08), 0 4px 16px rgba(31, 96, 232, 0.04);
+      }
+
+      .card h3 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1f2937;
+        margin-bottom: 24px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #374151;
+        margin-bottom: 8px;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid rgba(31, 96, 232, 0.2);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        box-sizing: border-box;
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: #1f60e8;
+        box-shadow: 0 0 0 3px rgba(31, 96, 232, 0.1);
+      }
+
+      .btn-create {
+        width: 100%;
+        padding: 14px 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 8px;
+      }
+
+      .btn-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      }
+
+      .courses-list {
+        max-height: 600px;
+        overflow-y: auto;
+      }
+
+      .course-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border: 1px solid rgba(31, 96, 232, 0.1);
+        border-radius: 8px;
+        margin-bottom: 12px;
+        transition: background 0.2s;
+      }
+
+      .course-item.inactive {
+        opacity: 0.55;
+        background: #f9fafb;
+      }
+
+      .course-name {
+        font-weight: 500;
+        color: #1f2937;
+        font-size: 15px;
+      }
+
+      .course-status {
+        font-size: 12px;
+        margin-top: 4px;
+        color: #6b7280;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .status-badge.active {
+        background: rgba(16, 185, 129, 0.15);
+        color: #047857;
+      }
+
+      .status-badge.inactive {
+        background: rgba(156, 163, 175, 0.2);
+        color: #6b7280;
+      }
+
+      .course-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn-small {
+        padding: 7px 14px;
+        border: 1px solid rgba(31, 96, 232, 0.2);
+        border-radius: 6px;
+        background: white;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.2s ease;
+        font-family: inherit;
+      }
+
+      .btn-small:hover {
+        background: rgba(31, 96, 232, 0.05);
+        border-color: #1f60e8;
+      }
+
+      .btn-small-warn {
+        color: #d97706;
+        border-color: rgba(217, 119, 6, 0.25);
+      }
+
+      .btn-small-warn:hover {
+        background: rgba(217, 119, 6, 0.07);
+        border-color: #d97706;
+      }
+
+      .btn-small-danger {
+        color: #dc2626;
+        border-color: rgba(220, 38, 38, 0.2);
+      }
+
+      .btn-small-danger:hover {
+        background: rgba(220, 38, 38, 0.05);
+        border-color: #dc2626;
+      }
+
+      @media (max-width: 768px) {
+        .courses-container {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="/assets/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link" href="../dashboard/dashboard.html">
+            <span>🏠</span>
+            Dashboard
+          </a>
+          <a class="sidebar__link" href="../activities/activities.html">
+            <span>📋</span>
+            Atividades
+          </a>
+          <a class="sidebar__link" href="../patients/list.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="../patients/medical-records.html">
+                📋 Prontuários Cadastrados
+              </a>
+              <a class="sidebar__submenu-link" href="../patients/questions.html">
+                ❓ Cadastro de Perguntas
+              </a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="attendance-menu">
+              <a class="sidebar__submenu-link" href="../attendance/attendance.html">
+                ✋ Registrar Frequência
+              </a>
+              <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">
+                📄 Relatório Frequência
+              </a>
+            </div>
+          </div>
+          <a class="sidebar__link sidebar__link--active" href="../admin/users.html#cursos" data-require-role="SUPERVISOR">
+            <span>🛡️</span>
+            Painel de Gerenciamento
+          </a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2>Gerenciar Cursos</h2>
+            <p>Cadastre e gerencie os cursos do programa CAIGE</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">caige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="breadcrumb">
+          <span>Admin</span>
+          <span> / Cursos</span>
+        </div>
+
+        <div class="courses-container">
+          <!-- Formulário de Criar Curso -->
+          <div class="card">
+            <h3>➕ Novo Curso</h3>
+            <form id="create-course-form">
+              <div class="form-group">
+                <label for="course-name">Nome do Curso *</label>
+                <input type="text" id="course-name" placeholder="Ex: Fisioterapia" required />
+              </div>
+              <button type="submit" class="btn-create">Criar Curso</button>
+            </form>
+          </div>
+
+          <!-- Lista de Cursos -->
+          <div class="card">
+            <h3>🎓 Cursos Cadastrados</h3>
+            <div class="courses-list" id="courses-list">
+              <p style="color: #9ca3af; text-align: center; padding: 20px;">Carregando cursos...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Editar Curso -->
+        <div class="modal" id="modal-edit-course" style="display:none;">
+          <div class="modal__content" style="max-width: 420px;">
+            <div class="modal__header">
+              <h2 class="modal__title">Editar Curso</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <form class="modal__form" id="form-edit-course">
+                <input type="hidden" id="edit-course-id" />
+                <div class="modal__form-group">
+                  <label for="edit-course-name">Nome do Curso</label>
+                  <input type="text" id="edit-course-name" required />
+                </div>
+                <div class="modal__form-group">
+                  <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 0; cursor: pointer;">
+                    <input type="checkbox" id="edit-course-active" style="width: auto;" />
+                    Curso ativo
+                  </label>
+                </div>
+                <div class="modal__form-actions">
+                  <button type="submit" class="modal__btn modal__btn--primary">Salvar</button>
+                  <button type="button" class="modal__btn modal__btn--secondary modal__close">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Minha Conta -->
+        <div class="modal" id="modal-account">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Minha Conta</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <div id="account-tabs">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                  <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">
+                    👤 Perfil
+                  </button>
+                  <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">
+                    🔐 Senha
+                  </button>
+                </div>
+                <div id="tab-profile" class="account__tab">
+                  <form class="modal__form" id="form-profile">
+                    <div class="modal__form-group">
+                      <label for="account-name">Nome</label>
+                      <input type="text" id="account-name" placeholder="Seu nome" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="account-email">Email (não pode ser alterado)</label>
+                      <input type="email" id="account-email" placeholder="Seu email" disabled />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+                <div id="tab-password" class="account__tab" style="display: none;">
+                  <form class="modal__form" id="form-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../../assets/js/notifications.js"></script>
+    <script src="../../assets/js/user-menu.js"></script>
+    <script src="../../assets/js/access-control.js"></script>
+    <script>
+      // Tabs modal conta
+      document.querySelectorAll('.account-tab-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.preventDefault();
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.account__tab').forEach(t => t.style.display = 'none');
+          document.getElementById('tab-' + tab).style.display = 'block';
+          document.querySelectorAll('.account-tab-btn').forEach(b => {
+            b.style.color = '#999'; b.style.borderBottom = 'none';
+          });
+          btn.style.color = '#1f60e8';
+          btn.style.borderBottom = '3px solid #1f60e8';
+        });
+      });
+    </script>
+    <script>
+      window.location.replace('../admin/users.html#cursos');
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) { window.location.href = '../auth/login.html'; }
+      const initials = (userEmail || '').split('@')[0].substring(0, 2).toUpperCase();
+
+      document.getElementById('user-avatar').textContent = initials;
+      document.getElementById('dropdown-avatar').textContent = initials;
+      document.getElementById('dropdown-email').textContent = userEmail;
+
+      // ---- Carregar cursos ----
+      async function loadCourses() {
+        try {
+          const response = await fetch(`${API_URL}/api/courses`, {
+            headers: { 'x-user-email': userEmail }
+          });
+
+          if (response.status === 403) {
+            notify.error('Apenas supervisores podem acessar esta página');
+            setTimeout(() => { window.location.href = '../dashboard/dashboard.html'; }, 1500);
+            return;
+          }
+
+          const courses = await response.json();
+          renderCourses(courses);
+        } catch (err) {
+          console.error('Erro ao carregar cursos:', err);
+          notify.error('Erro ao carregar cursos');
+        }
+      }
+
+      function renderCourses(courses) {
+        const list = document.getElementById('courses-list');
+        if (!courses.length) {
+          list.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:20px;">Nenhum curso cadastrado</p>';
+          return;
+        }
+        list.innerHTML = courses.map(c => `
+          <div class="course-item ${c.is_active ? '' : 'inactive'}" id="course-row-${c.id}">
+            <div>
+              <div class="course-name">${c.name}</div>
+              <div class="course-status">
+                <span class="status-badge ${c.is_active ? 'active' : 'inactive'}">
+                  ${c.is_active ? 'Ativo' : 'Inativo'}
+                </span>
+              </div>
+            </div>
+            <div class="course-actions">
+              <button class="btn-small" onclick="openEditCourse(${c.id}, '${c.name.replace(/'/g, "\\'")}', ${c.is_active})">Editar</button>
+              <button class="btn-small btn-small-danger" onclick="deleteCourse(${c.id}, '${c.name.replace(/'/g, "\\'")}')">Remover</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // ---- Criar curso ----
+      document.getElementById('create-course-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const name = document.getElementById('course-name').value.trim();
+        if (!name) return;
+
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'Criando...';
+
+        try {
+          const res = await fetch(`${API_URL}/api/courses`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-user-email': userEmail },
+            body: JSON.stringify({ name })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            notify.success(`Curso "${name}" criado com sucesso!`);
+            document.getElementById('course-name').value = '';
+            loadCourses();
+          } else {
+            notify.error(data.message || 'Erro ao criar curso');
+          }
+        } catch (err) {
+          notify.error('Erro ao conectar com o servidor');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Criar Curso';
+        }
+      });
+
+      // ---- Editar curso ----
+      function openEditCourse(id, name, isActive) {
+        document.getElementById('edit-course-id').value = id;
+        document.getElementById('edit-course-name').value = name;
+        document.getElementById('edit-course-active').checked = isActive;
+        document.getElementById('modal-edit-course').style.display = 'flex';
+      }
+
+      document.getElementById('form-edit-course').addEventListener('submit', async e => {
+        e.preventDefault();
+        const id = document.getElementById('edit-course-id').value;
+        const name = document.getElementById('edit-course-name').value.trim();
+        const is_active = document.getElementById('edit-course-active').checked;
+
+        if (!name) return;
+
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'Salvando...';
+
+        try {
+          const res = await fetch(`${API_URL}/api/courses/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'x-user-email': userEmail },
+            body: JSON.stringify({ name, is_active })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            notify.success('Curso atualizado com sucesso!');
+            document.getElementById('modal-edit-course').style.display = 'none';
+            loadCourses();
+          } else {
+            notify.error(data.message || 'Erro ao atualizar curso');
+          }
+        } catch (err) {
+          notify.error('Erro ao conectar com o servidor');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Salvar';
+        }
+      });
+
+      // ---- Remover curso ----
+      async function deleteCourse(id, name) {
+        if (!confirm(`Remover o curso "${name}"?\n\nIsto só é possível se não houver usuários vinculados.`)) return;
+
+        try {
+          const res = await fetch(`${API_URL}/api/courses/${id}`, {
+            method: 'DELETE',
+            headers: { 'x-user-email': userEmail }
+          });
+          const data = await res.json();
+          if (res.ok) {
+            notify.success(`Curso "${name}" removido`);
+            loadCourses();
+          } else {
+            notify.error(data.message || 'Erro ao remover curso');
+          }
+        } catch (err) {
+          notify.error('Erro ao conectar com o servidor');
+        }
+      }
+
+      // ---- Fechar modais ----
+      document.querySelectorAll('.modal__close').forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.closest('.modal').style.display = 'none';
+        });
+      });
+
+      // Expandir submenus do sidebar
+      document.querySelectorAll('.sidebar__menu-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.dataset.expand;
+          const submenu = document.getElementById(target);
+          if (submenu) {
+            const isOpen = submenu.style.display === 'block';
+            submenu.style.display = isOpen ? 'none' : 'block';
+            btn.querySelector('.sidebar__menu-icon').textContent = isOpen ? '+' : '−';
+          }
+        });
+      });
+
+      loadCourses();
+    </script>
+  </body>
+</html>
+

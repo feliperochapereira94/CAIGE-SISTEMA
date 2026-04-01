@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>�rea Restrita - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/login.css" />
+    <link rel="stylesheet" href="../../assets/css/notifications.css" />
+  </head>
+  <body>
+    <main class="login">
+      <section class="login__panel">
+        <header class="brand">
+          <img src="../../assets/images/logo-caige.png" alt="CAIGE Logo" class="brand__logo" />
+          <div>
+            <p class="brand__name">CAIGE</p>
+            <p class="brand__subtitle">Univale</p>
+          </div>
+        </header>
+
+        <div class="login__title">
+          <h1>�rea Restrita - CAIGE</h1>
+          <p>Acesso exclusivo para equipe e colaboradores</p>
+        </div>
+
+        <form class="login__form">
+          <label class="field">
+            <span class="field__label">E-mail ou Usuário</span>
+            <div class="field__input">
+              <span class="field__icon">??</span>
+              <input type="email" placeholder="caige@univale.br" />
+            </div>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Senha</span>
+            <div class="field__input">
+              <span class="field__icon">??</span>
+              <input type="password" placeholder="��������" />
+            </div>
+          </label>
+
+          <label class="remember">
+            <input type="checkbox" />
+            <span>Lembrar de mim</span>
+          </label>
+
+          <button type="submit" class="login__button">Entrar</button>
+        </form>
+      </section>
+
+      <section class="login__hero">
+        <div class="hero__content">
+          <div class="hero__card">
+            <h3>Cuidado Interdisciplinar</h3>
+            <p>
+              Nossa equipe multidisciplinar trabalha de forma integrada para oferecer
+              o melhor cuidado aos pacientes da nossa comunidade.
+            </p>
+            <div class="hero__dots">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <span class="hero__accent"></span>
+        </div>
+      </section>
+    </main>
+
+    <script src="../../assets/js/notifications.js"></script>
+    <script>
+      const form = document.querySelector('.login__form');
+      const button = form.querySelector('button[type="submit"]');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = form.querySelector('input[type="email"]').value;
+        const password = form.querySelector('input[type="password"]').value;
+        const rememberMe = form.querySelector('input[type="checkbox"]').checked;
+
+        // Valida��o b�sica
+        if (!email || !password) {
+          notify.error('Email e senha s�o obrigat�rios');
+          return;
+        }
+
+        // Desabilitar bot�o durante requisi��o
+        button.disabled = true;
+        const originalText = button.textContent;
+        button.textContent = 'Autenticando...';
+
+        try {
+          const response = await fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Armazenar dados se "Lembrar de mim" foi marcado
+            if (rememberMe) {
+              localStorage.setItem('userEmail', email);
+            } else {
+              localStorage.removeItem('userEmail');
+            }
+
+            notify.success('Login realizado com sucesso!');
+            
+            // Redirecionar para dashboard
+            setTimeout(() => {
+              window.location.href = '../dashboard/dashboard.html';
+            }, 1000);
+          } else {
+            // Mostrar erro
+            notify.error(data.message || 'Erro ao fazer login');
+            button.disabled = false;
+            button.textContent = originalText;
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+          notify.error('Erro ao conectar com o servidor. Certifique-se de que o backend est� rodando em http://localhost:3000');
+          button.disabled = false;
+          button.textContent = originalText;
+        }
+      });
+
+      // Preencher email se "Lembrar de mim" foi ativado
+      window.addEventListener('DOMContentLoaded', () => {
+        const savedEmail = localStorage.getItem('userEmail');
+        if (savedEmail) {
+          form.querySelector('input[type="email"]').value = savedEmail;
+          form.querySelector('input[type="checkbox"]').checked = true;
+        }
+      });
+    </script>
+  </body>
+</html>

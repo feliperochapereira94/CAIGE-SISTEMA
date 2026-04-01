@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Perfil - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/css/profile.css" />
+    <link rel="stylesheet" href="../../assets/css/notifications.css" />
+    <link rel="stylesheet" href="../../assets/css/user-menu.css" />
+    <link rel="stylesheet" href="../../assets/css/questionnaire.css" />
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="/assets/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link" href="../dashboard/dashboard.html">
+            <span>🏠</span>
+            Dashboard
+          </a>
+          <a class="sidebar__link" href="../activities/activities.html">
+            <span>📋</span>
+            Atividades
+          </a>
+          <a class="sidebar__link sidebar__link--active" href="./list.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="./medical-records.html">
+                📋 Prontuários Cadastrados
+              </a>
+              <a class="sidebar__submenu-link" href="./questions.html">
+                ❓ Cadastro de Perguntas
+              </a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="attendance-menu">
+              <a class="sidebar__submenu-link" href="../attendance/attendance.html">
+                ✋ Registrar Frequência
+              </a>
+              <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">
+                📄 Relatório Frequência
+              </a>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2 id="patient-name">Perfil do Paciente</h2>
+            <p>Visualize e gerencie as informações cadastrais</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <button class="user-dropdown__item" data-action="manage-users" style="display: none;" id="btn-manage-users">
+                  <span class="user-dropdown__item-icon">🔐</span>
+                  Gerenciar Usuários
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="breadcrumb">
+          <a href="./list.html">Pacientes Cadastrados</a>
+          <span>></span>
+          <span id="patient-breadcrumb">Perfil</span>
+        </div>
+
+        <div class="profile-actions">
+          <button class="btn btn--primary" id="btn-edit">✏️ Editar Cadastro</button>
+        </div>
+
+        <div class="profile-container">
+          <div class="profile-main">
+            <div class="profile-header">
+              <div class="profile-avatar" id="profile-avatar">MS</div>
+              <div class="profile-header__info">
+                <h1 class="profile-header__name" id="profile-name">Maria da Silva Santos</h1>
+                <div class="profile-header__meta">
+                  <span class="profile-meta-item">📅 Idade: <span id="profile-age">70</span> anos</span>
+                  <span class="profile-meta-item">📋 Nascimento: <span id="profile-birth">15/03/1955</span></span>
+                  <span class="profile-meta-item">👤 Sexo: <span id="profile-gender">Feminino</span></span>
+                  <span class="profile-meta-item">🆔 CPF: <span id="profile-cpf">123.456.789-00</span></span>
+                  <span class="profile-meta-item">📞 Telefone: <span id="profile-phone">(33) 99123-4567</span></span>
+                  <span class="profile-meta-item">👥 Responsável: <span id="profile-responsible">Ana Maria Santos</span></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-section">
+              <div class="profile-section__header">
+                <h3 class="profile-section__title">📍 Endereço</h3>
+              </div>
+              <div class="profile-grid profile-grid--2">
+                <div class="profile-field">
+                  <label>Rua</label>
+                  <p id="profile-street">Rua das Flores</p>
+                </div>
+                <div class="profile-field">
+                  <label>Número</label>
+                  <p id="profile-number">123</p>
+                </div>
+                <div class="profile-field">
+                  <label>Bairro</label>
+                  <p id="profile-neighborhood">Jardim Alice</p>
+                </div>
+                <div class="profile-field">
+                  <label>Cidade</label>
+                  <p id="profile-city">Governador Valadares</p>
+                </div>
+                <div class="profile-field">
+                  <label>Estado</label>
+                  <p id="profile-state">GV</p>
+                </div>
+                <div class="profile-field">
+                  <label>CEP</label>
+                  <p id="profile-cep">01234-567</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-section">
+              <h3 class="profile-section__title">📝 Observações Gerais</h3>
+              <div class="profile-observations" id="profile-observations">Participa ativa das atividades. Preferência por atividades em grupo.</div>
+            </div>
+
+            <!-- SEÇÃO DE PRONTUÁRIOS -->
+            <div class="questionnaire-section">
+              <div class="questionnaire-section__header">
+                <h3 class="questionnaire-section__title">📋 Prontuários por Curso</h3>
+              </div>
+              <div id="course-accordion">
+                <div class="questionnaire-empty">
+                  <div class="questionnaire-empty__icon">⏳</div>
+                  <div class="questionnaire-empty__text">Carregando prontuários...</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MODAL: RESPONDER PRONTUÁRIO -->
+            <div class="modal-overlay" id="modal-questionnaire" style="display: none; z-index: 999;">
+              <div class="questionnaire-modal" style="background: #fff; border-radius: 12px; padding: 24px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); position: relative;">
+                <div class="questionnaire-form__header">
+                  <h2 class="questionnaire-form__title" id="questionnaire-form-title">Prontuário</h2>
+                  <button type="button" class="modal__close" id="btn-close-questionnaire" style="position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 28px; cursor: pointer;">×</button>
+                  <p class="questionnaire-form__description" id="questionnaire-form-description"></p>
+                </div>
+                <form id="form-questionnaire" class="questionnaire-form">
+                  <div class="questionnaire-questions" id="questionnaire-questions-container">
+                    <!-- Perguntas serão renderizadas aqui -->
+                  </div>
+                  <div class="questionnaire-actions">
+                    <button type="button" class="questionnaire-btn questionnaire-btn--cancel" id="btn-cancel-questionnaire">Cancelar</button>
+                    <button type="submit" class="questionnaire-btn questionnaire-btn--submit" id="btn-submit-questionnaire">Enviar Respostas</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="modal-overlay" id="modal-response-view" style="display: none; z-index: 999;">
+              <div class="questionnaire-modal" style="background: #fff; border-radius: 12px; padding: 24px; max-width: 760px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); position: relative;">
+                <div class="questionnaire-form__header">
+                  <h2 class="questionnaire-form__title" id="response-view-title">Visualização de Respostas</h2>
+                  <button type="button" class="modal__close" id="btn-close-response-view" style="position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 28px; cursor: pointer;">×</button>
+                  <p class="questionnaire-form__description" id="response-view-description">Consulta somente leitura</p>
+                </div>
+                <div id="response-view-content" class="questionnaire-questions"></div>
+                <div class="questionnaire-actions">
+                  <button type="button" class="questionnaire-btn questionnaire-btn--cancel" id="btn-close-response-view-footer">Fechar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <aside class="profile-sidebar">
+            <div class="profile-card profile-card--compact">
+              <h4 class="profile-card__title">Resumo Rápido</h4>
+              <div class="clinical-summary__header">🩺 Resumo Clínico do Paciente</div>
+                  <span class="profile-summary-label">Idade</span>
+                  <span class="profile-summary-value" id="summary-age">70 anos</span>
+                </div>
+                <div class="profile-summary-item">
+                  <span class="profile-summary-label">Localização</span>
+                  <span class="profile-summary-value" id="summary-location">Jardim Alice, GV</span>
+                </div>
+                <div class="profile-summary-item">
+                  <span class="profile-summary-label">Cadastro</span>
+                  <span class="profile-summary-value" id="summary-created">10/01/2024</span>
+                </div>
+                <div class="profile-summary-item">
+                  <span class="profile-summary-label">Contato</span>
+                  <span class="profile-summary-value">
+                    <a href="#" id="summary-phone" class="profile-link" target="_blank" rel="noopener">(33) 99123-4567</a>
+                  </span>
+                </div>
+                <div class="profile-summary-item">
+                  <span class="profile-summary-label">Status</span>
+                  <span class="profile-summary-value" id="summary-status">
+                    <span class="status-badge status-badge--ativo">Ativo</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="profile-card profile-card--compact">
+              <h4 class="profile-card__title">👥 Responsável</h4>
+              <div class="profile-card__content">
+                <div class="profile-summary-item">
+                  <span class="profile-summary-label">Nome</span>
+                  <span class="profile-summary-value" id="responsible-name">Ana Maria Santos</span>
+                </div>
+                <div class="profile-summary-item">
+                  <span class="profile-summary-label">Telefone</span>
+                  <span class="profile-summary-value">
+                    <a href="#" id="responsible-phone" class="profile-link" target="_blank" rel="noopener">(33) 99123-4567</a>
+                  </span>
+                </div>
+                <div class="profile-summary-item">
+                  <span class="profile-summary-label">Parentesco</span>
+                  <span class="profile-summary-value" id="responsible-relation">Filha</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="clinical-summary" id="clinical-summary-card">
+              <div class="clinical-summary__header">🩺 Resumo Clínico do Paciente</div>
+
+              <div class="clinical-summary__block">
+                <div class="clinical-summary__label">Diagnóstico Nutricional</div>
+                <div class="clinical-summary__value" id="clinical-diagnosis">Sem informações</div>
+              </div>
+
+              <div class="clinical-summary__block">
+                <div class="clinical-summary__label">IMC Atual</div>
+                <div class="clinical-summary__imc-row">
+                  <span class="clinical-summary__imc-value" id="clinical-imc-value">-</span>
+                  <span class="clinical-summary__imc-badge" id="clinical-imc-badge">Sem classificação</span>
+                </div>
+              </div>
+
+              <div class="clinical-summary__divider"></div>
+
+              <div class="clinical-summary__block">
+                <div class="clinical-summary__subhead">Condições de Saúde Ativas</div>
+                <div class="clinical-summary__chips" id="clinical-conditions">
+                  <span class="clinical-summary__empty">Sem registro</span>
+                </div>
+              </div>
+
+              <div class="clinical-summary__block">
+                <div class="clinical-summary__subhead">Alergias</div>
+                <div class="clinical-summary__chips" id="clinical-allergies">
+                  <span class="clinical-summary__empty">Sem registro</span>
+                </div>
+              </div>
+
+              <div class="clinical-summary__block">
+                <div class="clinical-summary__subhead">Medicamentos em Uso</div>
+                <ul class="clinical-summary__list" id="clinical-meds">
+                  <li class="clinical-summary__empty">Sem registro</li>
+                </ul>
+              </div>
+            </div>
+
+          </aside>
+        </div>
+
+        <!-- Modal Minha Conta -->
+        <div class="modal" id="modal-account">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Minha Conta</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <!-- Aba de Editar Perfil -->
+              <div id="account-tabs">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                  <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">
+                    👤 Perfil
+                  </button>
+                  <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">
+                    🔐 Senha
+                  </button>
+                </div>
+
+                <!-- Tab Perfil -->
+                <div id="tab-profile" class="account__tab">
+                  <form class="modal__form" id="form-profile">
+                    <div class="modal__form-group">
+                      <label for="account-name">Nome</label>
+                      <input type="text" id="account-name" placeholder="Seu nome" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="account-email">Email (não pode ser alterado)</label>
+                      <input type="email" id="account-email" placeholder="Seu email" disabled />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Tab Senha -->
+                <div id="tab-password" class="account__tab" style="display: none;">
+                  <form class="modal__form" id="form-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <script src="../../assets/js/notifications.js"></script>
+    <script src="../../assets/js/user-menu.js"></script>
+    <script src="../../assets/js/questionnaire-handler.js"></script>
+    <script>
+      // Tabs no modal de conta
+      document.querySelectorAll('.account-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.account__tab').forEach(t => t.style.display = 'none');
+          document.getElementById('tab-' + tab).style.display = 'block';
+          document.querySelectorAll('.account-tab-btn').forEach(b => {
+            b.style.color = '#999';
+            b.style.borderBottom = 'none';
+          });
+          btn.style.color = '#1f60e8';
+          btn.style.borderBottom = '3px solid #1f60e8';
+        });
+      });
+
+      // Mostrar botão de gerenciar usuários se for SUPERVISOR
+      async function checkUserRole() {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch('http://localhost:3000/profile', {
+            headers: { 'x-user-email': userEmail }
+          });
+          if (response.ok) {
+            const profile = await response.json();
+            const btnManageUsers = document.getElementById('btn-manage-users');
+            if (btnManageUsers && profile.role === 'SUPERVISOR') {
+              btnManageUsers.style.display = 'block';
+            }
+          }
+        } catch (error) {
+          console.error('Erro ao verificar role:', error);
+        }
+      }
+      
+      checkUserRole();
+    </script>
+    <script>
+      const API_URL = 'http://localhost:3000';
+      const userAvatarEl = document.getElementById('user-avatar');
+      const dropdownAvatarEl = document.getElementById('dropdown-avatar');
+      const dropdownEmailEl = document.getElementById('dropdown-email');
+      const editBtn = document.getElementById('btn-edit');
+      let patientId = null;
+
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) { window.location.href = '../auth/login.html'; }
+      const initials = (userEmail || '').split('@')[0].substring(0, 2).toUpperCase();
+      userAvatarEl.textContent = initials;
+      dropdownAvatarEl.textContent = initials;
+      dropdownEmailEl.textContent = userEmail;
+
+      function getIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id');
+      }
+
+      function getPhotoUrl(photo) {
+        if (!photo) return null;
+        if (photo.startsWith('data:') || photo.startsWith('http')) {
+          return photo;
+        }
+        if (photo.startsWith('/uploads/')) {
+          return `${API_URL}${photo}`;
+        }
+        return photo;
+      }
+
+      function getDateParts(dateValue) {
+        if (!dateValue) return null;
+        const raw = typeof dateValue === 'string' ? dateValue : new Date(dateValue).toISOString();
+        const dateOnly = raw.split('T')[0];
+        const [year, month, day] = dateOnly.split('-');
+        if (!year || !month || !day) return null;
+        return {
+          year: Number(year),
+          month: Number(month),
+          day: Number(day)
+        };
+      }
+
+      function formatBirthDate(dateValue) {
+        const parts = getDateParts(dateValue);
+        if (!parts) return '';
+        const day = String(parts.day).padStart(2, '0');
+        const month = String(parts.month).padStart(2, '0');
+        return `${day}/${month}/${parts.year}`;
+      }
+
+      function calculateAgeFromParts(parts) {
+        if (!parts) return null;
+        const birthDate = new Date(parts.year, parts.month - 1, parts.day);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        return age;
+      }
+
+      async function loadPatient() {
+        patientId = getIdFromURL();
+        if (!patientId) {
+          notify.error('ID do paciente não encontrado');
+          setTimeout(() => window.location.href = './list.html', 1500);
+          return;
+        }
+
+        localStorage.setItem('selectedPatientId', String(patientId));
+
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch(`${API_URL}/api/patients/${patientId}`, {
+            headers: {
+              'x-user-email': userEmail
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            patientData = data;
+            populateProfile(data);
+            await initializeQuestionnaires();
+          } else {
+            notify.error('Paciente não encontrado');
+            setTimeout(() => window.location.href = './list.html', 1500);
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+          notify.error('Erro ao carregar dados do paciente');
+        }
+      }
+
+      function populateProfile(data) {
+        function buildWhatsappLink(rawPhone) {
+          if (!rawPhone) return null;
+          const digits = rawPhone.replace(/\D/g, '');
+          if (!digits) return null;
+          const message = encodeURIComponent('Olá, falamos do CAIGE');
+          const number = digits.length >= 12 ? digits : `55${digits}`;
+          return `https://wa.me/${number}?text=${message}`;
+        }
+
+        document.getElementById('patient-breadcrumb').textContent = data.name || '';
+        document.getElementById('profile-name').textContent = data.name || '';
+        
+        const avatarEl = document.getElementById('profile-avatar');
+        const photoUrl = getPhotoUrl(data.photo);
+        avatarEl.innerHTML = '';
+        if (photoUrl) {
+          avatarEl.innerHTML = `<img src="${photoUrl}" alt="Foto" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+        } else {
+          const initials = (data.name || '')
+            .split(' ')
+            .map(word => word[0])
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+          avatarEl.textContent = initials;
+        }
+
+        const dateParts = getDateParts(data.birth_date);
+        const age = calculateAgeFromParts(dateParts);
+        if (age !== null) {
+          document.getElementById('profile-age').textContent = age;
+          document.getElementById('summary-age').textContent = `${age} anos`;
+        } else {
+          document.getElementById('profile-age').textContent = '-';
+          document.getElementById('summary-age').textContent = '-';
+        }
+        const formattedBirth = formatBirthDate(data.birth_date);
+        document.getElementById('profile-birth').textContent = formattedBirth || '-';
+
+        document.getElementById('profile-gender').textContent = data.gender || '-';
+        document.getElementById('profile-cpf').textContent = data.cpf || '-';
+        const primaryPhone = data.phone || data.phone2 || '-';
+        document.getElementById('profile-phone').textContent = primaryPhone;
+        document.getElementById('profile-responsible').textContent = data.responsible || '-';
+        document.getElementById('profile-street').textContent = data.street || '-';
+        document.getElementById('profile-number').textContent = data.number || '-';
+        document.getElementById('profile-neighborhood').textContent = data.neighborhood || '-';
+        document.getElementById('profile-city').textContent = data.city || '-';
+        document.getElementById('profile-state').textContent = data.state || '-';
+        document.getElementById('profile-cep').textContent = data.cep || '-';
+        document.getElementById('summary-location').textContent = `${data.neighborhood || '-'}, ${data.city || '-'}`;
+        document.getElementById('profile-observations').textContent = data.observations || 'Nenhuma observação registrada';
+
+        const statusClass = data.status === 'ativo' ? 'status-badge--ativo' : 'status-badge--inativo';
+        const statusText = data.status === 'ativo' ? 'Ativo' : 'Inativo';
+        document.getElementById('summary-status').innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
+
+        const summaryPhoneEl = document.getElementById('summary-phone');
+        summaryPhoneEl.textContent = primaryPhone;
+        const summaryWhatsapp = buildWhatsappLink(primaryPhone === '-' ? '' : primaryPhone);
+        summaryPhoneEl.href = summaryWhatsapp || '#';
+
+        document.getElementById('responsible-name').textContent = data.responsible || '-';
+        const responsiblePhoneEl = document.getElementById('responsible-phone');
+        responsiblePhoneEl.textContent = data.responsible_phone || '-';
+        const responsibleWhatsapp = buildWhatsappLink(data.responsible_phone || '');
+        responsiblePhoneEl.href = responsibleWhatsapp || '#';
+        document.getElementById('responsible-relation').textContent = data.responsible_relationship || '-';
+
+        if (data.created_at) {
+          const date = new Date(data.created_at);
+          const formatted = date.toLocaleDateString('pt-BR');
+          document.getElementById('summary-created').textContent = formatted;
+        }
+      }
+
+      editBtn.addEventListener('click', () => {
+        window.location.href = `./edit.html?id=${patientId}`;
+      });
+
+      loadPatient();
+
+      // ==================== SEÇÃO DE PRONTUÁRIOS (ACORDEÃO POR CURSO) ====================
+      let questionnaireHandler = null;
+      let currentQuestionnaireId = null;
+      let patientData = null;
+      let availableQuestionnaires = [];
+
+      const ALL_COURSES = [
+        'Fisioterapia', 'Educacao Fisica', 'Agronomia', 'Farmacia',
+        'Enfermagem', 'Medicina', 'Estetica e Cosmetica', 'Fonoaudiologia', 'Nutricao'
+      ];
+
+      function esc(text) {
+        return String(text)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      async function initializeQuestionnaires() {
+        if (!patientData) return;
+        questionnaireHandler = new QuestionnaireHandler();
+        await questionnaireHandler.init(patientData);
+        await buildCourseAccordion();
+        await refreshClinicalSummary();
+      }
+
+      function normalizeText(value) {
+        return String(value || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .trim();
+      }
+
+      function parseNumber(value) {
+        const clean = String(value || '').replace(',', '.').replace(/[^0-9.]/g, '');
+        const num = Number(clean);
+        return Number.isFinite(num) ? num : null;
+      }
+
+      function getImcBadge(imc) {
+        if (!Number.isFinite(imc)) {
+          return { text: 'Sem classificação', tone: 'neutral' };
+        }
+        if (imc < 18.5) return { text: 'Baixo peso', tone: 'low' };
+        if (imc < 25) return { text: 'Eutrofia', tone: 'ok' };
+        if (imc < 30) return { text: 'Sobrepeso', tone: 'warn' };
+        return { text: 'Obesidade', tone: 'high' };
+      }
+
+      function splitValues(raw) {
+        return String(raw || '')
+          .split(/[,;\n]/g)
+          .map(item => item.trim())
+          .filter(Boolean);
+      }
+
+      function coerceResponseData(data) {
+        if (!data) return {};
+        if (typeof data === 'string') {
+          try {
+            return JSON.parse(data);
+          } catch (e) {
+            return {};
+          }
+        }
+        return data;
+      }
+
+      function renderChips(targetId, values, danger = false) {
+        const el = document.getElementById(targetId);
+        if (!values.length) {
+          el.innerHTML = '<span class="clinical-summary__empty">Sem registro</span>';
+          return;
+        }
+        el.innerHTML = values.map(v => `<span class="clinical-chip ${danger ? 'clinical-chip--danger' : ''}">${esc(v)}</span>`).join('');
+      }
+
+      function renderList(targetId, values) {
+        const el = document.getElementById(targetId);
+        if (!values.length) {
+          el.innerHTML = '<li class="clinical-summary__empty">Sem registro</li>';
+          return;
+        }
+        el.innerHTML = values.map(v => `<li>${esc(v)}</li>`).join('');
+      }
+
+      function applyClinicalSummary(summary) {
+        document.getElementById('clinical-diagnosis').textContent = summary.diagnosis || 'Sem informações';
+
+        const imcValueEl = document.getElementById('clinical-imc-value');
+        const imcBadgeEl = document.getElementById('clinical-imc-badge');
+        const imc = summary.imc;
+        if (Number.isFinite(imc)) {
+          imcValueEl.textContent = imc.toFixed(1);
+        } else {
+          imcValueEl.textContent = '-';
+        }
+
+        const badge = getImcBadge(imc);
+        imcBadgeEl.textContent = badge.text;
+        imcBadgeEl.className = `clinical-summary__imc-badge clinical-summary__imc-badge--${badge.tone}`;
+
+        renderChips('clinical-conditions', summary.conditions, false);
+        renderChips('clinical-allergies', summary.allergies, true);
+        renderList('clinical-meds', summary.meds);
+      }
+
+      async function refreshClinicalSummary() {
+        if (!availableQuestionnaires.length) {
+          applyClinicalSummary({ diagnosis: '', imc: null, conditions: [], allergies: [], meds: [] });
+          return;
+        }
+
+        const latestResponses = await Promise.all(
+          availableQuestionnaires.map(async (q) => {
+            try {
+              const responses = await questionnaireHandler.getPreviousResponses(q.id);
+              if (responses && responses.length) return responses[0];
+              return null;
+            } catch (err) {
+              return null;
+            }
+          })
+        );
+
+        const summary = {
+          diagnosis: '',
+          imc: null,
+          conditions: [],
+          allergies: [],
+          meds: []
+        };
+
+        const pushUnique = (arr, values) => {
+          values.forEach(v => {
+            if (!arr.some(existing => normalizeText(existing) === normalizeText(v))) {
+              arr.push(v);
+            }
+          });
+        };
+
+        latestResponses.filter(Boolean).forEach((resp) => {
+          const data = coerceResponseData(resp.response_data);
+          const entries = Object.values(data || {});
+
+          entries.forEach((entry) => {
+            const title = normalizeText(entry.title || '');
+            const answer = String(entry.answer || '').trim();
+            if (!answer) return;
+
+            if (title.includes('diagnostico nutricional')) {
+              summary.diagnosis = answer;
+            }
+
+            if (title.includes('imc')) {
+              const value = parseNumber(answer);
+              if (value !== null) summary.imc = value;
+            }
+
+            if (title.includes('condicao') || title.includes('condicoes')) {
+              pushUnique(summary.conditions, splitValues(answer));
+            }
+
+            if (title.includes('alerg')) {
+              if (title.includes('quais')) {
+                pushUnique(summary.allergies, splitValues(answer));
+              } else if (!['nao', 'não'].includes(normalizeText(answer))) {
+                pushUnique(summary.allergies, splitValues(answer));
+              }
+            }
+
+            if (title.includes('medicamento')) {
+              pushUnique(summary.meds, splitValues(answer));
+            }
+          });
+        });
+
+        applyClinicalSummary(summary);
+      }
+
+      async function buildCourseAccordion() {
+        const container = document.getElementById('course-accordion');
+        container.innerHTML = '<div class="questionnaire-empty"><div class="questionnaire-empty__icon">?</div><div class="questionnaire-empty__text">Carregando cursos...</div></div>';
+
+        const results = await Promise.all(
+          ALL_COURSES.map(async (course) => {
+            const questionnaires = await questionnaireHandler.getAvailableQuestionnaires(course);
+            return { course, questionnaires };
+          })
+        );
+
+        const coursesWithItems = results.filter(r => r.questionnaires.length > 0);
+        availableQuestionnaires = coursesWithItems.flatMap(r => r.questionnaires);
+
+        if (!coursesWithItems.length) {
+          container.innerHTML = `
+            <div class="questionnaire-empty">
+              <div class="questionnaire-empty__icon">📭</div>
+              <div class="questionnaire-empty__text">Nenhum prontuário publicado</div>
+              <div class="questionnaire-empty__subtext">Não há prontuários disponíveis em nenhum curso</div>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = coursesWithItems.map(({ course, questionnaires }) => `
+          <div class="course-accordion">
+            <button class="course-accordion__header" type="button">
+              <span class="course-accordion__title">📘 ${esc(course)}</span>
+              <span class="course-accordion__badge">${questionnaires.length}</span>
+              <span class="course-accordion__chevron">?</span>
+            </button>
+            <div class="course-accordion__body">
+              ${questionnaires.map(q => `
+                <div class="q-item" data-qid="${q.id}">
+                  <button type="button" class="q-item__toggle">
+                    <div class="q-item__info">
+                      <strong class="q-item__title">${esc(q.title)}</strong>
+                      ${q.description ? `<span class="q-item__desc">${esc(q.description)}</span>` : ''}
+                      <span class="q-item__meta">❓ ${q.question_count} pergunta(s)</span>
+                    </div>
+                    <span class="q-item__chevron">?</span>
+                  </button>
+                  <div class="q-item__body">
+                    <div class="q-item__actions">
+                      <button type="button" class="btn-novo-resposta"
+                        data-qid="${q.id}"
+                        data-qtitle="${esc(q.title)}"
+                        data-qdesc="${esc(q.description || '')}">
+                        + NOVO
+                      </button>
+                    </div>
+                    <div class="q-item__history" id="history-${q.id}">
+                      <span class="q-item__history-loading">Expanda este prontuário para carregar as respostas já registradas.</span>
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `).join('');
+
+        container.querySelectorAll('.course-accordion__header').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const acc = btn.closest('.course-accordion');
+            const isOpen = acc.classList.contains('open');
+            acc.classList.toggle('open', !isOpen);
+          });
+        });
+
+        container.querySelectorAll('.q-item__toggle').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const item = btn.closest('.q-item');
+            const isOpen = item.classList.contains('open');
+            item.classList.toggle('open', !isOpen);
+
+            if (!isOpen) {
+              const qid = item.dataset.qid;
+              const histEl = document.getElementById(`history-${qid}`);
+              if (histEl && histEl.dataset.loaded !== 'true') {
+                loadResponseHistory(qid, histEl);
+              }
+            }
+          });
+        });
+
+        container.querySelectorAll('.btn-novo-resposta').forEach(btn => {
+          btn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            openQuestionnaireForm(btn.dataset.qid, {
+              title: btn.dataset.qtitle,
+              description: btn.dataset.qdesc
+            });
+          });
+        });
+      }
+
+      async function loadResponseHistory(questionnaireId, containerEl) {
+        containerEl.dataset.loaded = 'true';
+        try {
+          const responses = await questionnaireHandler.getPreviousResponses(questionnaireId);
+          if (!responses.length) {
+            containerEl.innerHTML = '<span class="q-item__history-empty">Nenhuma resposta registrada ainda.</span>';
+            return;
+          }
+          containerEl.innerHTML = responses.map(r => {
+            const d = new Date(r.created_at);
+            const dateStr = d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            return `
+              <div class="history-entry">
+                <button type="button" class="history-entry__toggle" data-rid="${r.id}">
+                      <span class="history-entry__date">🕒 ${esc(dateStr)}</span>
+                  <span class="history-entry__action">Ver respostas</span>
+                </button>
+              </div>
+            `;
+          }).join('');
+
+          containerEl.querySelectorAll('.history-entry__toggle').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const response = responses.find(item => String(item.id) === String(btn.dataset.rid));
+              if (response) {
+                openResponseViewModal(response);
+              }
+            });
+          });
+        } catch (e) {
+          console.error(e);
+          containerEl.innerHTML = '<span class="q-item__history-empty" style="color:#c00;">Erro ao carregar histórico.</span>';
+        }
+      }
+
+      function renderResponseData(responseData) {
+        if (!responseData || typeof responseData !== 'object') return '<p style="font-size:12px;color:#999;">Sem dados.</p>';
+        const entries = Object.values(responseData);
+        if (!entries.length) return '<p style="font-size:12px;color:#999;">Sem respostas.</p>';
+        return entries.map(entry => `
+          <div class="response-answer">
+            <span class="response-answer__question">${esc(entry.title || '')}</span>
+            <span class="response-answer__value">${esc(String(entry.answer ?? '-'))}</span>
+          </div>
+        `).join('');
+      }
+
+      function openResponseViewModal(response) {
+        const date = new Date(response.created_at);
+        const dateStr = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('response-view-title').textContent = response.questionnaire_title || 'Visualização de Respostas';
+        document.getElementById('response-view-description').textContent = `Respondido em ${dateStr}`;
+        document.getElementById('response-view-content').innerHTML = renderResponseData(response.response_data);
+        document.getElementById('modal-response-view').style.display = 'flex';
+      }
+
+      function closeResponseViewModal() {
+        document.getElementById('modal-response-view').style.display = 'none';
+      }
+
+      async function openQuestionnaireForm(questionnaireId, questionnaireData) {
+        try {
+          currentQuestionnaireId = questionnaireId;
+          const questions = await questionnaireHandler.getQuestionnaireQuestions(questionnaireId);
+          document.getElementById('questionnaire-form-title').textContent = questionnaireData.title;
+          document.getElementById('questionnaire-form-description').textContent = questionnaireData.description || '';
+          const container = document.getElementById('questionnaire-questions-container');
+          if (!Array.isArray(questions) || !questions.length) {
+            container.innerHTML = '<div class="questionnaire-empty"><div class="questionnaire-empty__icon">📭</div><div class="questionnaire-empty__text">Este prontuário não possui perguntas.</div></div>';
+          } else {
+            container.innerHTML = questions.map(q => questionnaireHandler.renderQuestion(q, '')).join('');
+          }
+          document.getElementById('modal-questionnaire').style.display = 'flex';
+        } catch (error) {
+          console.error('Erro ao abrir formulário:', error);
+          notify.error(error.message || 'Erro ao carregar prontuário');
+        }
+      }
+
+      function closeQuestionnaireModal() {
+        document.getElementById('modal-questionnaire').style.display = 'none';
+        document.getElementById('form-questionnaire').reset();
+        currentQuestionnaireId = null;
+      }
+
+      document.getElementById('btn-close-questionnaire').addEventListener('click', closeQuestionnaireModal);
+      document.getElementById('btn-cancel-questionnaire').addEventListener('click', closeQuestionnaireModal);
+      document.getElementById('modal-questionnaire').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('modal-questionnaire')) closeQuestionnaireModal();
+      });
+
+      document.getElementById('btn-close-response-view').addEventListener('click', closeResponseViewModal);
+      document.getElementById('btn-close-response-view-footer').addEventListener('click', closeResponseViewModal);
+      document.getElementById('modal-response-view').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('modal-response-view')) closeResponseViewModal();
+      });
+
+      document.getElementById('form-questionnaire').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!currentQuestionnaireId) return;
+        const savedQid = currentQuestionnaireId;
+        try {
+          const responses = questionnaireHandler.collectResponses(e.target);
+          const btn = document.getElementById('btn-submit-questionnaire');
+          btn.disabled = true;
+          btn.textContent = 'Enviando...';
+          await questionnaireHandler.saveResponses(savedQid, responses);
+          notify.success('Prontuário respondido com sucesso!');
+          closeQuestionnaireModal();
+          const histEl = document.getElementById(`history-${savedQid}`);
+          if (histEl) {
+            delete histEl.dataset.loaded;
+            loadResponseHistory(savedQid, histEl);
+          }
+          await refreshClinicalSummary();
+        } catch (error) {
+          console.error('Erro ao salvar respostas:', error);
+          notify.error('Erro ao salvar prontuário');
+        } finally {
+          const btn = document.getElementById('btn-submit-questionnaire');
+          btn.disabled = false;
+          btn.textContent = 'Enviar Respostas';
+        }
+      });
+
+      // Menu Toggle
+      const menuToggles = document.querySelectorAll('.sidebar__menu-toggle');
+      menuToggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const menuId = toggle.getAttribute('data-expand');
+          const submenu = document.getElementById(menuId);
+          const isOpen = submenu.classList.contains('open');
+          
+          // Fechar todos os outros submenus
+          document.querySelectorAll('.sidebar__submenu').forEach(menu => {
+            if (menu.id !== menuId) {
+              menu.classList.remove('open');
+            }
+          });
+          
+          // Fechar/abrir o submenu clicado
+          if (isOpen) {
+            submenu.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+          } else {
+            submenu.classList.add('open');
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

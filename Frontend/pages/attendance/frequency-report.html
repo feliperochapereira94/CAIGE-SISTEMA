@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relatório de Frequência - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/dashboard.css" />
+    <link rel="stylesheet" href="../../assets/css/form.css" />
+    <link rel="stylesheet" href="../../assets/css/notifications.css" />
+    <link rel="stylesheet" href="../../assets/css/user-menu.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+      .filters-card {
+        background: linear-gradient(135deg, white 0%, #fafbfd 100%);
+        border: 1px solid rgba(31, 96, 232, 0.1);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 8px rgba(31, 96, 232, 0.08), 0 4px 16px rgba(31, 96, 232, 0.04);
+      }
+
+      .filter-row {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr)) auto auto;
+        gap: 16px;
+        align-items: flex-end;
+      }
+
+      .form-group {
+        margin: 0;
+        position: relative;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid rgba(31, 96, 232, 0.2);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #1f60e8;
+        box-shadow: 0 0 0 3px rgba(31, 96, 232, 0.1);
+      }
+
+      .search-results {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        border: 1px solid rgba(31, 96, 232, 0.2);
+        border-radius: 8px;
+        background: #fff;
+        max-height: 220px;
+        overflow-y: auto;
+        z-index: 30;
+      }
+
+      .search-result-item {
+        padding: 10px 12px;
+        border-bottom: 1px solid rgba(31, 96, 232, 0.08);
+        cursor: pointer;
+        font-size: 14px;
+        color: #1f2937;
+      }
+
+      .search-result-item:last-child {
+        border-bottom: none;
+      }
+
+      .search-result-item:hover,
+      .search-result-item.active {
+        background: rgba(31, 96, 232, 0.08);
+      }
+
+      .btn-filter {
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #1f60e8 0%, #1750c9 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+      }
+
+      .btn-filter:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(31, 96, 232, 0.3);
+      }
+
+      .report-card {
+        background: linear-gradient(135deg, white 0%, #fafbfd 100%);
+        border: 1px solid rgba(31, 96, 232, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(31, 96, 232, 0.08), 0 4px 16px rgba(31, 96, 232, 0.04);
+      }
+
+      .report-header {
+        background: linear-gradient(90deg, #f0f4fb 0%, #f8f9fb 50%, #f0f5fd 100%);
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(31, 96, 232, 0.1);
+      }
+
+      .report-header h3 {
+        margin: 0;
+        font-size: 18px;
+        color: #1f2937;
+      }
+
+      .report-content {
+        padding: 20px;
+        max-height: 600px;
+        overflow-y: auto;
+      }
+
+      .report-item {
+        display: grid;
+        grid-template-columns: 1.5fr 0.7fr 0.8fr 2fr 0.8fr;
+        gap: 16px;
+        padding: 16px;
+        border-bottom: 1px solid rgba(31, 96, 232, 0.1);
+        align-items: center;
+      }
+
+      .report-item:last-child {
+        border-bottom: none;
+      }
+
+      .report-item-name {
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .report-item-stat {
+        text-align: center;
+        font-weight: 600;
+        color: #1f60e8;
+        font-size: 18px;
+      }
+
+      .report-item-text {
+        text-align: center;
+        color: #6b7280;
+        font-size: 14px;
+      }
+
+      .report-admin-section {
+        border: 1px solid rgba(31, 96, 232, 0.12);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+      }
+
+      .report-admin-title {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: baseline;
+        margin-bottom: 14px;
+      }
+
+      .report-admin-title h4 {
+        margin: 0;
+        color: #1f2937;
+        font-size: 18px;
+      }
+
+      .report-admin-meta {
+        color: #6b7280;
+        font-size: 13px;
+      }
+
+      .report-admin-group {
+        border-top: 1px solid rgba(31, 96, 232, 0.1);
+        padding-top: 14px;
+        margin-top: 14px;
+      }
+
+      .report-admin-group:first-of-type {
+        border-top: none;
+        padding-top: 0;
+        margin-top: 0;
+      }
+
+      .report-admin-group-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      .report-admin-dates {
+        color: #4b5563;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .frequency-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .frequency-high {
+        background: rgba(16, 185, 129, 0.2);
+        color: #047857;
+      }
+
+      .frequency-medium {
+        background: rgba(245, 158, 11, 0.2);
+        color: #92400e;
+      }
+
+      .frequency-low {
+        background: rgba(239, 68, 68, 0.2);
+        color: #991b1b;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9ca3af;
+      }
+
+      .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, white 0%, #fafbfd 100%);
+        border: 1px solid rgba(31, 96, 232, 0.1);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(31, 96, 232, 0.08);
+      }
+
+      .stat-card-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1f60e8;
+        margin-bottom: 8px;
+      }
+
+      .stat-card-label {
+        font-size: 13px;
+        color: #6b7280;
+      }
+
+      @media (max-width: 768px) {
+        .filter-row {
+          grid-template-columns: 1fr;
+        }
+
+        .report-item {
+          grid-template-columns: 1fr;
+        }
+
+        .report-item-stat,
+        .report-item-text {
+          text-align: left;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="/assets/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link" href="../dashboard/dashboard.html">
+            <span>🏠</span>
+            Dashboard
+          </a>          <a class="sidebar__link" href="../activities/activities.html">
+            <span>📋</span>
+            Atividades
+          </a>          <a class="sidebar__link" href="../patients/list.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="../patients/medical-records.html">
+                📋 Prontuários Cadastrados
+              </a>
+              <a class="sidebar__submenu-link" href="../patients/questions.html">
+                ❓ Cadastro de Perguntas
+              </a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle sidebar__menu-toggle--active" data-expand="attendance-menu" aria-expanded="true">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu open" id="attendance-menu">
+              <a class="sidebar__submenu-link" href="./attendance.html">
+                ✋ Registrar Frequência
+              </a>
+              <a class="sidebar__submenu-link sidebar__submenu-link--active" href="./frequency-report.html">
+                📄 Relatório Frequência
+              </a>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2>Relatório de Frequência</h2>
+            <p>Consulte os dias em que cada paciente compareceu ao projeto</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <button class="user-dropdown__item" data-action="manage-users" style="display: none;" id="btn-manage-users">
+                  <span class="user-dropdown__item-icon">🔐</span>
+                  Gerenciar Usuários
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="breadcrumb">
+          <span>Relatório de Frequência</span>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-card">
+          <div class="filter-row">
+            <div class="form-group">
+              <label for="start-date">Data Inicial</label>
+              <input type="date" id="start-date" />
+            </div>
+            <div class="form-group">
+              <label for="end-date">Data Final</label>
+              <input type="date" id="end-date" />
+            </div>
+            <div class="form-group">
+              <label for="patient-search">Pesquisar Paciente (Opcional)</label>
+              <input id="patient-search" type="text" placeholder="Digite o nome do paciente" autocomplete="off" />
+              <input id="patient-id" type="hidden" />
+              <div id="patient-results" class="search-results" style="display: none;"></div>
+            </div>
+            <div class="form-group">
+              <label for="sector-filter">Setor</label>
+              <select id="sector-filter">
+                <option value="">Todos os setores</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="report-view">Formato</label>
+              <select id="report-view">
+                <option value="summary">Resumo do período</option>
+                <option value="administrative">Administrativo por paciente</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="admin-grouping">Agrupamento</label>
+              <select id="admin-grouping">
+                <option value="monthly">Mensal</option>
+                <option value="quarterly">Trimestral</option>
+                <option value="semiannual">Semestral</option>
+                <option value="yearly">Anual</option>
+              </select>
+            </div>
+            <button class="btn-filter" id="btn-filter">🔍 Gerar Relatório</button>
+            <button class="btn-filter" id="btn-export-pdf" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); display: none;">📥 Exportar PDF</button>
+          </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="stats-grid" id="stats-grid" style="display: none;">
+          <div class="stat-card">
+            <div class="stat-card-value" id="stat-total-patients">0</div>
+            <div class="stat-card-label">Total de Pacientes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-value" id="stat-total-entries">0</div>
+            <div class="stat-card-label">Total de Presenças</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-value" id="stat-avg-frequency">0%</div>
+            <div class="stat-card-label">Frequência Média</div>
+          </div>
+        </div>
+
+        <!-- Relatório -->
+        <div class="report-card">
+          <div class="report-header">
+            <h3 id="report-title">📊 Dados de Frequência</h3>
+          </div>
+          <div class="report-content" id="report-content">
+            <div class="empty-state">
+              <div class="empty-state-icon">📋</div>
+              <p>Selecione um período e clique em "Gerar Relatório"</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Minha Conta -->
+        <!-- Modal Minha Conta -->
+        <div class="modal" id="modal-account">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Minha Conta</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <!-- Aba de Editar Perfil -->
+              <div id="account-tabs">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                  <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">
+                    👤 Perfil
+                  </button>
+                  <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">
+                    🔐 Senha
+                  </button>
+                </div>
+
+                <!-- Tab Perfil -->
+                <div id="tab-profile" class="account__tab">
+                  <form class="modal__form" id="form-profile">
+                    <div class="modal__form-group">
+                      <label for="account-name">Nome</label>
+                      <input type="text" id="account-name" placeholder="Seu nome" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="account-email">Email (não pode ser alterado)</label>
+                      <input type="email" id="account-email" placeholder="Seu email" disabled />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+
+                <!-- Tab Senha -->
+                <div id="tab-password" class="account__tab" style="display: none;">
+                  <form class="modal__form" id="form-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../../assets/js/notifications.js"></script>
+    <script src="../../assets/js/user-menu.js"></script>
+    <script>
+      // Tabs no modal de conta
+      document.querySelectorAll('.account-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const tab = btn.dataset.tab;
+          document.querySelectorAll('.account__tab').forEach(t => t.style.display = 'none');
+          document.getElementById('tab-' + tab).style.display = 'block';
+          document.querySelectorAll('.account-tab-btn').forEach(b => {
+            b.style.color = '#999';
+            b.style.borderBottom = 'none';
+          });
+          btn.style.color = '#1f60e8';
+          btn.style.borderBottom = '3px solid #1f60e8';
+        });
+      });
+
+      // Mostrar botão de gerenciar usuários se for SUPERVISOR
+      async function checkUserRole() {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch('http://localhost:3000/profile', {
+            headers: { 'x-user-email': userEmail }
+          });
+          if (response.ok) {
+            const profile = await response.json();
+            const btnManageUsers = document.getElementById('btn-manage-users');
+            if (btnManageUsers && profile.role === 'SUPERVISOR') {
+              btnManageUsers.style.display = 'block';
+            }
+          }
+        } catch (error) {
+          console.error('Erro ao verificar role:', error);
+        }
+      }
+      
+      checkUserRole();
+    </script>
+    <script>
+      const API_URL = 'http://localhost:3000';
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) { window.location.href = '../auth/login.html'; }
+      const initials = (userEmail || '').split('@')[0].substring(0, 2).toUpperCase();
+
+      // Atualizar avatar
+      document.getElementById('user-avatar').textContent = initials;
+      document.getElementById('dropdown-avatar').textContent = initials;
+      document.getElementById('dropdown-email').textContent = userEmail;
+
+      // Formatar hora do último acesso
+      const now = new Date();
+      const timeString = now.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+
+      const SECTOR_OPTIONS = [
+        'Fisioterapia',
+        'Educação Física',
+        'Agronomia',
+        'Farmácia',
+        'Enfermagem',
+        'Medicina',
+        'Estética e Cosmética',
+        'Fonoaudiologia',
+        'Nutrição'
+      ];
+
+      let patientCache = [];
+      let selectedPatientId = null;
+
+      // Definir datas padrão (últimos 30 dias)
+      function setDefaultDates() {
+        const today = new Date();
+        const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+
+        document.getElementById('end-date').valueAsDate = today;
+        document.getElementById('start-date').valueAsDate = thirtyDaysAgo;
+      }
+
+      // Carregar pacientes para filtro
+      async function loadPatients() {
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch(`${API_URL}/api/patients`, {
+            headers: {
+              'x-user-email': userEmail
+            }
+          });
+          const patients = await response.json();
+
+          patientCache = Array.isArray(patients) ? patients : [];
+          document.getElementById('patient-results').style.display = 'none';
+        } catch (error) {
+          console.error('Erro ao carregar pacientes:', error);
+        }
+      }
+
+      function renderPatientResults(filteredList) {
+        const results = document.getElementById('patient-results');
+
+        if (!Array.isArray(filteredList) || filteredList.length === 0) {
+          results.style.display = 'none';
+          results.innerHTML = '';
+          return;
+        }
+
+        results.innerHTML = filteredList.map(item => `
+          <div class="search-result-item" data-id="${item.id}" data-name="${item.name}">
+            ${item.name}
+          </div>
+        `).join('');
+
+        results.style.display = 'block';
+      }
+
+      function selectPatient(item) {
+        selectedPatientId = Number(item.id);
+        document.getElementById('patient-id').value = String(item.id);
+        document.getElementById('patient-search').value = item.name;
+        document.getElementById('patient-results').style.display = 'none';
+      }
+
+      function populateSectorFilter() {
+        const select = document.getElementById('sector-filter');
+        select.innerHTML = '<option value="">Todos os setores</option>';
+
+        SECTOR_OPTIONS.forEach((sector) => {
+          const option = document.createElement('option');
+          option.value = sector;
+          option.textContent = sector;
+          select.appendChild(option);
+        });
+      }
+
+      const patientSearchInput = document.getElementById('patient-search');
+      patientSearchInput.addEventListener('input', () => {
+        const query = patientSearchInput.value.trim().toLowerCase();
+
+        if (!query) {
+          selectedPatientId = null;
+          document.getElementById('patient-id').value = '';
+          document.getElementById('patient-results').style.display = 'none';
+          document.getElementById('patient-results').innerHTML = '';
+          return;
+        }
+
+        const filtered = patientCache
+          .filter(item => item.name.toLowerCase().includes(query))
+          .slice(0, 20);
+
+        selectedPatientId = null;
+        document.getElementById('patient-id').value = '';
+        renderPatientResults(filtered);
+      });
+
+      document.getElementById('patient-results').addEventListener('click', (event) => {
+        const row = event.target.closest('.search-result-item');
+        if (!row) return;
+
+        selectPatient({
+          id: row.dataset.id,
+          name: row.dataset.name
+        });
+      });
+
+      document.addEventListener('click', (event) => {
+        const container = document.getElementById('patient-results');
+        if (!container.contains(event.target) && event.target !== patientSearchInput) {
+          container.style.display = 'none';
+        }
+      });
+
+      function formatDateToPtBr(dateString) {
+        return new Date(`${dateString}T00:00:00`).toLocaleDateString('pt-BR');
+      }
+
+      function getGroupingLabel(grouping) {
+        const labels = {
+          monthly: 'Mensal',
+          quarterly: 'Trimestral',
+          semiannual: 'Semestral',
+          yearly: 'Anual'
+        };
+
+        return labels[grouping] || 'Mensal';
+      }
+
+      function getPeriodKey(dateString, grouping) {
+        const [year, monthString] = dateString.split('-');
+        const month = Number(monthString);
+
+        if (grouping === 'yearly') {
+          return year;
+        }
+
+        if (grouping === 'quarterly') {
+          const quarter = Math.floor((month - 1) / 3) + 1;
+          return `${year}-Q${quarter}`;
+        }
+
+        if (grouping === 'semiannual') {
+          const semester = month <= 6 ? 1 : 2;
+          return `${year}-S${semester}`;
+        }
+
+        return `${year}-${monthString}`;
+      }
+
+      function getPeriodLabel(key, grouping) {
+        if (grouping === 'yearly') {
+          return key;
+        }
+
+        if (grouping === 'quarterly') {
+          const [year, quarter] = key.split('-');
+          return `${quarter} ${year}`;
+        }
+
+        if (grouping === 'semiannual') {
+          const [year, semester] = key.split('-');
+          return `${semester} ${year}`;
+        }
+
+        return new Date(`${key}-01T00:00:00`).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+      }
+
+      function getAdministrativePeriodColumnLabel(grouping) {
+        const labels = {
+          monthly: 'Mês',
+          quarterly: 'Trimestre',
+          semiannual: 'Semestre',
+          yearly: 'Ano'
+        };
+
+        return labels[grouping] || 'Mês';
+      }
+
+      function getAdministrativeSections(report, grouping) {
+        return report.map((item) => {
+          const groupedDates = {};
+          const attendanceRecords = Array.isArray(item.attendance_records)
+            ? item.attendance_records
+            : (Array.isArray(item.attendance_dates)
+              ? item.attendance_dates.map((date) => ({ date, sector: null }))
+              : []);
+
+          attendanceRecords.forEach((record) => {
+            const dateString = record.date;
+            if (!dateString) return;
+
+            const key = getPeriodKey(dateString, grouping);
+
+            if (!groupedDates[key]) {
+              groupedDates[key] = [];
+            }
+
+            groupedDates[key].push({
+              date: dateString,
+              sector: record.sector || 'Não informado'
+            });
+          });
+
+          const periods = Object.entries(groupedDates)
+            .sort(([left], [right]) => left.localeCompare(right))
+            .map(([key, records]) => {
+              const label = getPeriodLabel(key, grouping);
+
+              return {
+                label,
+                total: records.length,
+                records: records.sort((a, b) => a.date.localeCompare(b.date))
+              };
+            });
+
+          return {
+            id: item.id,
+            name: item.name,
+            total: item.days_present || 0,
+            periods
+          };
+        });
+      }
+
+      function renderSummaryReport(report, periodDays) {
+        return `
+          <div style="display: grid; grid-template-columns: 1.5fr 0.7fr 0.8fr 2fr 0.8fr; gap: 16px; padding: 12px; font-weight: 600; color: #6b7280; font-size: 13px; background: rgba(31, 96, 232, 0.05); border-radius: 8px; margin-bottom: 12px;">
+            <div>Nome</div>
+            <div style="text-align: center;">Dias</div>
+            <div style="text-align: center;">Presenças</div>
+            <div style="text-align: center;">Datas Registradas</div>
+            <div style="text-align: center;">Frequência</div>
+          </div>
+          ${report.map(item => {
+            const daysPresent = item.days_present || 0;
+            const totalEntries = item.total_entries || 0;
+            const frequency = ((daysPresent / periodDays) * 100).toFixed(1);
+            const frequencyClass = frequency >= 70 ? 'frequency-high' : frequency >= 40 ? 'frequency-medium' : 'frequency-low';
+            const attendanceDetails = Array.isArray(item.attendance_records) && item.attendance_records.length > 0
+              ? item.attendance_records.map((record) => `${formatDateToPtBr(record.date)} (${record.sector || 'Não informado'})`).join(', ')
+              : (Array.isArray(item.attendance_dates) && item.attendance_dates.length > 0
+                ? item.attendance_dates.map(formatDateToPtBr).join(', ')
+                : 'Nenhuma presença');
+
+            return `
+              <div class="report-item">
+                <div class="report-item-name">${item.name}</div>
+                <div class="report-item-stat">${daysPresent}</div>
+                <div class="report-item-text">${totalEntries}</div>
+                <div class="report-item-text">${attendanceDetails}</div>
+                <div style="text-align: center;">
+                  <span class="frequency-badge ${frequencyClass}">
+                    ${frequency}%
+                  </span>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        `;
+      }
+
+      function renderAdministrativeReport(report, grouping) {
+        const sections = getAdministrativeSections(report, grouping);
+
+        return sections.map((section) => {
+          const emptyState = section.periods.length === 0
+            ? '<div class="report-admin-dates">Nenhuma presença no período selecionado.</div>'
+            : section.periods.map((period) => `
+                <div class="report-admin-group">
+                  <div class="report-admin-group-header">
+                    <span>${period.label}</span>
+                    <span>${period.total} presença(s)</span>
+                  </div>
+                  <div class="report-admin-dates">${period.records.map((record) => `${formatDateToPtBr(record.date)} (${record.sector})`).join(', ')}</div>
+                </div>
+              `).join('');
+
+          return `
+            <section class="report-admin-section">
+              <div class="report-admin-title">
+                <h4>${section.name}</h4>
+                <div class="report-admin-meta">${section.total} dia(s) com presença</div>
+              </div>
+              ${emptyState}
+            </section>
+          `;
+        }).join('');
+      }
+
+      function buildSummaryPdfTable(report, periodDays) {
+        return `
+          <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+            <thead>
+              <tr style="background: #f0f4fb;">
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: left; font-weight: bold;">Nome</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: center; font-weight: bold;">Dias Presentes</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: center; font-weight: bold;">Total de Presenças</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: center; font-weight: bold;">Datas Registradas</th>
+                <th style="padding: 10px; border: 1px solid #ddd; text-align: center; font-weight: bold;">Frequência</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${report.map(item => {
+                const daysPresent = item.days_present || 0;
+                const totalEntries = item.total_entries || 0;
+                const frequency = ((daysPresent / periodDays) * 100).toFixed(1);
+                const attendanceDetails = Array.isArray(item.attendance_records) && item.attendance_records.length > 0
+                  ? item.attendance_records.map((record) => `${formatDateToPtBr(record.date)} (${record.sector || 'Não informado'})`).join(', ')
+                  : (Array.isArray(item.attendance_dates) && item.attendance_dates.length > 0
+                    ? item.attendance_dates.map(formatDateToPtBr).join(', ')
+                    : 'Nenhuma presença');
+                const bgColor = daysPresent > 0 ? '#f0fdf4' : '#fef2f2';
+
+                return `
+                  <tr style="background: ${bgColor};">
+                    <td style="padding: 8px; border: 1px solid #ddd;">${item.name}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${daysPresent}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${totalEntries}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${attendanceDetails}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd; text-align: center; font-weight: bold;">${frequency}%</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+
+      function buildAdministrativePdfContent(report, grouping) {
+        const sections = getAdministrativeSections(report, grouping);
+
+        return sections.map((section, index) => `
+          <div style="margin-bottom: 24px; border: 1px solid #ddd; border-radius: 10px; padding: 14px; page-break-inside: avoid; page-break-after: ${index === sections.length - 1 ? 'auto' : 'always'};">
+            <div style="display: flex; justify-content: space-between; gap: 12px; margin-bottom: 10px; align-items: baseline;">
+              <h3 style="margin: 0; color: #1f2937;">${section.name}</h3>
+              <span style="font-size: 12px; color: #6b7280;">${section.total} dia(s) com presença</span>
+            </div>
+            ${section.periods.length === 0 ? `
+              <p style="margin: 0; color: #6b7280;">Nenhuma presença no período selecionado.</p>
+            ` : `
+              <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                <thead>
+                  <tr style="background: #f0f4fb;">
+                    <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">${getAdministrativePeriodColumnLabel(grouping)}</th>
+                    <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Qtd.</th>
+                    <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Datas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${section.periods.map((period) => `
+                    <tr>
+                      <td style="padding: 8px; border: 1px solid #ddd;">${period.label}</td>
+                      <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${period.total}</td>
+                      <td style="padding: 8px; border: 1px solid #ddd;">${period.records.map((record) => `${formatDateToPtBr(record.date)} (${record.sector})`).join(', ')}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            `}
+          </div>
+        `).join('');
+      }
+
+      // Gerar relatório
+      document.getElementById('btn-filter').addEventListener('click', async () => {
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+        const patientId = selectedPatientId || Number(document.getElementById('patient-id').value);
+        const patientName = document.getElementById('patient-search').value.trim();
+        const sector = document.getElementById('sector-filter').value;
+
+        if (!startDate || !endDate) {
+          notify.error('Selecione um período');
+          return;
+        }
+
+        if (new Date(startDate) > new Date(endDate)) {
+          notify.error('Data inicial não pode ser maior que data final');
+          return;
+        }
+
+        try {
+          let url = `${API_URL}/api/attendance/report?start_date=${startDate}&end_date=${endDate}`;
+          if (patientId) {
+            url += `&patient_id=${patientId}`;
+          } else if (patientName) {
+            url += `&patient_name=${encodeURIComponent(patientName)}`;
+          }
+          if (sector) {
+            url += `&sector=${encodeURIComponent(sector)}`;
+          }
+
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch(url, {
+            headers: {
+              'x-user-email': userEmail
+            }
+          });
+          const data = await response.json();
+
+          if (response.ok) {
+            renderReport(data);
+          } else {
+            notify.error(data.message || 'Erro ao gerar relatório');
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+          notify.error('Erro ao conectar com o servidor');
+        }
+      });
+
+      // Renderizar relatório
+      function renderReport(data) {
+        const report = data.report || [];
+        const reportContent = document.getElementById('report-content');
+        const statsGrid = document.getElementById('stats-grid');
+        const reportView = document.getElementById('report-view').value;
+        const adminGrouping = document.getElementById('admin-grouping').value;
+        const sector = document.getElementById('sector-filter').value;
+        document.getElementById('report-title').textContent = reportView === 'administrative'
+          ? `📊 Relatório Administrativo ${getGroupingLabel(adminGrouping)}`
+          : '📊 Dados de Frequência';
+
+        currentReportData = report;
+        currentFilters = {
+          startDate: document.getElementById('start-date').value,
+          endDate: document.getElementById('end-date').value,
+          patientName: document.getElementById('patient-search').value.trim(),
+          sector,
+          reportView,
+          adminGrouping,
+          periodDays: data.period?.period_days || 1
+        };
+
+        if (report.length === 0) {
+          reportContent.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">📋</div>
+              <p>Nenhum registro no período selecionado</p>
+            </div>
+          `;
+          statsGrid.style.display = 'none';
+          document.getElementById('btn-export-pdf').style.display = 'none';
+          return;
+        }
+
+        // Calcular estatísticas
+        const periodDays = data.period?.period_days || 1;
+        const totalEntries = report.reduce((sum, item) => sum + (item.days_present || 0), 0);
+        const totalPatients = report.length;
+        const avgFrequency = totalPatients > 0
+          ? Math.round((totalEntries / (totalPatients * periodDays)) * 100)
+          : 0;
+
+        document.getElementById('stat-total-patients').textContent = totalPatients;
+        document.getElementById('stat-total-entries').textContent = totalEntries;
+        document.getElementById('stat-avg-frequency').textContent = `${avgFrequency}%`;
+        statsGrid.style.display = 'grid';
+        document.getElementById('btn-export-pdf').style.display = 'block';
+
+        reportContent.innerHTML = reportView === 'administrative'
+          ? renderAdministrativeReport(report, adminGrouping)
+          : renderSummaryReport(report, periodDays);
+      }
+
+      // Menu Toggle
+      const menuToggles = document.querySelectorAll('.sidebar__menu-toggle');
+      menuToggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const menuId = toggle.getAttribute('data-expand');
+          const submenu = document.getElementById(menuId);
+          const isOpen = submenu.classList.contains('open');
+          
+          document.querySelectorAll('.sidebar__submenu').forEach(menu => {
+            if (menu.id !== menuId) {
+              menu.classList.remove('open');
+            }
+          });
+          
+          if (isOpen) {
+            submenu.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
+          } else {
+            submenu.classList.add('open');
+            toggle.setAttribute('aria-expanded', 'true');
+          }
+        });
+      });
+
+      // Variável global para armazenar dados do relatório
+      let currentReportData = null;
+      let currentFilters = {};
+
+      function syncReportControls() {
+        const reportView = document.getElementById('report-view').value;
+        const groupingSelect = document.getElementById('admin-grouping');
+        groupingSelect.disabled = false;
+        groupingSelect.title = reportView === 'administrative'
+          ? ''
+          : 'Ao selecionar um agrupamento, o relatório muda para Administrativo automaticamente.';
+      }
+
+      // Função para exportar em PDF
+      document.getElementById('btn-export-pdf').addEventListener('click', async () => {
+        if (!currentReportData) {
+          notify.error('Gere um relatório primeiro');
+          return;
+        }
+
+        const reportView = currentFilters.reportView || 'summary';
+        const adminGrouping = currentFilters.adminGrouping || 'monthly';
+        const opt = {
+          margin: 10,
+          filename: `relatorio_frequencia_${reportView}_${new Date().toISOString().split('T')[0]}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { orientation: 'landscape', unit: 'mm', format: 'a4' }
+        };
+
+        // Criar conteúdo para PDF
+        const pdfContent = document.createElement('div');
+        pdfContent.style.padding = '20px';
+        pdfContent.style.fontFamily = 'Arial, sans-serif';
+        
+        // Header do PDF
+        pdfContent.innerHTML = `
+          <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="margin: 0; color: #1f2937;">CAIGE - Sistema de Gestão</h1>
+            <p style="margin: 5px 0; color: #6b7280;">Relatório de Frequência ${reportView === 'administrative' ? 'Administrativo' : 'Resumo'}</p>
+            <p style="margin: 5px 0; color: #9ca3af; font-size: 12px;">
+              Período: ${currentFilters.startDate} a ${currentFilters.endDate}
+            </p>
+            <p style="margin: 5px 0; color: #9ca3af; font-size: 12px;">
+              Setor: ${currentFilters.sector || 'Todos os setores'}
+            </p>
+            <p style="margin: 5px 0; color: #9ca3af; font-size: 12px;">
+              ${reportView === 'administrative' ? `Agrupamento: ${getGroupingLabel(adminGrouping)}` : 'Formato: Resumo do período'}
+            </p>
+            <p style="margin: 5px 0; color: #9ca3af; font-size: 12px;">
+              Gerado em: ${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR')}
+            </p>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <h3 style="margin: 0 0 10px 0; color: #1f2937;">Estatísticas</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ddd; background: #f3f4f6;">Total de Pacientes</td>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold;">${document.getElementById('stat-total-patients').textContent}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ddd; background: #f3f4f6;">Total de Presenças</td>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold;">${document.getElementById('stat-total-entries').textContent}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px; border: 1px solid #ddd; background: #f3f4f6;">Frequência Média</td>
+                <td style="padding: 8px; border: 1px solid #ddd; text-align: right; font-weight: bold;">${document.getElementById('stat-avg-frequency').textContent}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <h3 style="margin: 0 0 10px 0; color: #1f2937;">Dados Detalhados</h3>
+            ${reportView === 'administrative'
+              ? buildAdministrativePdfContent(currentReportData, adminGrouping)
+              : buildSummaryPdfTable(currentReportData, currentFilters.periodDays || 1)}
+          </div>
+
+          <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; color: #9ca3af; font-size: 11px;">
+            <p style="margin: 0;">Este é um documento gerado automaticamente pelo sistema CAIGE.</p>
+            <p style="margin: 5px 0 0 0;">Para mais informações, entre em contato com o administrador do sistema.</p>
+          </div>
+        `;
+
+        // Usar html2pdf para gerar o PDF
+        html2pdf().set(opt).from(pdfContent).save();
+        notify.success('PDF exportado com sucesso!');
+      });
+
+      document.querySelectorAll('.sidebar__submenu-link[href="#"]').forEach(link => {
+        if (link.textContent.includes('Prontuários')) {
+          link.addEventListener('click', (e) => {
+            e.preventDefault();
+            notify.info('📋 Funcionalidade de Prontuários em desenvolvimento');
+          });
+        }
+      });
+
+      // Inicializar
+      setDefaultDates();
+      loadPatients();
+      populateSectorFilter();
+      syncReportControls();
+
+      document.getElementById('report-view').addEventListener('change', () => {
+        syncReportControls();
+      });
+
+      document.getElementById('admin-grouping').addEventListener('change', () => {
+        const reportViewSelect = document.getElementById('report-view');
+        if (reportViewSelect.value !== 'administrative') {
+          reportViewSelect.value = 'administrative';
+        }
+        syncReportControls();
+      });
+    </script>
+  </body>
+</html>
