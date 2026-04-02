@@ -6,5 +6,11 @@ node_modules/
 npm-debug.log*
 dist/
 build/
+uploads/elderly/*
+!uploads/elderly/.gitkeep
+uploads/patients/*
+!uploads/patients/.gitkeep
+uploads/medical-records/*
+!uploads/medical-records/.gitkeep
 .vscode/
 .idea/

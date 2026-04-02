@@ -10,19 +10,12 @@ Frontend/
 ├── assets/
 │   ├── css/
 │   │   ├── dashboard.css
-│   │   ├── forms.css
+│   │   ├── form.css
 │   │   ├── patient.css
 │   │   ├── profile.css
 │   │   └── ...
 │   ├── images/
 │   └── js/
-├── controllers/
-│   ├── authController.js
-│   ├── dashboardController.js
-│   └── patientController.js
-├── models/
-│   ├── authApi.js
-│   └── patientApi.js
 ├── pages/
 │   ├── activities/
 │   ├── admin/
@@ -30,9 +23,7 @@ Frontend/
 │   ├── auth/
 │   ├── dashboard/
 │   └── patients/
-├── utils/
-└── views/
-	└── components/
+└── ...
 ```
 
 ## Módulo de Pacientes
@@ -52,14 +43,14 @@ Os estilos mais usados no fluxo de pacientes estão em:
 
 - `assets/css/patient.css`: listagem e componentes do módulo de pacientes
 - `assets/css/profile.css`: visualização de perfil
-- `assets/css/forms.css`: campos e formulários
+- `assets/css/form.css`: campos e formulários
 
 ## Integração com API
 
 O frontend consome a API principal em `http://localhost:3000`.
 
-- `controllers/patientController.js`: coordena ações da interface
-- `models/patientApi.js`: centraliza chamadas CRUD de pacientes
+- `assets/js/user-menu.js`: carrega perfil, menu do usuário e ações da conta
+- `assets/js/access-control.js`: controla exibição de módulos administrativos
 - `assets/js/questionnaire-handler.js`: gerencia prontuários por curso
 
 ## Navegação Principal
@@ -72,4 +63,4 @@ Fluxo principal do módulo:
 
 ## Observação
 
-O frontend foi padronizado para o termo `patient/paciente` em páginas, controladores, estilos e rotas consumidas.
+O frontend foi padronizado para páginas HTML com scripts inline e módulos auxiliares em `assets/js`, reduzindo camadas antigas que não estavam mais em uso.

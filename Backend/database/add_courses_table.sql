@@ -1,7 +1,7 @@
 -- ============================================================
 -- CAIGE: Tabela de Cursos
--- Execute APÓS setup_complete.sql (instalação nova)
--- ou APÓS migrate-security.sql (banco existente)
+-- Execute APOS setup_completo.sql (instalacao nova)
+-- ou APOS migrate-security.sql (banco existente)
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS courses (

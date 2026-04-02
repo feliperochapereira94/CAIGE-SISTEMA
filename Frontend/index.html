@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAIGE - Univale</title>
     <script>
-        // Se não está logado, redireciona para login
-        const userEmail = localStorage.getItem('userEmail');
-        if (!userEmail) {
-            window.location.href = './pages/auth/login.html';
-        } else {
-            // Se está logado, redireciona para dashboard
+        const sessionUserEmail = sessionStorage.getItem('userEmail');
+
+        if (sessionUserEmail) {
+            localStorage.setItem('userEmail', sessionUserEmail);
             window.location.href = './pages/dashboard/dashboard.html';
+        } else {
+            localStorage.removeItem('userEmail');
+            window.location.href = './pages/auth/login.html';
         }
     </script>
 </head>

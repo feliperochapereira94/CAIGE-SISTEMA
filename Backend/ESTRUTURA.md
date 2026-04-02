@@ -7,18 +7,15 @@ Backend/
 ├── src/
 │   └── server.js              # Servidor Express (API principal)
 ├── database/
-│   ├── schema.sql            # Schema do banco de dados
-│   ├── setup.sql             # Script de setup
-│   ├── create_tables.sql     # Criação de tabelas
-│   ├── add_relationship.sql  # Coluna de parentesco
-│   ├── update_patients.sql   # Updates diversos
-│   └── migrations/           # Pasta para futuras migrações
-├── migrate-add-relationship.js  # Migração: adicionar coluna relationship
-├── migrate-add-photo.js        # Migração: adicionar coluna photo
-├── setup-db.js                # Setup do banco de dados
+│   ├── setup_completo.sql      # Script principal com estrutura e dados iniciais
+│   ├── setup_zero.sql          # Estrutura limpa, sem dados iniciais
+│   ├── add_roles_permissions.sql
+│   ├── add_questionnaire_tables.sql
+│   └── scripts complementares de migração e apoio
 ├── package.json              # Dependências Node.js
 ├── .env                      # Variáveis de ambiente
-└── README.md                 # Documentação
+├── init-db.js                 # Atalho para executar o setup principal
+└── scripts de migração compatíveis com bases antigas
 ```
 
 ## 🔧 Configuração
@@ -97,32 +94,11 @@ DB_NAME=caige
 ### Dashboard
 - `GET /dashboard-data` - Dados para dashboard
 
-## 📊 Migrações Realizadas
+## 📊 Migrações e scripts auxiliares
 
-### 1. Adicionar Coluna `responsible_relationship`
-```javascript
-// migrate-add-relationship.js
-ALTER TABLE patients ADD COLUMN responsible_relationship VARCHAR(50)
-```
+Os campos historicamente adicionados por scripts separados, como `responsible_relationship` e `photo`, ja fazem parte do schema atual em `setup_completo.sql` e `setup_zero.sql`.
 
-**Valores Permitidos:**
-- mae, pai, filho, filha
-- esposo, esposa
-- irmao, irma
-- avô, avo
-- neto, neta
-- tio, tia
-- sobrinho, sobrinha
-- primo, prima
-- outro
-
-### 2. Adicionar Coluna `photo`
-```javascript
-// migrate-add-photo.js
-ALTER TABLE patients ADD COLUMN photo LONGTEXT
-```
-
-**Formato:** Base64 de imagem (armazenado como string)
+Os scripts que permanecem na raiz do backend servem apenas para compatibilizar bancos mais antigos com o modelo atual.
 
 ## 🚀 Como Iniciar
 
@@ -130,12 +106,11 @@ ALTER TABLE patients ADD COLUMN photo LONGTEXT
 # Instalar dependências
 npm install
 
-# Setup do banco de dados
-node setup-db.js
+# Criar o banco a partir do script principal
+# Use Backend/database/setup_completo.sql no MySQL Workbench
 
-# Executar migrações
-node migrate-add-relationship.js
-node migrate-add-photo.js
+# Ou execute o atalho pelo Node.js
+node init-db.js
 
 # Iniciar servidor
 node src/server.js
@@ -189,7 +164,7 @@ Content-Type: application/json
 Verificar credenciais em `.env` e usuário MySQL
 
 ### Erro: "Table doesn't exist"
-Executar `setup-db.js` para criar tabelas
+Executar o script `database/setup_completo.sql` e, se necessário, as migrações adicionais
 
 ### Coluna já existe
 Migrações checam automaticamente antes de adicionar

@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "caige-login",
   "version": "1.0.0",
   "description": "Backend simples para login CAIGE com validaÃ§Ã£o de email institucional",
@@ -20,4 +20,3 @@
     "mysql2": "^3.11.0"
   }
 }
-

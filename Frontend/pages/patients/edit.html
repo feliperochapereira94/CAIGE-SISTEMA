@@ -512,6 +512,11 @@
         return `${day}/${month}/${parts.year}`;
       }
 
+      function normalizePatientStatus(status) {
+        const normalized = String(status || '').trim().toLowerCase();
+        return normalized === 'inativo' ? 'inativo' : 'ativo';
+      }
+
       function calculateAgeFromParts(parts) {
         if (!parts) return null;
         const birthDate = new Date(parts.year, parts.month - 1, parts.day);
@@ -591,7 +596,7 @@
         document.getElementById('responsible-relationship').value = data.responsible_relationship || '';
         document.getElementById('responsible-phone').value = data.responsible_phone || '';
         document.getElementById('observations').value = data.observations || '';
-        document.getElementById('status').value = data.status || '';
+        document.getElementById('status').value = normalizePatientStatus(data.status);
       }
 
       // Calcular idade automaticamente

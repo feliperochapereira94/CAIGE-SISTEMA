@@ -1,3 +1,9 @@
+if (sessionStorage.getItem('userEmail')) {
+  localStorage.setItem('userEmail', sessionStorage.getItem('userEmail'));
+} else {
+  localStorage.removeItem('userEmail');
+}
+
 // Sistema de Menu de Usuário
 class UserMenuSystem {
   constructor() {
@@ -285,6 +291,7 @@ class UserMenuSystem {
 
   logout() {
     if (confirm('Deseja sair do sistema?')) {
+      sessionStorage.removeItem('userEmail');
       localStorage.removeItem('userEmail');
       sessionStorage.clear();
       window.location.href = '../../pages/auth/login.html';

@@ -1,7 +1,7 @@
 -- ============================================================
 -- CAIGE: Migração de Segurança
 -- Execute UMA VEZ em bancos de dados já existentes.
--- Tabelas novas são criadas pelo setup_complete.sql.
+-- Tabelas novas sao criadas pelo setup_completo.sql.
 -- ============================================================
 
 -- -------------------------------------------------------

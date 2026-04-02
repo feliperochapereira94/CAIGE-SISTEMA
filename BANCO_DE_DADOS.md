@@ -20,6 +20,8 @@ O sistema possui dois perfis de usuário:
 | `SUPERVISOR` | Administrador com acesso total, incluindo gestão de usuários |
 | `PROFESSOR` | Usuário operacional: cadastra pacientes, registra frequência e aplica questionários |
 
+Script SQL canonico para instalacao nova: `Backend/database/setup_completo.sql`.
+
 ---
 
 ## 2. Diagrama de Relacionamentos

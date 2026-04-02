@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>�rea Restrita - CAIGE</title>
+    <title>Área Restrita - CAIGE</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -25,7 +25,7 @@
         </header>
 
         <div class="login__title">
-          <h1>�rea Restrita - CAIGE</h1>
+          <h1>Área Restrita - CAIGE</h1>
           <p>Acesso exclusivo para equipe e colaboradores</p>
         </div>
 
@@ -33,7 +33,12 @@
           <label class="field">
             <span class="field__label">E-mail ou Usuário</span>
             <div class="field__input">
-              <span class="field__icon">??</span>
+              <span class="field__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-9Z" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="m5 7 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
               <input type="email" placeholder="caige@univale.br" />
             </div>
           </label>
@@ -41,8 +46,13 @@
           <label class="field">
             <span class="field__label">Senha</span>
             <div class="field__input">
-              <span class="field__icon">??</span>
-              <input type="password" placeholder="��������" />
+              <span class="field__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M8 11V8a4 4 0 1 1 8 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <input type="password" placeholder="Digite sua senha" />
             </div>
           </label>
 
@@ -79,21 +89,29 @@
     <script>
       const form = document.querySelector('.login__form');
       const button = form.querySelector('button[type="submit"]');
+      const emailInput = form.querySelector('input[type="email"]');
+      const passwordInput = form.querySelector('input[type="password"]');
+      const rememberMeInput = form.querySelector('input[type="checkbox"]');
+      const REMEMBERED_EMAIL_KEY = 'rememberedUserEmail';
+
+      if (!sessionStorage.getItem('userEmail')) {
+        localStorage.removeItem('userEmail');
+      }
 
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const email = form.querySelector('input[type="email"]').value;
-        const password = form.querySelector('input[type="password"]').value;
-        const rememberMe = form.querySelector('input[type="checkbox"]').checked;
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const rememberMe = rememberMeInput.checked;
 
-        // Valida��o b�sica
+        // Validacao basica
         if (!email || !password) {
-          notify.error('Email e senha s�o obrigat�rios');
+          notify.error('Email e senha sao obrigatorios');
           return;
         }
 
-        // Desabilitar bot�o durante requisi��o
+        // Desabilitar botao durante requisicao
         button.disabled = true;
         const originalText = button.textContent;
         button.textContent = 'Autenticando...';
@@ -110,11 +128,13 @@
           const data = await response.json();
 
           if (response.ok) {
-            // Armazenar dados se "Lembrar de mim" foi marcado
+            sessionStorage.setItem('userEmail', email);
+            localStorage.setItem('userEmail', email);
+
             if (rememberMe) {
-              localStorage.setItem('userEmail', email);
+              localStorage.setItem(REMEMBERED_EMAIL_KEY, email);
             } else {
-              localStorage.removeItem('userEmail');
+              localStorage.removeItem(REMEMBERED_EMAIL_KEY);
             }
 
             notify.success('Login realizado com sucesso!');
@@ -131,18 +151,17 @@
           }
         } catch (error) {
           console.error('Erro:', error);
-          notify.error('Erro ao conectar com o servidor. Certifique-se de que o backend est� rodando em http://localhost:3000');
+          notify.error('Erro ao conectar com o servidor. Certifique-se de que o backend esta rodando em http://localhost:3000');
           button.disabled = false;
           button.textContent = originalText;
         }
       });
 
-      // Preencher email se "Lembrar de mim" foi ativado
       window.addEventListener('DOMContentLoaded', () => {
-        const savedEmail = localStorage.getItem('userEmail');
+        const savedEmail = localStorage.getItem(REMEMBERED_EMAIL_KEY);
         if (savedEmail) {
-          form.querySelector('input[type="email"]').value = savedEmail;
-          form.querySelector('input[type="checkbox"]').checked = true;
+          emailInput.value = savedEmail;
+          rememberMeInput.checked = true;
         }
       });
     </script>

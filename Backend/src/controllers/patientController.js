@@ -3,6 +3,20 @@ import { isDataUrlPhoto, savePhotoFromDataUrl, deleteLocalPhoto } from "../utils
 import { logActivity } from "../utils/activityLogger.js";
 import { getPatientSchema } from "../utils/schemaNames.js";
 
+function normalizePatientStatus(status) {
+  const normalized = String(status || "").trim().toLowerCase();
+
+  if (normalized === "inativo") {
+    return "inativo";
+  }
+
+  if (normalized === "archived") {
+    return "archived";
+  }
+
+  return "ativo";
+}
+
 export async function getAllPatients(req, res) {
   try {
     const { patientTable } = await getPatientSchema();
@@ -48,7 +62,7 @@ export async function getAllPatients(req, res) {
           .join("")
           .toUpperCase()
           .substring(0, 2),
-        status: person.status || 'ativo'
+        status: normalizePatientStatus(person.status)
       };
     });
 
@@ -73,7 +87,10 @@ export async function getPatient(req, res) {
       return res.status(404).json({ message: "Paciente não encontrado." });
     }
 
-    return res.status(200).json(patients[0]);
+    return res.status(200).json({
+      ...patients[0],
+      status: normalizePatientStatus(patients[0].status)
+    });
   } catch (error) {
     console.error("Erro ao buscar paciente:", error);
     return res.status(500).json({ message: "Erro ao buscar paciente." });
@@ -258,7 +275,7 @@ export async function updatePatient(req, res) {
     }
 
     const normalizeStatus = (value) => String(value || '').trim().toLowerCase();
-    const previousStatus = normalizeStatus(current.status);
+    const previousStatus = normalizeStatus(current.status || 'ativo');
     const nextStatus = normalizeStatus(status);
     const statusChanged = previousStatus !== nextStatus;
 

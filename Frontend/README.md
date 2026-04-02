@@ -1,59 +1,31 @@
 # CAIGE Frontend
 
-Interface de login para o sistema CAIGE de gerenciamento.
+Interface web do sistema CAIGE, composta por páginas HTML, CSS e JavaScript vanilla servidas pelo backend.
 
-## 📁 Estrutura
+## Estrutura atual
 
-```
-Frontend/
-├── pages/              # Páginas HTML
-│   ├── login.html      # Página de login
-│   └── dashboard.html  # Dashboard
-├── css/                # Estilos
-│   ├── login.css       # Estilos do login
-│   └── dashboard.css   # Estilos do dashboard
-├── public/             # Arquivos estáticos (imagens, fontes, etc)
-└── README.md           # Este arquivo
-```
+O frontend está organizado principalmente em:
 
-## 🎨 Design
+- `pages/`: telas da aplicação
+- `assets/css/`: estilos compartilhados
+- `assets/js/`: scripts auxiliares de menu, permissões e questionários
+- `assets/images/`: imagens estáticas
 
-- **Responsivo**: Funciona em desktop, tablet e mobile
-- **BEM Naming Convention**: Código CSS bem organizado
-- **Google Fonts**: Tipografia Inter de alta qualidade
-- **Acessível**: HTML semântico
+## Fluxos principais
 
-## 🚀 Como usar
+- autenticação em `pages/auth/login.html`
+- dashboard em `pages/dashboard/dashboard.html`
+- pacientes em `pages/patients/`
+- frequência em `pages/attendance/`
+- atividades em `pages/activities/`
+- administração em `pages/admin/`
 
-1. Abra o arquivo `pages/login.html` no navegador
-2. Para desenvolvimento, use um servidor local (Live Server, http-server, etc)
+## Execução
 
-## 📝 Páginas
+O frontend é servido estaticamente pelo backend em `http://localhost:3000`.
 
-### Login (`pages/login.html`)
-- Formulário de autenticação
-- Email/Usuário e Senha
-- Opção "Lembrar de mim"
-- Seção hero com informações sobre o CAIGE
+Também é possível usar `npm run dev` na pasta `Frontend` para desenvolvimento local, quando necessário.
 
-### Dashboard (`pages/dashboard.html`)
-- Página protegida (após login)
+## Observação
 
-## 🔗 Conexão com Backend
-
-O formulário de login pode ser conectado ao backend:
-
-```javascript
-const form = document.querySelector('.login__form');
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const email = form.querySelector('input[type="email"]').value;
-  const password = form.querySelector('input[type="password"]').value;
-  
-  const response = await fetch('http://localhost:3000/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password })
-  });
-});
-```
+A estrutura antiga com camadas separadas de `controllers/`, `models/`, `utils/` e `views/components/` não era mais utilizada em runtime e foi removida para reduzir redundância.

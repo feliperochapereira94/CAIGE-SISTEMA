@@ -14,16 +14,15 @@ async function initializeDatabase() {
   });
 
   try {
-    const sqlFile = path.join(__dirname, "database", "setup_complete.sql");
+    const sqlFile = path.join(__dirname, "database", "setup_completo.sql");
     const sqlScript = fs.readFileSync(sqlFile, "utf8");
 
     console.log("📊 Inicializando banco de dados...");
     await connection.query(sqlScript);
     
     console.log("✅ Banco de dados inicializado com sucesso!");
-    console.log("✅ Usuários de teste criados:");
-    console.log("   📧 suportecaige@univale.br (senha: 123456)");
-    console.log("   📧 admin@univale.br (senha: admin123)");
+    console.log("✅ Usuário inicial criado:");
+    console.log("   📧 suportecaige@univale.br (senha: suporte123)");
   } catch (error) {
     console.error("❌ Erro ao inicializar banco:", error.message);
   } finally {

@@ -222,7 +222,8 @@
           <aside class="profile-sidebar">
             <div class="profile-card profile-card--compact">
               <h4 class="profile-card__title">Resumo Rápido</h4>
-              <div class="clinical-summary__header">🩺 Resumo Clínico do Paciente</div>
+              <div class="profile-card__content">
+                <div class="profile-summary-item">
                   <span class="profile-summary-label">Idade</span>
                   <span class="profile-summary-value" id="summary-age">70 anos</span>
                 </div>
@@ -469,6 +470,11 @@
         return `${day}/${month}/${parts.year}`;
       }
 
+      function normalizePatientStatus(status) {
+        const normalized = String(status || '').trim().toLowerCase();
+        return normalized === 'inativo' ? 'inativo' : 'ativo';
+      }
+
       function calculateAgeFromParts(parts) {
         if (!parts) return null;
         const birthDate = new Date(parts.year, parts.month - 1, parts.day);
@@ -567,8 +573,9 @@
         document.getElementById('summary-location').textContent = `${data.neighborhood || '-'}, ${data.city || '-'}`;
         document.getElementById('profile-observations').textContent = data.observations || 'Nenhuma observação registrada';
 
-        const statusClass = data.status === 'ativo' ? 'status-badge--ativo' : 'status-badge--inativo';
-        const statusText = data.status === 'ativo' ? 'Ativo' : 'Inativo';
+        const normalizedStatus = normalizePatientStatus(data.status);
+        const statusClass = normalizedStatus === 'ativo' ? 'status-badge--ativo' : 'status-badge--inativo';
+        const statusText = normalizedStatus === 'ativo' ? 'Ativo' : 'Inativo';
         document.getElementById('summary-status').innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
 
         const summaryPhoneEl = document.getElementById('summary-phone');
@@ -781,7 +788,7 @@
 
       async function buildCourseAccordion() {
         const container = document.getElementById('course-accordion');
-        container.innerHTML = '<div class="questionnaire-empty"><div class="questionnaire-empty__icon">?</div><div class="questionnaire-empty__text">Carregando cursos...</div></div>';
+        container.innerHTML = '<div class="questionnaire-empty"><div class="questionnaire-empty__icon"><span class="loading-spinner" aria-hidden="true"></span></div><div class="questionnaire-empty__text">Carregando cursos...</div></div>';
 
         const results = await Promise.all(
           ALL_COURSES.map(async (course) => {
@@ -808,7 +815,7 @@
             <button class="course-accordion__header" type="button">
               <span class="course-accordion__title">📘 ${esc(course)}</span>
               <span class="course-accordion__badge">${questionnaires.length}</span>
-              <span class="course-accordion__chevron">?</span>
+              <span class="course-accordion__chevron">&#9656;</span>
             </button>
             <div class="course-accordion__body">
               ${questionnaires.map(q => `
@@ -819,7 +826,7 @@
                       ${q.description ? `<span class="q-item__desc">${esc(q.description)}</span>` : ''}
                       <span class="q-item__meta">❓ ${q.question_count} pergunta(s)</span>
                     </div>
-                    <span class="q-item__chevron">?</span>
+                    <span class="q-item__chevron">&#9656;</span>
                   </button>
                   <div class="q-item__body">
                     <div class="q-item__actions">
