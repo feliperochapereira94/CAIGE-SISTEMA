@@ -1,31 +1,63 @@
 # CAIGE Frontend
 
-Interface web do sistema CAIGE, composta por páginas HTML, CSS e JavaScript vanilla servidas pelo backend.
+Interface web do sistema CAIGE, desenvolvida com HTML, CSS e JavaScript vanilla. A aplicação é organizada por páginas e consome a API do backend para autenticação, cadastros, frequência, atividades e administração.
 
-## Estrutura atual
+## Estrutura
 
-O frontend está organizado principalmente em:
+O frontend está dividido nos seguintes grupos principais:
 
-- `pages/`: telas da aplicação
-- `assets/css/`: estilos compartilhados
-- `assets/js/`: scripts auxiliares de menu, permissões e questionários
-- `assets/images/`: imagens estáticas
+- `index.html`: ponto de entrada que redireciona para login ou dashboard conforme a sessão local
+- `pages/`: telas da aplicação separadas por módulo
+- `assets/css/`: estilos compartilhados e folhas específicas por contexto
+- `assets/js/`: scripts auxiliares de permissões, notificações, menu do usuário e questionários
+- `assets/images/`: imagens estáticas da interface
+- `controllers/`: scripts de apoio a fluxos específicos, como autenticação
 
-## Fluxos principais
+## Módulos da interface
 
-- autenticação em `pages/auth/login.html`
-- dashboard em `pages/dashboard/dashboard.html`
-- pacientes em `pages/patients/`
-- frequência em `pages/attendance/`
-- atividades em `pages/activities/`
-- administração em `pages/admin/`
+As páginas atualmente presentes no sistema incluem:
+
+- `pages/auth/login.html`: autenticação
+- `pages/dashboard/dashboard.html`: painel principal
+- `pages/patients/`: listagem, cadastro, edição, perfil, prontuários e questionários
+- `pages/attendance/attendance.html`: registro de frequência
+- `pages/attendance/frequency-report.html`: relatório de frequência
+- `pages/activities/activities.html`: gerenciamento de atividades
+- `pages/admin/users.html`: administração de usuários
+- `pages/admin/courses.html`: administração de cursos
+- `pages/admin/archived.html`: registros arquivados
+
+## Recursos compartilhados
+
+Alguns arquivos centrais da interface:
+
+- `assets/js/user-menu.js`: menu do usuário e ações de sessão
+- `assets/js/access-control.js`: controle de exibição por permissão
+- `assets/js/questionnaire-handler.js`: suporte aos questionários e prontuários
+- `assets/js/notifications.js`: notificações da interface
+- `assets/css/login.css`: estilos da tela de login
+- `assets/css/dashboard.css`: estilos do dashboard
+- `assets/css/form.css`: estilos base de formulários
+- `assets/css/patient.css`: estilos do módulo de pacientes
 
 ## Execução
 
-O frontend é servido estaticamente pelo backend em `http://localhost:3000`.
+Existem duas formas principais de usar a interface:
 
-Também é possível usar `npm run dev` na pasta `Frontend` para desenvolvimento local, quando necessário.
+1. Integrada ao sistema completo, com o backend servindo a aplicação e a API em `http://localhost:3000`.
+2. Em desenvolvimento local na pasta `Frontend`, usando o servidor estático definido no `package.json`.
+
+### Comandos locais
+
+Na pasta `Frontend`:
+
+```bash
+npm install
+npm run dev
+```
+
+O script de desenvolvimento usa `live-server` na porta `5500`. Nesse modo, a interface é aberta separadamente, mas continua dependendo do backend em execução para chamadas da API.
 
 ## Observação
 
-A estrutura antiga com camadas separadas de `controllers/`, `models/`, `utils/` e `views/components/` não era mais utilizada em runtime e foi removida para reduzir redundância.
+O frontend segue uma estrutura simples e direta, baseada em páginas HTML com scripts auxiliares compartilhados. Isso reduz acoplamento desnecessário e facilita manutenção dos módulos existentes.
