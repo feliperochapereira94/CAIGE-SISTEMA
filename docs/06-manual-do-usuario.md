@@ -8,10 +8,6 @@ Orientar o uso do sistema para usuarios finais, especialmente supervisores e pro
 
 Este manual deve ser lido por quem vai operar o sistema, e nao necessariamente por quem vai desenvolver o software.
 
-## Observacao sobre os prints
-
-Este manual foi atualizado com os pontos exatos onde os prints devem ser inseridos na versao final de entrega. Como o ambiente atual nao fornece captura automatica das telas, os locais de imagem foram marcados com titulos padronizados para facilitar a montagem final em PDF ou Word.
-
 ## Fluxo basico de uso
 
 1. acessar a tela de login;
@@ -264,23 +260,3 @@ Passos:
 - confira o tipo e o tamanho do arquivo;
 - confirme se a especialidade escolhida existe na lista de cursos.
 5. cadastrar, consultar ou editar informacoes conforme a permissao do perfil.
-
-## Recomendacao para a versao final
-Para a entrega final, recomenda-se exportar este manual com os prints inseridos na ordem sugerida, mantendo numeracao unica e legenda curta em cada imagem.
-Este manual deve conter linguagem simples, capturas de tela numeradas e passos diretos, como se fosse um treinamento curto de uso do sistema.
-## Checklist de prints a produzir
-## Estrutura sugerida para complementar depois
-- Print 01 - Tela de login
-- Print 02 - Dashboard principal
-- Print 03 - Menu do usuario e modal Minha Conta
-- Print 04 - Listagem de pacientes
-- Print 05 - Cadastro de paciente
-- Print 06 - Perfil do paciente
-- Print 07 - Edicao de paciente
-- Print 08 - Registro de frequencia
-- Print 09 - Relatorio de frequencia
-- Print 10 - Gestao de prontuarios
-- Print 11 - Cadastro de perguntas e questionarios
-- Print 12 - Historico de atividades
-- Print 13 - Opcao sair
-- logout.
