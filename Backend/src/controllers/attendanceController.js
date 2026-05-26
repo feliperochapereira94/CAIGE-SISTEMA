@@ -1,126 +1,88 @@
 import pool from '../models/database.js';
-import { logActivity } from '../utils/activityLogger.js';
-import { getPatientSchema } from '../utils/schemaNames.js';
+import { getPatientSchema } from '../models/schemaModel.js';
+import { parsePagination, parsePositiveInt } from '../models/validationModel.js';
 
 export const attendanceController = {
-  // Registrar presença diária
-  registerPresence: async (req, res) => {
-    try {
-      const schema = await getPatientSchema();
-      const patientId = req.body.patient_id;
-      const { professional_id, notes } = req.body;
-
-      if (!patientId) {
-        return res.status(400).json({ message: 'ID do paciente é obrigatório' });
-      }
-
-      // Verificar se paciente existe
-      const [patients] = await pool.query(`SELECT id, name FROM ${schema.patientTable} WHERE id = ?`, [patientId]);
-      if (patients.length === 0) {
-        return res.status(404).json({ message: 'Paciente não encontrado' });
-      }
-
-      // Permitir apenas uma presença por paciente por dia
-      const today = new Date().toISOString().split('T')[0];
-      const [existingPresence] = await pool.query(
-        `SELECT id FROM attendance WHERE ${schema.attendancePatientColumn} = ? AND attendance_date = ? LIMIT 1`,
-        [patientId, today]
-      );
-
-      if (existingPresence.length > 0) {
-        return res.status(400).json({ message: 'A presença deste paciente já foi registrada hoje' });
-      }
-
-      // Registrar presença
-      const now = new Date();
-      const [result] = await pool.query(
-        `INSERT INTO attendance (${schema.attendancePatientColumn}, professional_id, check_in_time, attendance_date, notes) VALUES (?, ?, ?, ?, ?)`,
-        [patientId, professional_id || null, now, today, notes || null]
-      );
-
-      // Log de atividade
-      await logActivity('Frequência', `${patients[0].name} teve presença registrada`, 'Sistema');
-
-      res.status(201).json({
-        message: 'Presença registrada com sucesso',
-        id: result.insertId,
-        time: now
-      });
-    } catch (error) {
-      console.error('Erro ao registrar presença:', error);
-      res.status(500).json({ message: 'Erro ao registrar presença' });
-    }
-  },
-
   // Listar histórico de frequência
   getHistory: async (req, res) => {
     try {
       const schema = await getPatientSchema();
-      const patientId = req.query.patient_id;
-      const { start_date, end_date, sector, limit = 50, offset = 0 } = req.query;
+      const patientId = req.query.patient_id ? parsePositiveInt(req.query.patient_id) : null;
+      const { start_date, end_date, course } = req.query;
+      const { limit, offset } = parsePagination(req.query.limit, req.query.offset, { limit: 50, maxLimit: 200 });
+
+      if (req.query.patient_id && !patientId) {
+        return res.status(400).json({ message: 'ID do paciente inválido' });
+      }
 
       let query = `
         SELECT 
-          a.id,
-          a.${schema.attendancePatientColumn} AS patient_id,
+          qr.id,
+          qr.${schema.questionnaireResponsePatientColumn} AS patient_id,
           e.name,
-          a.check_in_time,
-          a.notes,
-          a.attendance_date
-        FROM attendance a
-        JOIN ${schema.patientTable} e ON a.${schema.attendancePatientColumn} = e.id
+          qr.created_at AS check_in_time,
+          DATE(qr.created_at) AS attendance_date,
+          q.course
+        FROM questionnaire_responses qr
+        JOIN ${schema.patientTable} e ON qr.${schema.questionnaireResponsePatientColumn} = e.id
+        JOIN questionnaires q ON q.id = qr.questionnaire_id
         WHERE 1=1
       `;
 
       const params = [];
 
       if (patientId) {
-        query += ` AND a.${schema.attendancePatientColumn} = ?`;
+        query += ` AND qr.${schema.questionnaireResponsePatientColumn} = ?`;
         params.push(patientId);
       }
 
       if (start_date) {
-        query += ' AND a.attendance_date >= ?';
+        query += ' AND DATE(qr.created_at) >= ?';
         params.push(start_date);
       }
 
       if (end_date) {
-        query += ' AND a.attendance_date <= ?';
+        query += ' AND DATE(qr.created_at) <= ?';
         params.push(end_date);
       }
 
-      if (sector) {
-        query += ' AND a.notes = ?';
-        params.push(sector);
+      if (course) {
+        query += ' AND q.course = ?';
+        params.push(course);
       }
 
-      query += ' ORDER BY a.check_in_time DESC LIMIT ? OFFSET ?';
-      params.push(parseInt(limit), parseInt(offset));
+      query += ' ORDER BY qr.created_at DESC LIMIT ? OFFSET ?';
+      params.push(limit, offset);
 
       const [attendance] = await pool.query(query, params);
 
       // Contar total
-      let countQuery = 'SELECT COUNT(*) as total FROM attendance WHERE 1=1';
+      let countQuery = `
+        SELECT COUNT(*) as total
+        FROM questionnaire_responses qr
+        JOIN questionnaires q ON q.id = qr.questionnaire_id
+        WHERE 1=1
+      `;
       const countParams = [];
 
       if (patientId) {
-        countQuery += ` AND ${schema.attendancePatientColumn} = ?`;
+        countQuery += ` AND qr.${schema.questionnaireResponsePatientColumn} = ?`;
         countParams.push(patientId);
       }
 
       if (start_date) {
-        countQuery += ' AND attendance_date >= ?';
+        countQuery += ' AND DATE(qr.created_at) >= ?';
         countParams.push(start_date);
       }
 
       if (end_date) {
-        countQuery += ' AND attendance_date <= ?';
+        countQuery += ' AND DATE(qr.created_at) <= ?';
         countParams.push(end_date);
       }
 
-      if (sector) {
-        countQuery += ' AND notes = ?';
-        countParams.push(sector);
+      if (course) {
+        countQuery += ' AND q.course = ?';
+        countParams.push(course);
       }
 
       const [countResult] = await pool.query(countQuery, countParams);
@@ -129,8 +91,8 @@ export const attendanceController = {
         data: attendance,
         pagination: {
           total: countResult[0].total,
-          limit: parseInt(limit),
-          offset: parseInt(offset)
+          limit,
+          offset
         }
       });
     } catch (error) {
@@ -143,9 +105,13 @@ export const attendanceController = {
   getFrequencyReport: async (req, res) => {
     try {
       const schema = await getPatientSchema();
-      const patientId = req.query.patient_id;
+      const patientId = req.query.patient_id ? parsePositiveInt(req.query.patient_id) : null;
       const patientName = req.query.patient_name;
-      const { start_date, end_date, sector } = req.query;
+      const { start_date, end_date, course } = req.query;
+
+      if (req.query.patient_id && !patientId) {
+        return res.status(400).json({ message: 'ID do paciente inválido' });
+      }
 
       if (!start_date || !end_date) {
         return res.status(400).json({ message: 'Data inicial e final são obrigatórias' });
@@ -155,22 +121,23 @@ export const attendanceController = {
         SELECT 
           e.id,
           e.name,
-          COUNT(DISTINCT a.attendance_date) as days_present,
-          COUNT(a.id) as total_entries,
-          GROUP_CONCAT(DISTINCT DATE_FORMAT(a.attendance_date, '%Y-%m-%d') ORDER BY a.attendance_date SEPARATOR ',') as attendance_dates,
+          COUNT(DISTINCT DATE(qr.created_at)) as days_present,
+          COUNT(qr.id) as total_entries,
+          GROUP_CONCAT(DISTINCT DATE_FORMAT(qr.created_at, '%Y-%m-%d') ORDER BY qr.created_at SEPARATOR ',') as attendance_dates,
           GROUP_CONCAT(
-            DISTINCT CONCAT(
-              DATE_FORMAT(a.attendance_date, '%Y-%m-%d'),
+            CONCAT(
+              DATE_FORMAT(qr.created_at, '%Y-%m-%d %H:%i:%s'),
               '::',
-              COALESCE(a.notes, '')
+              COALESCE(q.course, '')
             )
-            ORDER BY a.attendance_date
+            ORDER BY qr.created_at
             SEPARATOR '||'
           ) as attendance_records
         FROM ${schema.patientTable} e
-        LEFT JOIN attendance a ON e.id = a.${schema.attendancePatientColumn} 
-          AND a.attendance_date >= ? 
-          AND a.attendance_date <= ?
+        LEFT JOIN questionnaire_responses qr ON e.id = qr.${schema.questionnaireResponsePatientColumn}
+          AND DATE(qr.created_at) >= ?
+          AND DATE(qr.created_at) <= ?
+        LEFT JOIN questionnaires q ON q.id = qr.questionnaire_id
         WHERE 1=1
       `;
 
@@ -184,9 +151,9 @@ export const attendanceController = {
         params.push(`%${patientName}%`);
       }
 
-      if (sector) {
-        query += ' AND a.notes = ?';
-        params.push(sector);
+      if (course) {
+        query += ' AND q.course = ?';
+        params.push(course);
       }
 
       query += ' GROUP BY e.id, e.name ORDER BY days_present DESC';
@@ -202,10 +169,13 @@ export const attendanceController = {
         attendance_dates: item.attendance_dates ? item.attendance_dates.split(',') : [],
         attendance_records: item.attendance_records
           ? item.attendance_records.split('||').map((entry) => {
-              const [date, sectorValue] = entry.split('::');
+              const [timestamp, courseValue] = entry.split('::');
+              const [datePart, timePart = '00:00:00'] = (timestamp || '').split(' ');
               return {
-                date,
-                sector: sectorValue || null
+                timestamp: timestamp || null,
+                date: datePart || null,
+                time: timePart.slice(0, 5),
+                course: courseValue || null
               };
             })
           : [],
@@ -217,7 +187,7 @@ export const attendanceController = {
           start_date,
           end_date,
           period_days: periodDays,
-          sector: sector || null
+          course: course || null
         },
         report: normalizedReport
       });
@@ -235,17 +205,18 @@ export const attendanceController = {
 
       const [todayAttendance] = await pool.query(`
         SELECT 
-          a.id,
-          a.${schema.attendancePatientColumn} AS patient_id,
+          qr.id,
+          qr.${schema.questionnaireResponsePatientColumn} AS patient_id,
           e.name,
-          a.check_in_time,
-          a.attendance_date,
-          a.notes,
+          qr.created_at AS check_in_time,
+          DATE(qr.created_at) AS attendance_date,
+          q.course,
           'Presente' as status
-        FROM attendance a
-        JOIN ${schema.patientTable} e ON a.${schema.attendancePatientColumn} = e.id
-        WHERE a.attendance_date = ?
-        ORDER BY a.check_in_time DESC
+        FROM questionnaire_responses qr
+        JOIN ${schema.patientTable} e ON qr.${schema.questionnaireResponsePatientColumn} = e.id
+        JOIN questionnaires q ON q.id = qr.questionnaire_id
+        WHERE DATE(qr.created_at) = ?
+        ORDER BY qr.created_at DESC
       `, [today]);
 
       res.json({

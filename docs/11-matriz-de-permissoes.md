@@ -63,7 +63,6 @@ Esta matriz foi montada com base em:
 | Cadastrar paciente | ✔ | ✔ | `POST /api/patients` |
 | Editar paciente | ✔ | ✔ | `PUT /api/patients/:id` |
 | Arquivar paciente | ✔ | ✔ | `DELETE /api/patients/:id` |
-| Registrar frequencia | ✔ | ✔ | `POST /api/attendance/register` |
 | Ver historico de frequencia | ✔ | ✔ | `GET /api/attendance/history` |
 | Emitir relatorio de frequencia | ✔ | ✔ | `GET /api/attendance/report` |
 | Ver status do dia | ✔ | ✔ | `GET /api/attendance/today` |

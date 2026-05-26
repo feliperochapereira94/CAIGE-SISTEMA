@@ -1,10 +1,9 @@
 import pool from "../models/database.js";
-import { info, error, warn } from "../utils/logger.js";
-import { getPatientSchema } from "../utils/schemaNames.js";
+import { getPatientSchema } from "../models/schemaModel.js";
 
 export async function getDashboardData(req, res) {
   try {
-    info("📊 Carregando dados do dashboard...");
+    console.log("Carregando dados do dashboard...");
     const { patientTable } = await getPatientSchema();
 
     // Contar pacientes cadastrados
@@ -12,22 +11,23 @@ export async function getDashboardData(req, res) {
       `SELECT COUNT(*) AS total FROM ${patientTable} WHERE status IS NULL OR status != 'archived'`
     );
     const patientCount = patientRows[0]?.total || 0;
-    info(`  → Pacientes cadastrados: ${patientCount}`);
+    console.log(`Pacientes cadastrados: ${patientCount}`);
 
     // Contar presenças de hoje
     const [todayAttendanceRows] = await pool.query(
-      `SELECT COUNT(*) AS total FROM attendance 
-       WHERE attendance_date = CURDATE()`
+      `SELECT COUNT(*) AS total
+       FROM questionnaire_responses
+       WHERE DATE(created_at) = CURDATE()`
     );
     const todayAttendanceCount = todayAttendanceRows[0]?.total || 0;
-    info(`  → Presenças hoje: ${todayAttendanceCount}`);
+    console.log(`Presencas hoje: ${todayAttendanceCount}`);
 
     // Contar atividades reais registradas
     const [activitiesRows] = await pool.query(
       "SELECT COUNT(*) AS total FROM activities"
     );
     const activitiesCount = activitiesRows[0]?.total || 0;
-    info(`  → Atividades registradas: ${activitiesCount}`);
+    console.log(`Atividades registradas: ${activitiesCount}`);
 
     // Buscar atividades recentes (últimas 5)
     const [recentActivities] = await pool.query(
@@ -36,7 +36,7 @@ export async function getDashboardData(req, res) {
        ORDER BY created_at DESC
        LIMIT 5`
     );
-    info(`  → Atividades recentes encontradas: ${recentActivities.length}`);
+    console.log(`Atividades recentes encontradas: ${recentActivities.length}`);
 
     const stats = [];
 
@@ -85,7 +85,7 @@ export async function getDashboardData(req, res) {
       responsible: activity.responsible
     }));
 
-    info(`✓ Dashboard carregado com ${stats.length} estatísticas e ${formattedActivities.length} atividades`);
+    console.log(`Dashboard carregado com ${stats.length} estatisticas e ${formattedActivities.length} atividades`);
 
     return res.status(200).json({
       stats: stats.length > 0 ? stats : [],
@@ -93,7 +93,7 @@ export async function getDashboardData(req, res) {
       message: stats.length === 0 ? "Nenhum dado disponível ainda" : null
     });
   } catch (err) {
-    error("Erro ao carregar dashboard", err);
+    console.error("Erro ao carregar dashboard", err);
     return res.status(200).json({
       stats: [],
       activities: [],

@@ -1,6 +1,6 @@
 import express from 'express';
 import questionnaireController from '../controllers/questionnaireController.js';
-import { requireAuth, requirePermission } from '../middleware/auth.js';
+import { requireAuth, requirePermission } from '../controllers/accessController.js';
 
 const router = express.Router();
 

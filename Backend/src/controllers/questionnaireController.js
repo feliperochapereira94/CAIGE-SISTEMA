@@ -1,6 +1,7 @@
 import pool from '../models/database.js';
-import { logActivity } from '../utils/activityLogger.js';
-import { getPatientSchema } from '../utils/schemaNames.js';
+import { logActivity } from '../models/activityModel.js';
+import { getPatientSchema } from '../models/schemaModel.js';
+import { normalizeIdArray, parsePositiveInt } from '../models/validationModel.js';
 
 function normalizeText(value) {
   return String(value || '').trim().toLowerCase();
@@ -91,9 +92,13 @@ export const createQuestion = async (req, res) => {
 // Editar pergunta
 export const updateQuestion = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = parsePositiveInt(req.params.id);
     const { title, description, options } = req.body;
     const userEmail = req.headers['x-user-email'];
+
+    if (!id) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
 
     const [user] = await pool.query('SELECT id FROM users WHERE email = ?', [userEmail]);
     if (user.length === 0) {
@@ -137,8 +142,12 @@ export const updateQuestion = async (req, res) => {
 // Deletar pergunta
 export const deleteQuestion = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = parsePositiveInt(req.params.id);
     const userEmail = req.headers['x-user-email'];
+
+    if (!id) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
 
     const [user] = await pool.query('SELECT id FROM users WHERE email = ?', [userEmail]);
     if (user.length === 0) {
@@ -199,8 +208,9 @@ export const getQuestionnairesByCourse = async (req, res) => {
 // Criar prontuário
 export const createQuestionnaire = async (req, res) => {
   try {
-    const { title, description, course, questions: questionIds } = req.body;
+    const { title, description, course, questions } = req.body;
     const userEmail = req.headers['x-user-email'];
+    const questionIds = normalizeIdArray(questions);
 
     const [user] = await pool.query('SELECT id, role, sector FROM users WHERE email = ?', [userEmail]);
     if (user.length === 0) {
@@ -220,7 +230,7 @@ export const createQuestionnaire = async (req, res) => {
     const questionnaireId = result.insertId;
 
     // Adicionar perguntas ao prontuário
-    if (questionIds && Array.isArray(questionIds)) {
+    if (questionIds.length > 0) {
       for (let i = 0; i < questionIds.length; i++) {
         await pool.query(
           'INSERT INTO questionnaire_questions (questionnaire_id, question_id, question_order, is_active) VALUES (?, ?, ?, TRUE)',
@@ -252,9 +262,14 @@ export const createQuestionnaire = async (req, res) => {
 // Atualizar prontuário (adicionar/remover perguntas ou reordenar)
 export const updateQuestionnaire = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { title, description, questions: questionIds } = req.body;
+    const id = parsePositiveInt(req.params.id);
+    const { title, description, questions } = req.body;
     const userEmail = req.headers['x-user-email'];
+    const questionIds = normalizeIdArray(questions);
+
+    if (!id) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
 
     const [user] = await pool.query('SELECT id, role, sector FROM users WHERE email = ?', [userEmail]);
     if (user.length === 0) {
@@ -283,7 +298,7 @@ export const updateQuestionnaire = async (req, res) => {
     // Estrategia:
     // 1) Desativar perguntas removidas
     // 2) Upsert das perguntas enviadas, reativando e reordenando
-    if (questionIds && Array.isArray(questionIds)) {
+    if (Array.isArray(questions)) {
       if (questionIds.length > 0) {
         const placeholders = questionIds.map(() => '?').join(',');
         await pool.query(
@@ -329,8 +344,12 @@ export const updateQuestionnaire = async (req, res) => {
 // Publicar prontuário
 export const publishQuestionnaire = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = parsePositiveInt(req.params.id);
     const userEmail = req.headers['x-user-email'];
+
+    if (!id) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
 
     const [user] = await pool.query('SELECT id FROM users WHERE email = ?', [userEmail]);
     if (user.length === 0) {
@@ -374,8 +393,12 @@ export const publishQuestionnaire = async (req, res) => {
 // Deletar prontuário
 export const deleteQuestionnaire = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = parsePositiveInt(req.params.id);
     const userEmail = req.headers['x-user-email'];
+
+    if (!id) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
 
     const [user] = await pool.query('SELECT id FROM users WHERE email = ?', [userEmail]);
     if (user.length === 0) {
@@ -424,7 +447,11 @@ export const deleteQuestionnaire = async (req, res) => {
 // Obter perguntas de um prontuário
 export const getQuestionnaireQuestions = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = parsePositiveInt(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
 
     const [questions] = await pool.query(
       `SELECT q.id, q.title, q.description, q.question_type, q.options, qq.question_order
@@ -447,8 +474,9 @@ export const getQuestionnaireQuestions = async (req, res) => {
 export const saveQuestionnaireResponse = async (req, res) => {
   try {
     const schema = await getPatientSchema();
-    const patientId = req.body.patientId;
-    const { questionnaireId, responses } = req.body;
+    const patientId = parsePositiveInt(req.body.patientId);
+    const questionnaireId = parsePositiveInt(req.body.questionnaireId);
+    const { responses } = req.body;
     const userEmail = req.headers['x-user-email'];
 
     // Validar dados
@@ -505,12 +533,16 @@ export const saveQuestionnaireResponse = async (req, res) => {
 export const getQuestionnaireResponses = async (req, res) => {
   try {
     const schema = await getPatientSchema();
-    const patientId = req.params.patientId;
-    const { questionnaireId } = req.params;
+    const patientId = parsePositiveInt(req.params.patientId);
+    const questionnaireId = parsePositiveInt(req.params.questionnaireId);
     const userEmail = req.headers['x-user-email'];
 
+    if (!patientId || !questionnaireId) {
+      return res.status(400).json({ error: 'IDs inválidos' });
+    }
+
     const [responses] = await pool.query(
-      `SELECT qr.id, qr.response_data, qr.created_at, q.title
+      `SELECT qr.id, qr.response_data, qr.created_at, q.title AS questionnaire_title, q.course
        FROM questionnaire_responses qr
        JOIN questionnaires q ON qr.questionnaire_id = q.id
        WHERE qr.${schema.questionnaireResponsePatientColumn} = ? AND qr.questionnaire_id = ?

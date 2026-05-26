@@ -6,7 +6,7 @@ import {
   updatePatient,
   deletePatient
 } from "../controllers/patientController.js";
-import { requireAuth, requirePermission } from "../middleware/auth.js";
+import { requireAuth, requirePermission } from "../controllers/accessController.js";
 
 const router = express.Router();
 

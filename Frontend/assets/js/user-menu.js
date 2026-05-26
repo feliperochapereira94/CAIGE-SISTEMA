@@ -1,3 +1,36 @@
+if (!window.__CAIGE_JWT_FETCH_PATCHED__) {
+  window.__CAIGE_JWT_FETCH_PATCHED__ = true;
+  const originalFetch = window.fetch.bind(window);
+
+  function shouldAttachToken(inputUrl) {
+    try {
+      const normalized = new URL(inputUrl, window.location.origin);
+      return normalized.origin === 'http://localhost:3000';
+    } catch {
+      return String(inputUrl || '').startsWith('http://localhost:3000');
+    }
+  }
+
+  window.fetch = async (input, init = {}) => {
+    const requestUrl = typeof input === 'string' ? input : input?.url;
+    const token = localStorage.getItem('jwtToken');
+
+    if (!token || !shouldAttachToken(requestUrl)) {
+      return originalFetch(input, init);
+    }
+
+    const headers = new Headers(init.headers || (input instanceof Request ? input.headers : undefined));
+    if (!headers.has('Authorization')) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return originalFetch(input, {
+      ...init,
+      headers
+    });
+  };
+}
+
 if (sessionStorage.getItem('userEmail')) {
   localStorage.setItem('userEmail', sessionStorage.getItem('userEmail'));
 } else {
@@ -19,9 +52,10 @@ class UserMenuSystem {
 
   async loadUserProfile() {
     try {
+      const token = localStorage.getItem('jwtToken');
       const userEmail = localStorage.getItem('userEmail');
-      if (!userEmail) { window.location.href = '/Frontend/pages/auth/login.html'; return; }
-      const response = await fetch('http://localhost:3000/profile', {
+      if (!token || !userEmail) { window.location.href = '/Frontend/pages/auth/login.html'; return; }
+      const response = await fetch('http://localhost:3000/api/auth/profile', {
         headers: { 'x-user-email': userEmail }
       });
 
@@ -84,7 +118,7 @@ class UserMenuSystem {
   async checkPermissionAndNavigate() {
     try {
       const userEmail = localStorage.getItem('userEmail');
-      const response = await fetch('http://localhost:3000/profile', {
+      const response = await fetch('http://localhost:3000/api/auth/profile', {
         headers: { 'x-user-email': userEmail }
       });
 
@@ -175,7 +209,7 @@ class UserMenuSystem {
   async loadAccountData() {
     try {
       const userEmail = localStorage.getItem('userEmail');
-      const response = await fetch('http://localhost:3000/profile', {
+      const response = await fetch('http://localhost:3000/api/auth/profile', {
         headers: { 'x-user-email': userEmail }
       });
 
@@ -203,7 +237,7 @@ class UserMenuSystem {
       }
 
       const userEmail = localStorage.getItem('userEmail');
-      const response = await fetch('http://localhost:3000/profile', {
+      const response = await fetch('http://localhost:3000/api/auth/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -249,7 +283,7 @@ class UserMenuSystem {
       }
 
       const userEmail = localStorage.getItem('userEmail');
-      const response = await fetch('http://localhost:3000/change-password', {
+      const response = await fetch('http://localhost:3000/api/auth/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -293,6 +327,7 @@ class UserMenuSystem {
     if (confirm('Deseja sair do sistema?')) {
       sessionStorage.removeItem('userEmail');
       localStorage.removeItem('userEmail');
+      localStorage.removeItem('jwtToken');
       sessionStorage.clear();
       window.location.href = '../../pages/auth/login.html';
     }

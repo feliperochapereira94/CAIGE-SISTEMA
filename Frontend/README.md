@@ -11,7 +11,6 @@ O frontend está dividido nos seguintes grupos principais:
 - `assets/css/`: estilos compartilhados e folhas específicas por contexto
 - `assets/js/`: scripts auxiliares de permissões, notificações, menu do usuário e questionários
 - `assets/images/`: imagens estáticas da interface
-- `controllers/`: scripts de apoio a fluxos específicos, como autenticação
 
 ## Módulos da interface
 
@@ -20,8 +19,8 @@ As páginas atualmente presentes no sistema incluem:
 - `pages/auth/login.html`: autenticação
 - `pages/dashboard/dashboard.html`: painel principal
 - `pages/patients/`: listagem, cadastro, edição, perfil, prontuários e questionários
-- `pages/attendance/attendance.html`: registro de frequência
-- `pages/attendance/frequency-report.html`: relatório de frequência
+- `pages/attendance/attendance.html`: redirecionamento para relatório de frequência
+- `pages/attendance/frequency-report.html`: relatório de frequência derivado de prontuários
 - `pages/activities/activities.html`: gerenciamento de atividades
 - `pages/admin/users.html`: administração de usuários
 - `pages/admin/courses.html`: administração de cursos

@@ -344,9 +344,6 @@
               <span class="sidebar__menu-icon">+</span>
             </button>
             <div class="sidebar__submenu open" id="attendance-menu">
-              <a class="sidebar__submenu-link" href="./attendance.html">
-                ✋ Registrar Frequência
-              </a>
               <a class="sidebar__submenu-link sidebar__submenu-link--active" href="./frequency-report.html">
                 📄 Relatório Frequência
               </a>
@@ -414,9 +411,9 @@
               <div id="patient-results" class="search-results" style="display: none;"></div>
             </div>
             <div class="form-group">
-              <label for="sector-filter">Setor</label>
+              <label for="sector-filter">Curso</label>
               <select id="sector-filter">
-                <option value="">Todos os setores</option>
+                <option value="">Todos os cursos</option>
               </select>
             </div>
             <div class="form-group">
@@ -558,7 +555,7 @@
       async function checkUserRole() {
         try {
           const userEmail = localStorage.getItem('userEmail');
-          const response = await fetch('http://localhost:3000/profile', {
+          const response = await fetch('http://localhost:3000/api/auth/profile', {
             headers: { 'x-user-email': userEmail }
           });
           if (response.ok) {
@@ -596,7 +593,7 @@
         minute: '2-digit'
       });
 
-      const SECTOR_OPTIONS = [
+      const COURSE_OPTIONS = [
         'Fisioterapia',
         'Educação Física',
         'Agronomia',
@@ -665,9 +662,9 @@
 
       function populateSectorFilter() {
         const select = document.getElementById('sector-filter');
-        select.innerHTML = '<option value="">Todos os setores</option>';
+        select.innerHTML = '<option value="">Todos os cursos</option>';
 
-        SECTOR_OPTIONS.forEach((sector) => {
+        COURSE_OPTIONS.forEach((sector) => {
           const option = document.createElement('option');
           option.value = sector;
           option.textContent = sector;
@@ -799,7 +796,8 @@
 
             groupedDates[key].push({
               date: dateString,
-              sector: record.sector || 'Não informado'
+              time: record.time || '',
+              course: record.course || 'Não informado'
             });
           });
 
@@ -811,7 +809,11 @@
               return {
                 label,
                 total: records.length,
-                records: records.sort((a, b) => a.date.localeCompare(b.date))
+                records: records.sort((a, b) => {
+                  const left = `${a.date || ''} ${a.time || ''}`;
+                  const right = `${b.date || ''} ${b.time || ''}`;
+                  return left.localeCompare(right);
+                })
               };
             });
 
@@ -839,7 +841,7 @@
             const frequency = ((daysPresent / periodDays) * 100).toFixed(1);
             const frequencyClass = frequency >= 70 ? 'frequency-high' : frequency >= 40 ? 'frequency-medium' : 'frequency-low';
             const attendanceDetails = Array.isArray(item.attendance_records) && item.attendance_records.length > 0
-              ? item.attendance_records.map((record) => `${formatDateToPtBr(record.date)} (${record.sector || 'Não informado'})`).join(', ')
+              ? item.attendance_records.map((record) => `${formatDateToPtBr(record.date)} ${record.time || ''} (${record.course || 'Não informado'})`).join(', ')
               : (Array.isArray(item.attendance_dates) && item.attendance_dates.length > 0
                 ? item.attendance_dates.map(formatDateToPtBr).join(', ')
                 : 'Nenhuma presença');
@@ -873,7 +875,7 @@
                     <span>${period.label}</span>
                     <span>${period.total} presença(s)</span>
                   </div>
-                  <div class="report-admin-dates">${period.records.map((record) => `${formatDateToPtBr(record.date)} (${record.sector})`).join(', ')}</div>
+                  <div class="report-admin-dates">${period.records.map((record) => `${formatDateToPtBr(record.date)} ${record.time || ''} (${record.course})`).join(', ')}</div>
                 </div>
               `).join('');
 
@@ -907,7 +909,7 @@
                 const totalEntries = item.total_entries || 0;
                 const frequency = ((daysPresent / periodDays) * 100).toFixed(1);
                 const attendanceDetails = Array.isArray(item.attendance_records) && item.attendance_records.length > 0
-                  ? item.attendance_records.map((record) => `${formatDateToPtBr(record.date)} (${record.sector || 'Não informado'})`).join(', ')
+                  ? item.attendance_records.map((record) => `${formatDateToPtBr(record.date)} ${record.time || ''} (${record.course || 'Não informado'})`).join(', ')
                   : (Array.isArray(item.attendance_dates) && item.attendance_dates.length > 0
                     ? item.attendance_dates.map(formatDateToPtBr).join(', ')
                     : 'Nenhuma presença');
@@ -953,7 +955,7 @@
                     <tr>
                       <td style="padding: 8px; border: 1px solid #ddd;">${period.label}</td>
                       <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${period.total}</td>
-                      <td style="padding: 8px; border: 1px solid #ddd;">${period.records.map((record) => `${formatDateToPtBr(record.date)} (${record.sector})`).join(', ')}</td>
+                      <td style="padding: 8px; border: 1px solid #ddd;">${period.records.map((record) => `${formatDateToPtBr(record.date)} ${record.time || ''} (${record.course})`).join(', ')}</td>
                     </tr>
                   `).join('')}
                 </tbody>
@@ -969,7 +971,7 @@
         const endDate = document.getElementById('end-date').value;
         const patientId = selectedPatientId || Number(document.getElementById('patient-id').value);
         const patientName = document.getElementById('patient-search').value.trim();
-        const sector = document.getElementById('sector-filter').value;
+        const course = document.getElementById('sector-filter').value;
 
         if (!startDate || !endDate) {
           notify.error('Selecione um período');
@@ -988,8 +990,8 @@
           } else if (patientName) {
             url += `&patient_name=${encodeURIComponent(patientName)}`;
           }
-          if (sector) {
-            url += `&sector=${encodeURIComponent(sector)}`;
+          if (course) {
+            url += `&course=${encodeURIComponent(course)}`;
           }
 
           const userEmail = localStorage.getItem('userEmail');
@@ -1018,7 +1020,7 @@
         const statsGrid = document.getElementById('stats-grid');
         const reportView = document.getElementById('report-view').value;
         const adminGrouping = document.getElementById('admin-grouping').value;
-        const sector = document.getElementById('sector-filter').value;
+        const course = document.getElementById('sector-filter').value;
         document.getElementById('report-title').textContent = reportView === 'administrative'
           ? `📊 Relatório Administrativo ${getGroupingLabel(adminGrouping)}`
           : '📊 Dados de Frequência';
@@ -1028,7 +1030,7 @@
           startDate: document.getElementById('start-date').value,
           endDate: document.getElementById('end-date').value,
           patientName: document.getElementById('patient-search').value.trim(),
-          sector,
+          course,
           reportView,
           adminGrouping,
           periodDays: data.period?.period_days || 1
@@ -1048,7 +1050,7 @@
 
         // Calcular estatísticas
         const periodDays = data.period?.period_days || 1;
-        const totalEntries = report.reduce((sum, item) => sum + (item.days_present || 0), 0);
+        const totalEntries = report.reduce((sum, item) => sum + (item.total_entries || 0), 0);
         const totalPatients = report.length;
         const avgFrequency = totalPatients > 0
           ? Math.round((totalEntries / (totalPatients * periodDays)) * 100)
@@ -1133,7 +1135,7 @@
               Período: ${currentFilters.startDate} a ${currentFilters.endDate}
             </p>
             <p style="margin: 5px 0; color: #9ca3af; font-size: 12px;">
-              Setor: ${currentFilters.sector || 'Todos os setores'}
+              Curso: ${currentFilters.course || 'Todos os cursos'}
             </p>
             <p style="margin: 5px 0; color: #9ca3af; font-size: 12px;">
               ${reportView === 'administrative' ? `Agrupamento: ${getGroupingLabel(adminGrouping)}` : 'Formato: Resumo do período'}

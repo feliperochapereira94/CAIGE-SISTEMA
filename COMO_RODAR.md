@@ -11,14 +11,14 @@
 PowerShell:
 
 ```powershell
-cd "D:\CAIGE SISTEMA"
+cd "caminho/do/repositorio/CAIGE-SISTEMA"
 .\start-all.ps1
 ```
 
 CMD:
 
 ```cmd
-cd D:\CAIGE SISTEMA
+cd caminho\do\repositorio\CAIGE-SISTEMA
 start-all.bat
 ```
 
@@ -27,7 +27,7 @@ start-all.bat
 Terminal 1 (backend):
 
 ```powershell
-cd "D:\CAIGE SISTEMA\Backend"
+cd "caminho/do/repositorio/CAIGE-SISTEMA/Backend"
 npm install
 npm run dev
 ```
@@ -35,7 +35,7 @@ npm run dev
 Terminal 2 (frontend):
 
 ```powershell
-cd "D:\CAIGE SISTEMA\Frontend"
+cd "caminho/do/repositorio/CAIGE-SISTEMA/Frontend"
 npm install
 npm run dev
 ```
@@ -47,8 +47,7 @@ npm run dev
 
 ## Credencial inicial de teste
 
-- Email: suportecaige@univale.br
-- Senha: 123456
+Use a credencial configurada no seu banco local (script de setup vigente).
 
 ## Troubleshooting rapido
 
@@ -61,7 +60,7 @@ npm install -g live-server
 Backend com erro:
 
 ```powershell
-cd "D:\CAIGE SISTEMA\Backend"
+cd "caminho/do/repositorio/CAIGE-SISTEMA/Backend"
 npm run dev
 Get-Content .\logs\app.log -Tail 80
 ```

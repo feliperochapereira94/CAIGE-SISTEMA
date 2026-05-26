@@ -26,6 +26,7 @@ Organizar o projeto de forma que uma pessoa que nao participou do desenvolviment
 9. [09-implantacao.md](09-implantacao.md)
 10. [10-limitacoes-e-evolucao.md](10-limitacoes-e-evolucao.md)
 11. [11-matriz-de-permissoes.md](11-matriz-de-permissoes.md)
+12. [12-prompt-de-continuidade.md](12-prompt-de-continuidade.md)
 
 ## Ordem recomendada de leitura
 

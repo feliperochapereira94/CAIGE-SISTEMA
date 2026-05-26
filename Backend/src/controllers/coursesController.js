@@ -1,5 +1,6 @@
 import pool from '../models/database.js';
-import { logActivity } from '../utils/activityLogger.js';
+import { logActivity } from '../models/activityModel.js';
+import { parsePositiveInt } from '../models/validationModel.js';
 
 // Listar todos os cursos (qualquer usuário autenticado pode ver)
 export async function listCourses(req, res) {
@@ -47,8 +48,12 @@ export async function createCourse(req, res) {
 // Atualizar curso (apenas supervisor)
 export async function updateCourse(req, res) {
   try {
-    const { id } = req.params;
+    const id = parsePositiveInt(req.params.id);
     const { name, is_active } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ message: 'ID do curso inválido' });
+    }
 
     if (!name || !String(name).trim()) {
       return res.status(400).json({ message: 'Nome do curso é obrigatório' });
@@ -59,7 +64,7 @@ export async function updateCourse(req, res) {
 
     const [result] = await pool.query(
       'UPDATE courses SET name = ?, is_active = ? WHERE id = ?',
-      [trimmedName, active, Number(id)]
+      [trimmedName, active, id]
     );
 
     if (result.affectedRows === 0) {
@@ -79,9 +84,13 @@ export async function updateCourse(req, res) {
 // Remover curso (apenas supervisor, somente se não houver usuários vinculados)
 export async function deleteCourse(req, res) {
   try {
-    const { id } = req.params;
+    const id = parsePositiveInt(req.params.id);
 
-    const [course] = await pool.query('SELECT name FROM courses WHERE id = ?', [Number(id)]);
+    if (!id) {
+      return res.status(400).json({ message: 'ID do curso inválido' });
+    }
+
+    const [course] = await pool.query('SELECT name FROM courses WHERE id = ?', [id]);
     if (course.length === 0) {
       return res.status(404).json({ message: 'Curso não encontrado' });
     }
@@ -99,7 +108,7 @@ export async function deleteCourse(req, res) {
       });
     }
 
-    await pool.query('DELETE FROM courses WHERE id = ?', [Number(id)]);
+    await pool.query('DELETE FROM courses WHERE id = ?', [id]);
 
     await logActivity(
       'Remover Curso',

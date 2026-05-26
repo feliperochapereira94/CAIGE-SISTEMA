@@ -58,9 +58,6 @@
               <span class="sidebar__menu-icon">+</span>
             </button>
             <div class="sidebar__submenu" id="attendance-menu">
-              <a class="sidebar__submenu-link" href="../attendance/attendance.html">
-                ✋ Registrar Frequência
-              </a>
               <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">
                 📄 Relatório Frequência
               </a>
@@ -401,7 +398,7 @@
       async function checkUserRole() {
         try {
           const userEmail = localStorage.getItem('userEmail');
-          const response = await fetch('http://localhost:3000/profile', {
+          const response = await fetch('http://localhost:3000/api/auth/profile', {
             headers: { 'x-user-email': userEmail }
           });
           if (response.ok) {
@@ -933,7 +930,8 @@
         const date = new Date(response.created_at);
         const dateStr = date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
         document.getElementById('response-view-title').textContent = response.questionnaire_title || 'Visualização de Respostas';
-        document.getElementById('response-view-description').textContent = `Respondido em ${dateStr}`;
+        const courseLabel = response.course ? ` | Curso: ${response.course}` : '';
+        document.getElementById('response-view-description').textContent = `Respondido em ${dateStr}${courseLabel}`;
         document.getElementById('response-view-content').innerHTML = renderResponseData(response.response_data);
         document.getElementById('modal-response-view').style.display = 'flex';
       }

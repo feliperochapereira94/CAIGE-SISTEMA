@@ -7,7 +7,7 @@ import {
   getUserPermissions,
   getUserProfile
 } from '../controllers/userController.js';
-import { requireAuth, requireSupervisor, requireProfessor } from '../middleware/auth.js';
+import { requireAuth, requireSupervisor } from '../controllers/accessController.js';
 
 const router = express.Router();
 

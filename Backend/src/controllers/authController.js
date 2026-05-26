@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import pool from "../models/database.js";
+import { getTokenTtl, signAccessToken } from "../models/tokenModel.js";
 
 const EMAIL_DOMAIN = "@univale.br";
 
@@ -18,7 +19,7 @@ export async function login(req, res) {
 
   try {
     const [rows] = await pool.query(
-      "SELECT id, password_hash, name, last_login FROM users WHERE email = ? LIMIT 1",
+      "SELECT id, password_hash, name, role, sector, last_login FROM users WHERE email = ? LIMIT 1",
       [email]
     );
 
@@ -40,8 +41,24 @@ export async function login(req, res) {
       [now, user.id]
     );
 
+    const token = signAccessToken({
+      id: user.id,
+      email,
+      role: user.role
+    });
+
     return res.status(200).json({ 
       message: "Login autorizado.",
+      accessToken: token,
+      tokenType: "Bearer",
+      expiresIn: getTokenTtl(),
+      user: {
+        id: user.id,
+        email,
+        name: user.name || email.split('@')[0],
+        role: user.role,
+        sector: user.sector
+      },
       name: user.name || email.split('@')[0],
       lastLogin: user.last_login
     });
@@ -53,7 +70,8 @@ export async function login(req, res) {
 
 export async function changePassword(req, res) {
   try {
-    const { email, currentPassword, newPassword } = req.body;
+    const { currentPassword, newPassword } = req.body;
+    const email = req.user?.email;
 
     if (!email || !currentPassword || !newPassword) {
       return res.status(400).json({ message: "Informe todos os dados." });
@@ -91,7 +109,7 @@ export async function changePassword(req, res) {
 
 export async function getUserProfile(req, res) {
   try {
-    const userEmail = req.headers['x-user-email'];
+    const userEmail = req.user?.email;
 
     if (!userEmail) {
       return res.status(401).json({ message: "Não autenticado." });
@@ -124,7 +142,7 @@ export async function getUserProfile(req, res) {
 
 export async function updateUserProfile(req, res) {
   try {
-    const userEmail = req.headers['x-user-email'];
+    const userEmail = req.user?.email;
     const { name } = req.body;
 
     if (!userEmail) {

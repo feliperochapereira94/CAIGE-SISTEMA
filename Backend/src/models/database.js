@@ -1,10 +1,9 @@
 ﻿import mysql from "mysql2/promise";
 import dotenv from "dotenv";
-import { info, error, success } from "../utils/logger.js";
 
 dotenv.config();
 
-info(`Conectando ao banco: ${process.env.DB_HOST} | User: ${process.env.DB_USER} | DB: ${process.env.DB_NAME}`);
+console.log(`Conectando ao banco: ${process.env.DB_HOST} | User: ${process.env.DB_USER} | DB: ${process.env.DB_NAME}`);
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
@@ -44,11 +43,11 @@ const guardedPool = new Proxy(pool, {
 // Testar conexao
 pool.getConnection()
   .then((connection) => {
-    success("Conexao com banco de dados estabelecida com sucesso!");
+    console.log("Conexao com banco de dados estabelecida com sucesso!");
     connection.release();
   })
   .catch((err) => {
-    error("Erro ao conectar com o banco de dados", err);
+    console.error("Erro ao conectar com o banco de dados", err);
   });
 
 export default guardedPool;

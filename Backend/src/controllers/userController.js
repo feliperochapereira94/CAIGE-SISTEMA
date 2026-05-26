@@ -1,6 +1,6 @@
 import bcryptjs from 'bcryptjs';
 import pool from '../models/database.js';
-import { logActivity } from '../utils/activityLogger.js';
+import { logActivity } from '../models/activityModel.js';
 
 const EMAIL_DOMAIN = '@univale.br';
 
@@ -174,7 +174,11 @@ export async function deleteUser(req, res) {
 // Obter permissões do usuário
 export async function getUserPermissions(req, res) {
   try {
-    const userEmail = req.user?.email || req.headers['x-user-email'];
+    const userEmail = req.user?.email;
+
+    if (!userEmail) {
+      return res.status(401).json({ message: 'Nao autenticado' });
+    }
 
     const [user] = await pool.query('SELECT role FROM users WHERE email = ?', [userEmail]);
     const [permissions] = await pool.query(
@@ -192,7 +196,11 @@ export async function getUserPermissions(req, res) {
 // Obter perfil completo do usuário
 export async function getUserProfile(req, res) {
   try {
-    const userEmail = req.user?.email || req.headers['x-user-email'];
+    const userEmail = req.user?.email;
+
+    if (!userEmail) {
+      return res.status(401).json({ message: 'Nao autenticado' });
+    }
 
     const [user] = await pool.query(
       'SELECT id, email, role, sector, created_at FROM users WHERE email = ?',

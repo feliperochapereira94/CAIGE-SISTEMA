@@ -5,7 +5,7 @@ import {
   updateCourse,
   deleteCourse
 } from '../controllers/coursesController.js';
-import { requireAuth, requireSupervisor } from '../middleware/auth.js';
+import { requireAuth, requireSupervisor } from '../controllers/accessController.js';
 
 const router = express.Router();
 

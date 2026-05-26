@@ -1,11 +1,8 @@
 import express from 'express';
 import { attendanceController } from '../controllers/attendanceController.js';
-import { requireAuth, requirePermission } from '../middleware/auth.js';
+import { requireAuth, requirePermission } from '../controllers/accessController.js';
 
 const router = express.Router();
-
-// Registrar presença diária - requer permissão can_check_in
-router.post('/register', requireAuth, requirePermission('can_check_in'), attendanceController.registerPresence);
 
 // Listar histórico - qualquer autenticado
 router.get('/history', requireAuth, attendanceController.getHistory);

@@ -57,9 +57,6 @@
               <span class="sidebar__menu-icon">+</span>
             </button>
             <div class="sidebar__submenu" id="attendance-menu">
-              <a class="sidebar__submenu-link" href="../attendance/attendance.html">
-                ✋ Registrar Frequência
-              </a>
               <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">
                 📄 Relatório Frequência
               </a>
@@ -247,9 +244,11 @@
         activityTable.innerHTML = header + rows;
       };
 
-      const loadDashboardData = async (statsCards, activityTable) => {
+      const loadDashboardData = async (statsCards, activityTable, userEmail) => {
         try {
-          const dashboardResponse = await fetch("http://localhost:3000/dashboard-data");
+          const dashboardResponse = await fetch("http://localhost:3000/api/dashboard-data", {
+            headers: { 'x-user-email': userEmail }
+          });
           
           if (!dashboardResponse.ok) {
             console.error("Erro na resposta do servidor:", dashboardResponse.status);
@@ -306,7 +305,7 @@
       async function checkUserRole() {
         try {
           const userEmail = localStorage.getItem('userEmail');
-          const response = await fetch('http://localhost:3000/profile', {
+          const response = await fetch('http://localhost:3000/api/auth/profile', {
             headers: { 'x-user-email': userEmail }
           });
           if (response.ok) {
@@ -358,7 +357,7 @@
         // Carregar dados do dashboard
         const statsCards = document.getElementById("stats-cards");
         const activityTable = document.getElementById("activity-table");
-        loadDashboardData(statsCards, activityTable);
+        loadDashboardData(statsCards, activityTable, userEmail);
 
         // Alterar Senha
         const btnChangePassword = document.getElementById('btn-change-password');
@@ -389,7 +388,7 @@
             btnChangePassword.disabled = true;
             btnChangePassword.textContent = 'Alterando...';
 
-            const response = await fetch('http://localhost:3000/change-password', {
+            const response = await fetch('http://localhost:3000/api/auth/change-password', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'

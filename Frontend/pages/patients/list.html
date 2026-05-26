@@ -58,9 +58,6 @@
               <span class="sidebar__menu-icon">+</span>
             </button>
             <div class="sidebar__submenu" id="attendance-menu">
-              <a class="sidebar__submenu-link" href="../attendance/attendance.html">
-                ✋ Registrar Frequência
-              </a>
               <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">
                 📄 Relatório Frequência
               </a>
@@ -250,7 +247,7 @@
       async function checkUserRole() {
         try {
           const userEmail = localStorage.getItem('userEmail');
-          const response = await fetch('http://localhost:3000/profile', {
+          const response = await fetch('http://localhost:3000/api/auth/profile', {
             headers: { 'x-user-email': userEmail }
           });
           if (response.ok) {

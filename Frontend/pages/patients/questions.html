@@ -290,7 +290,6 @@
             <span class="sidebar__menu-icon">+</span>
           </button>
           <div class="sidebar__submenu" id="attendance-menu">
-            <a class="sidebar__submenu-link" href="../attendance/attendance.html">✋ Registrar Frequência</a>
             <a class="sidebar__submenu-link" href="../attendance/frequency-report.html">📄 Relatório Frequência</a>
           </div>
         </div>
@@ -390,7 +389,7 @@
   <script src="../../assets/js/user-menu.js"></script>
   <script>
     const API_BASE = 'http://localhost:3000/api/questionnaires';
-    const API_PROFILE = 'http://localhost:3000/profile';
+    const API_PROFILE = 'http://localhost:3000/api/auth/profile';
     const userEmail = localStorage.getItem('userEmail');
     const allowedCourses = [
       'Fisioterapia',

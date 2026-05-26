@@ -1,7 +1,8 @@
 import pool from "../models/database.js";
-import { isDataUrlPhoto, savePhotoFromDataUrl, deleteLocalPhoto } from "../utils/photoHandler.js";
-import { logActivity } from "../utils/activityLogger.js";
-import { getPatientSchema } from "../utils/schemaNames.js";
+import { isDataUrlPhoto, savePhotoFromDataUrl, deleteLocalPhoto } from "../models/photoModel.js";
+import { logActivity } from "../models/activityModel.js";
+import { getPatientSchema } from "../models/schemaModel.js";
+import { parsePagination, parsePositiveInt } from "../models/validationModel.js";
 
 function normalizePatientStatus(status) {
   const normalized = String(status || "").trim().toLowerCase();
@@ -22,8 +23,7 @@ export async function getAllPatients(req, res) {
     const { patientTable } = await getPatientSchema();
     const search = typeof req.query.q === 'string' ? req.query.q.trim() : '';
     const terms = search ? search.split(/\s+/).filter(Boolean) : [];
-    const parsedLimit = Number.parseInt(req.query.limit, 10);
-    const limit = Number.isNaN(parsedLimit) ? 50 : Math.min(Math.max(parsedLimit, 1), 100);
+    const { limit } = parsePagination(req.query.limit, 0, { limit: 50, maxLimit: 100 });
 
     let query = `SELECT id, name, birth_date, phone, phone2, neighborhood, city, status FROM ${patientTable} WHERE (status IS NULL OR status <> 'archived')`;
     const params = [];
@@ -76,7 +76,11 @@ export async function getAllPatients(req, res) {
 export async function getPatient(req, res) {
   try {
     const { patientTable } = await getPatientSchema();
-    const { id } = req.params;
+    const id = parsePositiveInt(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({ message: "ID de paciente inválido." });
+    }
 
     const [patients] = await pool.query(
       `SELECT * FROM ${patientTable} WHERE id = ?`,
@@ -180,7 +184,11 @@ export async function createPatient(req, res) {
 export async function updatePatient(req, res) {
   try {
     const { patientTable } = await getPatientSchema();
-    const { id } = req.params;
+    const id = parsePositiveInt(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({ message: "ID de paciente inválido." });
+    }
     const {
       name,
       birth_date,
@@ -302,7 +310,11 @@ export async function updatePatient(req, res) {
 export async function deletePatient(req, res) {
   try {
     const { patientTable } = await getPatientSchema();
-    const { id } = req.params;
+    const id = parsePositiveInt(req.params.id);
+
+    if (!id) {
+      return res.status(400).json({ message: "ID de paciente inválido." });
+    }
 
     const [[current]] = await pool.query(
       `SELECT name, photo, status FROM ${patientTable} WHERE id = ?`,

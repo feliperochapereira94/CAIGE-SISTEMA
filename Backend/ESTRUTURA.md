@@ -9,8 +9,6 @@ Backend/
 ├── database/
 │   ├── setup_completo.sql      # Script principal com estrutura e dados iniciais
 │   ├── setup_zero.sql          # Estrutura limpa, sem dados iniciais
-│   ├── add_roles_permissions.sql
-│   ├── add_questionnaire_tables.sql
 │   └── scripts complementares de migração e apoio
 ├── package.json              # Dependências Node.js
 ├── .env                      # Variáveis de ambiente
@@ -156,7 +154,7 @@ Content-Type: application/json
 
 - Email domain obrigatório: `@univale.br`
 - Senhas hash com bcryptjs
-- Sessão via localStorage no frontend
+- Sessão via JWT (Bearer token) no frontend
 
 ## 🐛 Troubleshooting
 
@@ -172,10 +170,9 @@ Migrações checam automaticamente antes de adicionar
 ## 📦 Próximos Passos
 
 1. **Validações Avançadas** - Implementar schema validation
-2. **Autenticação JWT** - Melhorar segurança
-3. **Rate Limiting** - Proteger endpoints
-4. **Logging** - Sistema de logs
-5. **Backup Automático** - Backups periódicos
+2. **Rate Limiting** - Proteger endpoints
+3. **Logging** - Sistema de logs
+4. **Backup Automático** - Backups periódicos
 
 ---
 

@@ -114,7 +114,6 @@ Algumas rotas, como `/login`, `/change-password`, `/profile`, `/dashboard-data` 
 | DELETE | /api/patients/:id | pacientes | can_edit_patient |
 | GET | /dashboard-data | dashboard | sem middleware explicito na rota |
 | GET | /api/activities | atividades | autenticado |
-| POST | /api/attendance/register | frequencia | can_check_in |
 | GET | /api/attendance/history | frequencia | autenticado |
 | GET | /api/attendance/report | frequencia | can_view_reports |
 | GET | /api/attendance/today | frequencia | autenticado |
@@ -628,37 +627,13 @@ Exemplo real de item da lista:
 
 Baseado em [../Backend/src/routes/attendance.js](../Backend/src/routes/attendance.js).
 
-### POST /api/attendance/register
-
-Objetivo: registrar presenca diaria.
-
-Protecao: `requireAuth` e `can_check_in`
-
-Corpo observado no controller:
-
-```json
-{
-	"patient_id": 1,
-	"professional_id": 2,
-	"notes": "Paciente presente no atendimento"
-}
-```
-
-Exemplo real de resposta com sucesso:
-
-```json
-{
-	"message": "Presença registrada com sucesso",
-	"id": 33,
-	"time": "2026-04-02T14:22:10.000Z"
-}
-```
-
 ### GET /api/attendance/history
 
 Objetivo: listar historico de frequencia.
 
 Protecao: `requireAuth`
+
+Observacao: a presenca e derivada de respostas de prontuario (`questionnaire_responses`).
 
 Exemplo real de resposta com sucesso:
 
@@ -670,7 +645,7 @@ Exemplo real de resposta com sucesso:
 			"patient_id": 1,
 			"name": "Maria Silva",
 			"check_in_time": "2026-04-02T14:22:10.000Z",
-			"notes": "Fisioterapia",
+			"course": "Fisioterapia",
 			"attendance_date": "2026-04-02T00:00:00.000Z"
 		}
 	],
@@ -696,7 +671,7 @@ Exemplo real de resposta com sucesso:
 		"start_date": "2026-04-01",
 		"end_date": "2026-04-30",
 		"period_days": 30,
-		"sector": null
+		"course": null
 	},
 	"report": [
 		{
