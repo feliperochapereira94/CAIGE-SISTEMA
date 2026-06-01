@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -10,11 +10,11 @@
 
         if (jwtToken && sessionUserEmail) {
             localStorage.setItem('userEmail', sessionUserEmail);
-            window.location.href = './pages/dashboard/dashboard.html';
+            window.location.href = './paginas/painel/painel.html';
         } else {
             localStorage.removeItem('userEmail');
             localStorage.removeItem('jwtToken');
-            window.location.href = './pages/auth/login.html';
+            window.location.href = './paginas/autenticacao/entrar.html';
         }
     </script>
 </head>
@@ -22,3 +22,4 @@
     <p>Redirecionando...</p>
 </body>
 </html>
+

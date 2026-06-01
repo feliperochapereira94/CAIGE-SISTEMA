@@ -1,264 +1,269 @@
--- =====================================================
--- CAIGE - SETUP BANCO ZERADO (ESTRUTURA)
--- Cria banco e todas as tabelas sem dados de exemplo
--- =====================================================
-
+﻿-- =====================================================================
+-- CAIGE SISTEMA — SETUP ZERADO (PT-BR)
+-- =====================================================================
 CREATE DATABASE IF NOT EXISTS caige
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
 USE caige;
 
--- =====================================================
--- TABELA: users
--- =====================================================
-CREATE TABLE IF NOT EXISTS users (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  password_hash VARCHAR(255) NOT NULL,
-  name VARCHAR(255) NULL,
-  role ENUM('SUPERVISOR', 'PROFESSOR') NOT NULL DEFAULT 'PROFESSOR',
-  sector VARCHAR(255) NULL,
-  created_by INT NULL,
-  is_active BOOLEAN NOT NULL DEFAULT TRUE,
-  is_hidden BOOLEAN NOT NULL DEFAULT FALSE,
-  last_login TIMESTAMP NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_users_created_by
-    FOREIGN KEY (created_by) REFERENCES users(id)
+CREATE TABLE IF NOT EXISTS usuarios (
+  id           INT AUTO_INCREMENT PRIMARY KEY,
+  email        VARCHAR(255) NOT NULL UNIQUE,
+  senha_hash   VARCHAR(255) NOT NULL,
+  nome         VARCHAR(255) NULL,
+  papel        ENUM('SUPERVISOR','PROFESSOR') NOT NULL DEFAULT 'PROFESSOR',
+  setor        VARCHAR(255) NULL,
+  criado_por   INT NULL,
+  ativo        BOOLEAN NOT NULL DEFAULT TRUE,
+  oculto       BOOLEAN NOT NULL DEFAULT FALSE,
+  ultimo_login TIMESTAMP NULL,
+  criado_em    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_usuarios_criado_por
+    FOREIGN KEY (criado_por) REFERENCES usuarios(id)
     ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: permissions
--- =====================================================
-CREATE TABLE IF NOT EXISTS permissions (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  role VARCHAR(50) NOT NULL UNIQUE,
-  can_check_in BOOLEAN DEFAULT FALSE,
-  can_create_patient BOOLEAN DEFAULT FALSE,
-  can_edit_patient BOOLEAN DEFAULT FALSE,
-  can_view_patient BOOLEAN DEFAULT FALSE,
-  can_view_reports BOOLEAN DEFAULT FALSE,
-  can_create_user BOOLEAN DEFAULT FALSE,
-  can_edit_user BOOLEAN DEFAULT FALSE,
-  can_view_medical_records BOOLEAN DEFAULT FALSE,
-  can_manage_activities BOOLEAN DEFAULT FALSE,
-  can_access_dashboard BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS permissoes (
+  id                          INT AUTO_INCREMENT PRIMARY KEY,
+  papel                       VARCHAR(50) NOT NULL UNIQUE,
+  pode_registrar_frequencia   BOOLEAN DEFAULT FALSE,
+  pode_criar_paciente         BOOLEAN DEFAULT FALSE,
+  pode_editar_paciente        BOOLEAN DEFAULT FALSE,
+  pode_visualizar_paciente    BOOLEAN DEFAULT FALSE,
+  pode_visualizar_relatorios  BOOLEAN DEFAULT FALSE,
+  pode_criar_usuario          BOOLEAN DEFAULT FALSE,
+  pode_editar_usuario         BOOLEAN DEFAULT FALSE,
+  pode_visualizar_questionarios BOOLEAN DEFAULT FALSE,
+  pode_gerenciar_atividades   BOOLEAN DEFAULT FALSE,
+  pode_acessar_painel         BOOLEAN DEFAULT FALSE,
+  pode_gerenciar_usuarios     BOOLEAN DEFAULT FALSE,
+  criado_em                   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: professionals
--- =====================================================
-CREATE TABLE IF NOT EXISTS professionals (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS profissionais (
+  id        INT AUTO_INCREMENT PRIMARY KEY,
+  nome      VARCHAR(255) NOT NULL,
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: courses
--- =====================================================
-CREATE TABLE IF NOT EXISTS courses (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL UNIQUE,
-  is_active BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS cursos (
+  id        INT AUTO_INCREMENT PRIMARY KEY,
+  nome      VARCHAR(100) NOT NULL UNIQUE,
+  ativo     BOOLEAN NOT NULL DEFAULT TRUE,
+  criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: patients
--- =====================================================
-CREATE TABLE IF NOT EXISTS patients (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  birth_date DATE NULL,
-  gender VARCHAR(50) NULL,
-  cpf VARCHAR(20) NULL,
-  phone VARCHAR(20) NULL,
-  phone2 VARCHAR(20) NULL,
-  cep VARCHAR(20) NULL,
-  street VARCHAR(255) NULL,
-  number VARCHAR(50) NULL,
-  neighborhood VARCHAR(255) NULL,
-  city VARCHAR(255) NULL,
-  state VARCHAR(50) NULL,
-  responsible VARCHAR(255) NULL,
-  responsible_relationship VARCHAR(50) NULL,
-  responsible_phone VARCHAR(20) NULL,
-  photo LONGTEXT NULL,
-  observations LONGTEXT NULL,
-  status VARCHAR(50) NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS pacientes (
+  id                      INT AUTO_INCREMENT PRIMARY KEY,
+  nome                    VARCHAR(255) NOT NULL,
+  data_nascimento         DATE NULL,
+  genero                  VARCHAR(50) NULL,
+  cpf                     VARCHAR(20) NULL,
+  telefone                VARCHAR(20) NULL,
+  celular                 VARCHAR(20) NULL,
+  cep                     VARCHAR(20) NULL,
+  rua                     VARCHAR(255) NULL,
+  numero                  VARCHAR(50) NULL,
+  bairro                  VARCHAR(255) NULL,
+  cidade                  VARCHAR(255) NULL,
+  estado                  VARCHAR(50) NULL,
+  responsavel             VARCHAR(255) NULL,
+  parentesco_responsavel  VARCHAR(50) NULL,
+  telefone_responsavel    VARCHAR(20) NULL,
+  observacoes             LONGTEXT NULL,
+  status                  VARCHAR(50) NULL,
+  criado_em               TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: activities
--- =====================================================
-CREATE TABLE IF NOT EXISTS activities (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  type VARCHAR(100) NOT NULL,
-  description VARCHAR(255) NOT NULL,
-  responsible VARCHAR(255) NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE IF NOT EXISTS atividades (
+  id         INT AUTO_INCREMENT PRIMARY KEY,
+  tipo       VARCHAR(100) NOT NULL,
+  descricao  VARCHAR(255) NOT NULL,
+  responsavel VARCHAR(255) NOT NULL,
+  criado_em  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: attendance
--- =====================================================
-CREATE TABLE IF NOT EXISTS attendance (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  patient_id INT NOT NULL,
-  professional_id INT NULL,
-  check_in_time DATETIME NOT NULL,
-  attendance_date DATE NOT NULL,
-  notes VARCHAR(255) NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT fk_attendance_patient
-    FOREIGN KEY (patient_id) REFERENCES patients(id)
+CREATE TABLE IF NOT EXISTS frequencia (
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  id_paciente     INT NOT NULL,
+  id_profissional INT NULL,
+  hora_entrada    DATETIME NOT NULL,
+  data_frequencia DATE NOT NULL,
+  observacoes     VARCHAR(255) NULL,
+  criado_em       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_frequencia_paciente
+    FOREIGN KEY (id_paciente) REFERENCES pacientes(id)
     ON DELETE CASCADE,
-  CONSTRAINT fk_attendance_professional
-    FOREIGN KEY (professional_id) REFERENCES professionals(id)
+  CONSTRAINT fk_frequencia_profissional
+    FOREIGN KEY (id_profissional) REFERENCES profissionais(id)
     ON DELETE SET NULL,
-  UNIQUE KEY uniq_attendance_patient_date (patient_id, attendance_date),
-  INDEX idx_attendance_date (attendance_date),
-  INDEX idx_check_in_time (check_in_time)
+  UNIQUE KEY uniq_frequencia_paciente_data (id_paciente, data_frequencia),
+  INDEX idx_frequencia_data (data_frequencia),
+  INDEX idx_hora_entrada (hora_entrada)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: medical_records
--- =====================================================
-CREATE TABLE IF NOT EXISTS medical_records (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  patient_id INT NOT NULL,
-  specialty ENUM(
-    'Fisioterapia',
-    'Educação Física',
-    'Agronomia',
-    'Farmácia',
-    'Enfermagem',
-    'Medicina',
-    'Estética e Cosmética',
-    'Fonoaudiologia',
-    'Nutrição'
-  ) NOT NULL,
-  notes LONGTEXT NULL,
-  file_path VARCHAR(255) NOT NULL,
-  file_name VARCHAR(255) NOT NULL,
-  file_size INT NULL,
-  uploaded_by INT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_medical_records_patient
-    FOREIGN KEY (patient_id) REFERENCES patients(id)
-    ON DELETE CASCADE,
-  CONSTRAINT fk_medical_records_uploaded_by
-    FOREIGN KEY (uploaded_by) REFERENCES users(id)
-    ON DELETE SET NULL,
-  INDEX idx_patient_id (patient_id),
-  INDEX idx_specialty (specialty),
-  INDEX idx_created_at (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- =====================================================
--- TABELA: questions
--- =====================================================
-CREATE TABLE IF NOT EXISTS questions (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  description TEXT NULL,
-  question_type ENUM('texto_livre', 'multipla_escolha', 'sim_nao', 'escala') NOT NULL DEFAULT 'texto_livre',
-  options JSON NULL,
-  created_by INT NOT NULL,
-  course VARCHAR(100) NOT NULL,
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_questions_created_by
-    FOREIGN KEY (created_by) REFERENCES users(id)
+CREATE TABLE IF NOT EXISTS perguntas (
+  id             INT AUTO_INCREMENT PRIMARY KEY,
+  titulo         VARCHAR(255) NOT NULL,
+  descricao      TEXT NULL,
+  tipo_pergunta  ENUM('texto_livre','multipla_escolha','sim_nao','escala') NOT NULL DEFAULT 'texto_livre',
+  opcoes         JSON NULL,
+  criado_por     INT NOT NULL,
+  curso          VARCHAR(100) NOT NULL,
+  ativo          BOOLEAN DEFAULT TRUE,
+  criado_em      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  atualizado_em  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_perguntas_criado_por
+    FOREIGN KEY (criado_por) REFERENCES usuarios(id)
     ON DELETE RESTRICT,
-  INDEX idx_course_active (course, is_active),
-  INDEX idx_questions_created_by (created_by)
+  INDEX idx_perguntas_curso_ativo (curso, ativo),
+  INDEX idx_perguntas_criado_por (criado_por)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: questionnaires
--- =====================================================
-CREATE TABLE IF NOT EXISTS questionnaires (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(255) NOT NULL,
-  description TEXT NULL,
-  course VARCHAR(100) NOT NULL,
-  created_by INT NOT NULL,
-  is_published BOOLEAN DEFAULT FALSE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_questionnaires_created_by
-    FOREIGN KEY (created_by) REFERENCES users(id)
+CREATE TABLE IF NOT EXISTS questionarios (
+  id             INT AUTO_INCREMENT PRIMARY KEY,
+  titulo         VARCHAR(255) NOT NULL,
+  descricao      TEXT NULL,
+  curso          VARCHAR(100) NOT NULL,
+  criado_por     INT NOT NULL,
+  publicado      BOOLEAN DEFAULT FALSE,
+  criado_em      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  atualizado_em  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_questionarios_criado_por
+    FOREIGN KEY (criado_por) REFERENCES usuarios(id)
     ON DELETE RESTRICT,
-  INDEX idx_course_published (course, is_published),
-  INDEX idx_questionnaires_created_by (created_by)
+  INDEX idx_questionarios_curso_publicado (curso, publicado),
+  INDEX idx_questionarios_criado_por (criado_por)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: questionnaire_questions
--- =====================================================
-CREATE TABLE IF NOT EXISTS questionnaire_questions (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  questionnaire_id INT NOT NULL,
-  question_id INT NOT NULL,
-  question_order INT NOT NULL DEFAULT 0,
-  is_active BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY unique_questionnaire_question (questionnaire_id, question_id),
-  CONSTRAINT fk_questionnaire_questions_questionnaire
-    FOREIGN KEY (questionnaire_id) REFERENCES questionnaires(id)
+CREATE TABLE IF NOT EXISTS questoes_questionarios (
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  id_questionario INT NOT NULL,
+  id_pergunta     INT NOT NULL,
+  ordem_pergunta  INT NOT NULL DEFAULT 0,
+  ativo           BOOLEAN NOT NULL DEFAULT TRUE,
+  criado_em       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY unique_questao_questionario (id_questionario, id_pergunta),
+  CONSTRAINT fk_questoes_questionarios_questionario
+    FOREIGN KEY (id_questionario) REFERENCES questionarios(id)
     ON DELETE CASCADE,
-  CONSTRAINT fk_questionnaire_questions_question
-    FOREIGN KEY (question_id) REFERENCES questions(id)
+  CONSTRAINT fk_questoes_questionarios_pergunta
+    FOREIGN KEY (id_pergunta) REFERENCES perguntas(id)
     ON DELETE CASCADE,
-  INDEX idx_questionnaire_order (questionnaire_id, question_order),
-  INDEX idx_questionnaire_active (questionnaire_id, is_active)
+  INDEX idx_questoes_questionarios_ordem (id_questionario, ordem_pergunta),
+  INDEX idx_questoes_questionarios_ativo (id_questionario, ativo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: questionnaire_responses
--- =====================================================
-CREATE TABLE IF NOT EXISTS questionnaire_responses (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  patient_id INT NOT NULL,
-  questionnaire_id INT NOT NULL,
-  response_data JSON NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_questionnaire_responses_patient
-    FOREIGN KEY (patient_id) REFERENCES patients(id)
+CREATE TABLE IF NOT EXISTS respostas_questionarios (
+  id              INT AUTO_INCREMENT PRIMARY KEY,
+  id_paciente     INT NOT NULL,
+  id_questionario INT NOT NULL,
+  dados_resposta  JSON NOT NULL,
+  criado_em       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  atualizado_em   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_respostas_questionarios_paciente
+    FOREIGN KEY (id_paciente) REFERENCES pacientes(id)
     ON DELETE CASCADE,
-  CONSTRAINT fk_questionnaire_responses_questionnaire
-    FOREIGN KEY (questionnaire_id) REFERENCES questionnaires(id)
+  CONSTRAINT fk_respostas_questionarios_questionario
+    FOREIGN KEY (id_questionario) REFERENCES questionarios(id)
     ON DELETE RESTRICT,
-  INDEX idx_patient_questionnaire (patient_id, questionnaire_id),
-  INDEX idx_questionnaire_responses_created_at (created_at)
+  INDEX idx_respostas_paciente_questionario (id_paciente, id_questionario),
+  INDEX idx_respostas_criado_em (criado_em)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- TABELA: quick_stats
--- =====================================================
-CREATE TABLE IF NOT EXISTS quick_stats (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  label VARCHAR(100) NOT NULL,
-  value VARCHAR(50) NOT NULL
+CREATE TABLE IF NOT EXISTS estatisticas_rapidas (
+  id    INT AUTO_INCREMENT PRIMARY KEY,
+  rotulo VARCHAR(100) NOT NULL,
+  valor  VARCHAR(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- =====================================================
--- ÍNDICES ADICIONAIS
--- =====================================================
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_patients_status ON patients(status);
-CREATE INDEX idx_patients_name ON patients(name);
-CREATE INDEX idx_activities_created_at ON activities(created_at);
+-- Compatibilidade com versoes que nao suportam CREATE INDEX IF NOT EXISTS.
+SET @sql = (
+  SELECT IF(
+    EXISTS(
+      SELECT 1
+      FROM information_schema.statistics
+      WHERE table_schema = DATABASE()
+        AND table_name = 'usuarios'
+        AND index_name = 'idx_usuarios_email'
+    ),
+    'SELECT 1',
+    'CREATE INDEX idx_usuarios_email ON usuarios(email)'
+  )
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
 
--- =====================================================
--- FIM - BANCO ZERADO (SEM INSERTS)
--- =====================================================
+SET @sql = (
+  SELECT IF(
+    EXISTS(
+      SELECT 1
+      FROM information_schema.statistics
+      WHERE table_schema = DATABASE()
+        AND table_name = 'pacientes'
+        AND index_name = 'idx_pacientes_status'
+    ),
+    'SELECT 1',
+    'CREATE INDEX idx_pacientes_status ON pacientes(status)'
+  )
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(
+    EXISTS(
+      SELECT 1
+      FROM information_schema.statistics
+      WHERE table_schema = DATABASE()
+        AND table_name = 'pacientes'
+        AND index_name = 'idx_pacientes_nome'
+    ),
+    'SELECT 1',
+    'CREATE INDEX idx_pacientes_nome ON pacientes(nome)'
+  )
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @sql = (
+  SELECT IF(
+    EXISTS(
+      SELECT 1
+      FROM information_schema.statistics
+      WHERE table_schema = DATABASE()
+        AND table_name = 'atividades'
+        AND index_name = 'idx_atividades_criado_em'
+    ),
+    'SELECT 1',
+    'CREATE INDEX idx_atividades_criado_em ON atividades(criado_em)'
+  )
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+INSERT IGNORE INTO usuarios
+  (email, senha_hash, nome, papel, ativo, oculto)
+VALUES
+  (
+    'suportecaige@univale.br',
+    '$2a$10$Ji4DeFj5XiJePFMlwsMCRedwAYHg/uV/z8KOL72ZmCNKkslkQ/yXS',
+    'Suporte CAIGE',
+    'SUPERVISOR',
+    TRUE,
+    FALSE
+  );
+
+INSERT IGNORE INTO permissoes
+  (papel,
+   pode_registrar_frequencia, pode_criar_paciente, pode_editar_paciente, pode_visualizar_paciente,
+   pode_visualizar_relatorios, pode_criar_usuario, pode_editar_usuario,
+   pode_visualizar_questionarios, pode_gerenciar_atividades, pode_acessar_painel, pode_gerenciar_usuarios)
+VALUES
+  ('SUPERVISOR', TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE);
+

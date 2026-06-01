@@ -1,0 +1,1078 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movimentações Importantes - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="../../recursos/css/painel.css" />
+    <link rel="stylesheet" href="../../recursos/css/mobile-app.css" />
+    <link rel="stylesheet" href="../../recursos/css/notificacoes.css" />
+    <link rel="stylesheet" href="../../recursos/css/menu-usuario.css" />
+            <link rel="stylesheet" href="../../recursos/css/desktop-polish.css" />
+            <script src="../../recursos/js/text-normalizer.js"></script>
+    <style>
+        .activities-page {
+            display: grid;
+            grid-template-columns: 228px minmax(0, 1fr);
+            min-height: 100vh;
+        }
+
+        .activities-content {
+            padding: 18px 24px 24px 24px;
+        }
+
+        .activities-filters {
+            background: var(--white);
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 18px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.8fr) auto;
+            gap: 12px;
+            align-items: end;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gray-700);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--gray-900);
+            height: 40px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--blue-500);
+            box-shadow: 0 0 0 3px var(--blue-100);
+        }
+
+        .filter-group select {
+            cursor: pointer;
+            min-width: 180px;
+        }
+
+        .btn-filter {
+            background: var(--blue-600);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .filters-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-self: stretch;
+            justify-content: flex-end;
+        }
+
+        .btn-filter:hover {
+            background: var(--blue-500);
+            transform: translateY(-1px);
+        }
+
+        .btn-filter-clear {
+            background: var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        .btn-filter-clear:hover {
+            background: var(--gray-300);
+        }
+
+        .activities-table {
+            background: var(--white);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .activities-table-header {
+            display: grid;
+            grid-template-columns: 130px 160px 1fr 130px;
+            gap: 14px;
+            padding: 10px 16px;
+            background: #f9fafb;
+            border-bottom: 2px solid var(--gray-200);
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .activities-table-body {
+            display: flex;
+            flex-direction: column;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .activities-row {
+            display: grid;
+            grid-template-columns: 130px 160px 1fr 130px;
+            gap: 14px;
+            padding: 10px 16px;
+            border-bottom: 1px solid var(--gray-100);
+            align-items: center;
+            font-size: 13px;
+            color: var(--gray-900);
+            transition: all 0.2s ease;
+        }
+
+        .activities-row:hover {
+            background: #f9fafb;
+        }
+
+        .activities-row:last-child {
+            border-bottom: none;
+        }
+
+        .activity-date {
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+
+        .activity-type {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .activity-type.cadastro {
+            background: #dbeafe;
+            color: #0284c7;
+        }
+
+        .activity-type.edicao {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .activity-type.delecao {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .activity-type.frequencia {
+          background: #dbeafe;
+          color: #1d4ed8;
+        }
+
+                .activity-type.prontuario {
+                        background: #ede9fe;
+                        color: #6d28d9;
+                }
+
+        .activity-type.inativacao {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .activity-type.reativacao {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .activity-type.avaliacao {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+
+        .activity-type.anexo {
+            background: #d1d5db;
+            color: #374151;
+        }
+
+        .activity-description {
+            line-height: 1.5;
+            color: var(--gray-600);
+        }
+
+        .activity-responsible {
+            text-align: right;
+            font-size: 12px;
+            color: var(--gray-700);
+        }
+
+        .activity-action {
+            text-align: center;
+        }
+
+        .activity-action button {
+            background: none;
+            border: none;
+            color: var(--blue-600);
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s ease;
+            padding: 4px 8px;
+        }
+
+        .activity-action button:hover {
+            transform: scale(1.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 42px 20px;
+            color: var(--gray-500);
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 14px 12px;
+            border-radius: 18px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 22px;
+            color: var(--blue-600);
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 12px;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        body.caige-mobile-quicknav .activities-page {
+            grid-template-columns: 1fr;
+        }
+
+        body.caige-mobile-quicknav .activities-content {
+            padding-bottom: 96px;
+        }
+
+        @media (max-width: 1024px) {
+            .activities-page {
+                grid-template-columns: 1fr;
+            }
+
+            .activities-content {
+                padding: 24px 20px 96px 20px;
+            }
+
+            .activities-filters {
+                display: flex;
+                padding: 16px;
+                gap: 12px;
+                align-items: flex-end;
+                flex-wrap: wrap;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .filter-group input,
+            .filter-group select,
+            .btn-filter {
+                width: 100%;
+            }
+
+            .filters-actions {
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .activities-table {
+                overflow-x: auto;
+            }
+
+            .activities-table-header,
+            .activities-row {
+                min-width: 760px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .activities-content {
+                padding: 16px 14px 96px 14px;
+            }
+
+            .stats-summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .activities-table {
+                background: transparent;
+                box-shadow: none;
+                overflow: visible;
+            }
+
+            .activities-table-header {
+                display: none;
+            }
+
+            .activities-table-body {
+                max-height: none;
+                gap: 10px;
+            }
+
+            .activities-row {
+                min-width: 0;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) auto;
+                grid-template-areas:
+                    "date type"
+                    "description description"
+                    "responsible responsible";
+                align-items: start;
+                gap: 8px;
+                padding: 14px;
+                border: 1px solid var(--gray-200);
+                border-radius: 10px;
+                background: var(--white);
+            }
+
+            .activity-date {
+                grid-area: date;
+            }
+
+            .activity-type {
+                grid-area: type;
+                justify-self: end;
+            }
+
+            .activity-description {
+                grid-area: description;
+            }
+
+            .activity-responsible {
+                grid-area: responsible;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .stats-summary {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .stats-summary {
+                gap: 10px;
+            }
+
+            .activities-row {
+                padding: 12px;
+                gap: 7px;
+            }
+
+            .activity-type {
+                font-size: 11px;
+                padding: 5px 10px;
+            }
+
+            .activity-date,
+            .activity-description,
+            .activity-responsible {
+                font-size: 12px;
+                line-height: 1.35;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .activities-filters {
+                padding: 12px;
+                border-radius: 12px;
+                box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+            }
+
+            .activities-content h2 {
+                font-size: 19px;
+                letter-spacing: -0.01em;
+            }
+
+            .activities-content .content__header p {
+                font-size: 12px;
+                color: #6b7280;
+            }
+
+            .filter-group label {
+                font-size: 11px;
+                color: #6b7280;
+            }
+
+            .stat-card {
+                border-radius: 12px;
+                border: 1px solid #e1e8f5;
+                box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+                padding: 14px;
+            }
+
+            .stat-card h3 {
+                font-size: 28px;
+                margin-bottom: 2px;
+            }
+
+            .stat-card p {
+                font-size: 11px;
+                color: #6b7280;
+            }
+
+            .activities-row {
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+                border-radius: 12px;
+            }
+
+            .activity-date,
+            .activity-description,
+            .activity-responsible {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .stats-summary {
+                grid-template-columns: 1fr;
+            }
+
+            .activities-row {
+                grid-template-columns: 1fr;
+                grid-template-areas:
+                    "date"
+                    "type"
+                    "description"
+                    "responsible";
+            }
+
+            .activity-type {
+                justify-self: start;
+            }
+        }
+    
+        /* Padronização desktop - Movimentações no mesmo padrão das telas Pacientes/Prontuários/Frequência */
+        @media screen and (min-width: 1025px) {
+            .activities-page {
+                grid-template-columns: 228px minmax(0, 1fr) !important;
+            }
+
+            .activities-content {
+                padding: 18px 24px 24px !important;
+            }
+
+            .activities-content .content__header {
+                margin: 0 0 16px 0 !important;
+                padding: 14px 18px !important;
+                border-radius: 18px !important;
+                min-height: auto !important;
+            }
+
+            .activities-content .content__header h2 {
+                font-size: 18px !important;
+                line-height: 1.2 !important;
+                margin: 0 0 2px 0 !important;
+            }
+
+            .activities-content .content__header p {
+                font-size: 13px !important;
+                line-height: 1.35 !important;
+                margin: 0 !important;
+            }
+
+            .activities-filters {
+                padding: 16px !important;
+                margin-bottom: 18px !important;
+                border-radius: 18px !important;
+                gap: 12px !important;
+                box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06) !important;
+            }
+
+            .filter-group {
+                gap: 6px !important;
+            }
+
+            .filter-group label {
+                font-size: 12px !important;
+                line-height: 1.2 !important;
+            }
+
+            .filter-group input,
+            .filter-group select,
+            .btn-filter {
+                height: 40px !important;
+                min-height: 40px !important;
+                font-size: 13px !important;
+                border-radius: 12px !important;
+            }
+
+            .btn-filter {
+                padding: 10px 14px !important;
+            }
+
+            .stats-summary {
+                gap: 12px !important;
+                margin-bottom: 18px !important;
+            }
+
+            .stat-card {
+                padding: 14px 12px !important;
+                border-radius: 18px !important;
+                box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06) !important;
+            }
+
+            .stat-card h3 {
+                font-size: 22px !important;
+                line-height: 1.05 !important;
+            }
+
+            .stat-card p {
+                font-size: 11px !important;
+                line-height: 1.25 !important;
+            }
+
+            .activities-table {
+                border-radius: 14px !important;
+                box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06) !important;
+            }
+
+            .activities-table-header,
+            .activities-row {
+                grid-template-columns: 130px 160px minmax(0, 1fr) 130px !important;
+                gap: 14px !important;
+                padding: 10px 16px !important;
+            }
+
+            .activities-table-header {
+                font-size: 11px !important;
+            }
+
+            .activities-row {
+                font-size: 13px !important;
+            }
+
+            .activity-type {
+                padding: 4px 10px !important;
+                font-size: 11px !important;
+                border-radius: 999px !important;
+                min-width: 92px !important;
+                text-align: center !important;
+            }
+
+            .activity-responsible {
+                font-size: 12px !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="activities-page">
+        <aside class="sidebar">
+            <div class="sidebar__brand">
+              <img src="../../recursos/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+              <div>
+                <h1>CAIGE</h1>
+                <span>Univale</span>
+              </div>
+            </div>
+            <nav class="sidebar__nav">
+                <a class="sidebar__link" href="../painel/painel.html">
+                    <span>🏠</span>
+                    Dashboard
+                </a>
+                <a class="sidebar__link sidebar__link--active" href="#">
+                    <span>📋</span>
+                    Movimentações
+                </a>
+                <a class="sidebar__link" href="../pacientes/lista.html">
+                    <span>👥</span>
+                    Pacientes
+                </a>
+                <div class="sidebar__menu-item">
+                    <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+                        <span>📄</span>
+                        <span>Prontuários</span>
+                        <span class="sidebar__menu-icon">+</span>
+                    </button>
+                    <div class="sidebar__submenu" id="prontuarios-menu">
+                        <a class="sidebar__submenu-link" href="../pacientes/questionario-detalhes.html">
+                            📋 Prontuários Cadastrados
+                        </a>
+                        <a class="sidebar__submenu-link" href="../pacientes/questionarios.html">
+                            ❓ Cadastro de Perguntas
+                        </a>
+                    </div>
+                </div>
+                <div class="sidebar__menu-item">
+                    <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+                        <span>📊</span>
+                        <span>Frequência</span>
+                        <span class="sidebar__menu-icon">+</span>
+                    </button>
+                    <div class="sidebar__submenu" id="attendance-menu">
+                        <a class="sidebar__submenu-link" href="../frequencia/relatorio-frequencia.html">
+                            📄 Relatório de Frequência
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="activities-content">
+                        <header class="content__header">
+                            <div>
+                                <h2>Movimentações Importantes</h2>
+                                <p>Consulte um volume maior de registros relevantes para pacientes, presenças e prontuários.</p>
+              </div>
+              <div class="user-menu">
+                <button class="user-avatar-btn" id="user-avatar-btn">
+                  <span class="content__user-avatar" id="user-avatar">SC</span>
+                </button>
+                <div class="user-dropdown">
+                  <div class="user-dropdown__header">
+                    <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                    <div style="flex: 1;">
+                      <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                      <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                    </div>
+                  </div>
+                  <div class="user-dropdown__body">
+                    <button class="user-dropdown__item" data-modal="account">
+                      <span class="user-dropdown__item-icon">👤</span>
+                      Minha Conta
+                    </button>
+                    <button class="user-dropdown__item" data-action="manage-users" style="display: none;" id="btn-manage-users">
+                      <span class="user-dropdown__item-icon">🔐</span>
+                                            Gerenciar Usuários
+                    </button>
+                    <div class="user-dropdown__divider"></div>
+                    <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                      <span class="user-dropdown__item-icon">🚪</span>
+                      Sair
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            <div class="stats-summary" id="stats-summary"></div>
+
+            <div class="activities-filters">
+                <div class="filter-group">
+                    <label for="filter-date">Data</label>
+                    <input type="text" id="filter-date" title="Selecione a data" autocomplete="off" />
+                </div>
+                <div class="filter-group">
+                    <label for="filter-type">Tipo</label>
+                    <select id="filter-type">
+                        <option value="">Todos os eventos</option>
+                        <option value="Novo paciente">Novo paciente</option>
+                        <option value="Presença registrada">Presença registrada</option>
+                        <option value="Prontuário adicionado">Prontuário adicionado</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-responsible">Origem</label>
+                    <input type="text" id="filter-responsible" placeholder="Buscar origem..." />
+                </div>
+                <div class="filters-actions">
+                    <button class="btn-filter" id="btn-apply-filters">🔍 Filtrar</button>
+                    <button class="btn-filter btn-filter-clear" id="btn-clear-filters">✖ Limpar</button>
+                </div>
+            </div>
+
+            <div class="activities-table">
+                <div class="activities-table-header">
+                    <span>Data/Hora</span>
+                    <span>Evento</span>
+                    <span>Detalhes</span>
+                    <span>Origem</span>
+                </div>
+                <div class="activities-table-body" id="activities-list"></div>
+            </div>
+
+            <div class="modal" id="modal-account">
+              <div class="modal__content">
+                <div class="modal__header">
+                  <h2 class="modal__title">Minha Conta</h2>
+                  <button class="modal__close">×</button>
+                </div>
+                <div class="modal__body">
+                  <div id="account-tabs">
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                      <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">
+                        👤 Perfil
+                      </button>
+                      <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">
+                        🔐 Senha
+                      </button>
+                    </div>
+
+                    <div id="tab-profile" class="account__tab">
+                      <form class="modal__form" id="form-profile">
+                        <div class="modal__form-group">
+                          <label for="account-name">Nome</label>
+                          <input type="text" id="account-name" placeholder="Seu nome" required />
+                        </div>
+                        <div class="modal__form-group">
+                          <label for="account-email">Email (não pode ser alterado)</label>
+                          <input type="email" id="account-email" placeholder="Seu email" disabled />
+                        </div>
+                        <div class="modal__form-actions">
+                          <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                          <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                        </div>
+                      </form>
+                    </div>
+
+                    <div id="tab-password" class="account__tab" style="display: none;">
+                      <form class="modal__form" id="form-password">
+                        <div class="modal__form-group">
+                          <label for="current-password">Senha Atual</label>
+                          <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                        </div>
+                        <div class="modal__form-group">
+                          <label for="new-password">Nova Senha</label>
+                          <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                        </div>
+                        <div class="modal__form-group">
+                          <label for="confirm-password">Confirmar Nova Senha</label>
+                          <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                        </div>
+                        <div class="modal__form-actions">
+                          <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                          <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        </main>
+    </div>
+
+  <script src="../../recursos/js/sidebar-menu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+    <script src="../../recursos/js/date-picker-ptbr.js"></script>
+
+    <script>
+        const statsSummary = document.getElementById('stats-summary');
+        const activitiesList = document.getElementById('activities-list');
+        const filterDate = document.getElementById('filter-date');
+        const filterType = document.getElementById('filter-type');
+        const filterResponsible = document.getElementById('filter-responsible');
+        const btnApplyFilters = document.getElementById('btn-apply-filters');
+        const btnClearFilters = document.getElementById('btn-clear-filters');
+        const [filterDatePicker] = window.initPtBrDatePicker ? window.initPtBrDatePicker('#filter-date') : [];
+
+        if (!filterDatePicker) {
+            filterDate.type = 'date';
+            filterDate.lang = 'pt-BR';
+        }
+
+        let allActivities = [];
+
+        const getActivityClass = (type) => {
+            const typeMap = {
+                                'Novo paciente': 'cadastro',
+                                'Presença registrada': 'frequencia',
+                                'Prontuário adicionado': 'prontuario'
+            };
+                    return typeMap[type] || 'cadastro';
+        };
+
+                const getActivityRawDate = (activity) => {
+                    if (!activity || typeof activity !== 'object') {
+                        return '';
+                    }
+
+                    return activity.date || activity.created_at || activity.createdAt || '';
+                };
+
+                const parseActivityDate = (activityDate) => {
+                    const raw = String(activityDate || '').trim();
+
+                    if (!raw) {
+                        return null;
+                    }
+
+          const brDateMatch = raw.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+
+          if (brDateMatch) {
+            const [, day, month, year] = brDateMatch;
+                        return new Date(Number(year), Number(month) - 1, Number(day));
+          }
+
+          const parsed = new Date(raw);
+          if (Number.isNaN(parsed.getTime())) {
+                        return null;
+          }
+
+                    return parsed;
+                };
+
+                const getActivityDateKey = (activityDate) => {
+                    const parsed = parseActivityDate(activityDate);
+
+                    if (!parsed) {
+                        return '';
+                    }
+
+          const year = parsed.getFullYear();
+          const month = String(parsed.getMonth() + 1).padStart(2, '0');
+          const day = String(parsed.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+
+                const formatActivityDateForDisplay = (activityDate) => {
+                    const parsed = parseActivityDate(activityDate);
+
+                    if (!parsed) {
+                        return activityDate || 'Sem data';
+                    }
+
+                    return parsed.toLocaleString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                };
+
+        const getTodayDateKey = () => {
+          const now = new Date();
+          const year = now.getFullYear();
+          const month = String(now.getMonth() + 1).padStart(2, '0');
+          const day = String(now.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        };
+
+        const renderActivities = (activities) => {
+            activitiesList.innerHTML = '';
+
+            if (activities.length === 0) {
+                activitiesList.innerHTML = `
+                    <div class="empty-state" style="padding: 80px 20px;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">📭</div>
+                        <p>Nenhuma movimentação importante encontrada com esses filtros.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            activities.forEach(activity => {
+                const activityRawDate = getActivityRawDate(activity);
+                const row = document.createElement('div');
+                row.className = 'activities-row';
+                row.innerHTML = `
+                    <span class="activity-date">${formatActivityDateForDisplay(activityRawDate)}</span>
+                    <span class="activity-type ${getActivityClass(activity.type)}">${activity.type}</span>
+                    <span class="activity-description">${activity.description}</span>
+                    <span class="activity-responsible">${activity.responsible}</span>
+                `;
+                activitiesList.appendChild(row);
+            });
+        };
+
+        const renderStats = (activities) => {
+            const stats = [
+                {
+                    title: 'Total de registros',
+                    value: activities.length,
+                    icon: '📊'
+                },
+                {
+                    title: 'Novos pacientes',
+                    value: activities.filter(a => a.type === 'Novo paciente').length,
+                    icon: '👥'
+                },
+                {
+                    title: 'Presenças',
+                    value: activities.filter(a => a.type === 'Presença registrada').length,
+                    icon: '✅'
+                },
+                {
+                    title: 'Prontuários',
+                    value: activities.filter(a => a.type === 'Prontuário adicionado').length,
+                    icon: '📝'
+                },
+                {
+                    title: 'Hoje',
+                    value: activities.filter(a => {
+                    return getActivityDateKey(getActivityRawDate(a)) === getTodayDateKey();
+                    }).length,
+                    icon: '📅'
+                }
+            ];
+
+            statsSummary.innerHTML = stats.map(stat => `
+                <div class="stat-card">
+                    <div class="activity-date" style="font-size: 24px; margin-bottom: 5px;">${stat.icon}</div>
+                    <h3>${stat.value}</h3>
+                    <p>${stat.title}</p>
+                </div>
+            `).join('');
+        };
+
+        const applyFilters = () => {
+            let filtered = allActivities;
+
+            if (filterDate.value) {
+            const selectedDateKey = filterDate.value;
+            filtered = filtered.filter(a => getActivityDateKey(getActivityRawDate(a)) === selectedDateKey);
+            }
+
+            if (filterType.value) {
+                filtered = filtered.filter(a => a.type === filterType.value);
+            }
+
+            if (filterResponsible.value) {
+                filtered = filtered.filter(a => 
+                    a.responsible.toLowerCase().includes(filterResponsible.value.toLowerCase())
+                );
+            }
+
+            renderActivities(filtered);
+        };
+
+        const clearFilters = () => {
+            if (filterDatePicker) {
+                filterDatePicker.clear();
+            } else {
+                filterDate.value = '';
+            }
+            filterType.value = '';
+            filterResponsible.value = '';
+            renderActivities(allActivities);
+            renderStats(allActivities);
+        };
+
+        const loadActivities = async () => {
+            try {
+                // Buscar movimentações importantes
+                const userEmail = localStorage.getItem('userEmail');
+                const token = localStorage.getItem('jwtToken');
+
+                if (!userEmail || !token) {
+                    window.location.href = '../autenticacao/entrar.html';
+                    return;
+                }
+
+                const response = await fetch('/api/atividades?important_only=true&limit=1000', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'x-user-email': userEmail
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('jwtToken');
+                    localStorage.removeItem('userEmail');
+                    window.location.href = '../autenticacao/entrar.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Falha ao carregar movimentações (${response.status})`);
+                }
+
+                const data = await response.json();
+                
+                allActivities = data.activities || [];
+                
+                renderActivities(allActivities);
+                renderStats(allActivities);
+
+            } catch (error) {
+                console.error('Erro ao carregar atividades:', error);
+                activitiesList.innerHTML = `
+                    <div class="empty-state">
+                        <p>Erro ao carregar movimentações importantes.</p>
+                    </div>
+                `;
+            }
+        };
+
+        // Event listeners
+        btnApplyFilters.addEventListener('click', applyFilters);
+        btnClearFilters.addEventListener('click', clearFilters);
+        filterDate.addEventListener('change', applyFilters);
+        filterType.addEventListener('change', applyFilters);
+
+        // User menu
+        const userEmail = localStorage.getItem('userEmail');
+        const token = localStorage.getItem('jwtToken');
+        if (!userEmail || !token) { window.location.href = '../autenticacao/entrar.html'; }
+
+        initSidebarMenus();
+
+        // Carregar atividades ao abrir a página
+        loadActivities();
+    </script>
+
+    <script src="../../recursos/js/notificacoes.js"></script>
+    <script src="../../recursos/js/menu-usuario.js"></script>
+</body>
+</html>
+
+
+
+
+
+

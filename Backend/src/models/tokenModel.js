@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+﻿import jwt from "jsonwebtoken";
 
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "8h";
 const JWT_SECRET = process.env.JWT_SECRET || "caige-dev-secret-change-in-production";
@@ -19,3 +19,4 @@ export function verifyAccessToken(token) {
 export function getTokenTtl() {
   return JWT_EXPIRES_IN;
 }
+

@@ -3,10 +3,11 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-console.log(`Conectando ao banco: ${process.env.DB_HOST} | User: ${process.env.DB_USER} | DB: ${process.env.DB_NAME}`);
+console.log(`Conectando ao banco: ${process.env.DB_HOST}:${process.env.DB_PORT || 3306} | User: ${process.env.DB_USER} | DB: ${process.env.DB_NAME}`);
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT || 3306),
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
@@ -51,3 +52,4 @@ pool.getConnection()
   });
 
 export default guardedPool;
+

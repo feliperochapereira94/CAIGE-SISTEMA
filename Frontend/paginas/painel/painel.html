@@ -1,0 +1,354 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../recursos/css/painel.css" />
+    <link rel="stylesheet" href="../../recursos/css/notificacoes.css" />
+    <link rel="stylesheet" href="../../recursos/css/menu-usuario.css" />
+    <link rel="stylesheet" href="../../recursos/css/mobile-app.css" />
+    <link rel="stylesheet" href="../../recursos/css/desktop-polish.css" />
+    <script src="../../recursos/js/text-normalizer.js"></script>
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="../../recursos/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link sidebar__link--active" href="#">
+            <span>🏠</span>
+            Dashboard
+          </a>          <a class="sidebar__link" href="../atividades/atividades.html">
+            <span>📋</span>
+            Movimentações
+          </a>          <a class="sidebar__link" href="../pacientes/lista.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="../pacientes/questionario-detalhes.html">
+                📋 Prontuários Cadastrados
+              </a>
+              <a class="sidebar__submenu-link" href="../pacientes/questionarios.html">
+                ❓ Cadastro de Perguntas
+              </a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="attendance-menu">
+              <a class="sidebar__submenu-link" href="../frequencia/relatorio-frequencia.html">
+                📄 Relatório de Frequência
+              </a>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2>Bem-vindo(a), <span id="user-welcome">Usuário</span></h2>
+            <p>Acompanhe os principais pacientes, presenças e prontuários do dia.</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <button class="user-dropdown__item" data-action="manage-users" style="display: none;" id="btn-manage-users">
+                  <span class="user-dropdown__item-icon">🔐</span>
+                  Gerenciar Usuários
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="modal" id="modal-account">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Minha Conta</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <div id="account-tabs">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                  <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">
+                    👤 Perfil
+                  </button>
+                  <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">
+                    🔐 Senha
+                  </button>
+                </div>
+
+                <div id="tab-profile" class="account__tab">
+                  <form class="modal__form" id="form-profile">
+                    <div class="modal__form-group">
+                      <label for="account-name">Nome</label>
+                      <input type="text" id="account-name" placeholder="Seu nome" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="account-email">Email (não pode ser alterado)</label>
+                      <input type="email" id="account-email" placeholder="Seu email" disabled />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+
+                <div id="tab-password" class="account__tab" style="display: none;">
+                  <form class="modal__form" id="form-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="section">
+          <h3>Indicadores importantes</h3>
+          <div class="cards" id="stats-cards"></div>
+        </section>
+
+        <section class="grid">
+          <div class="panel dashboard-events-panel" id="dashboard-events-panel">
+            <div class="panel__header dashboard-events-header">
+              <div class="dashboard-events-title">
+                <h3>Movimentações importantes</h3>
+              </div>
+              <div class="dashboard-events-actions">
+                <a href="../atividades/atividades.html" class="panel__link dashboard-events-link">+ Registro</a>
+                <button type="button" class="dashboard-events-toggle" id="dashboard-events-toggle" aria-label="Expandir movimentações importantes" aria-expanded="false" aria-controls="dashboard-events-body">
+                  <span class="dashboard-events-toggle__icon" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <div class="dashboard-events-body" id="dashboard-events-body">
+              <div class="panel__table" id="important-events-table"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const renderStatsFunction = (stats, statsCards) => {
+        statsCards.innerHTML = "";
+        stats.forEach((stat) => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div class="card__top">
+              <span class="card__icon">${stat.icon}</span>
+              <span class="card__delta card__delta--${stat.deltaType}">${stat.delta}</span>
+            </div>
+            <div class="card__value">${stat.value}</div>
+            <div class="card__title">${stat.title}</div>
+            <div class="card__note">${stat.note}</div>
+          `;
+          statsCards.appendChild(card);
+        });
+        statsCards.style.display = stats.length ? "grid" : "none";
+      };
+
+      const getEventTypeClass = (type) => {
+        const typeMap = {
+          'Novo paciente': 'cadastro',
+          'Presença registrada': 'frequencia',
+          'Prontuário adicionado': 'edicao'
+        };
+        return typeMap[type] || 'cadastro';
+      };
+
+      const renderImportantEvents = (events, eventsTable) => {
+        const limitedEvents = events.slice(0, 5);
+        
+        if (!limitedEvents.length) {
+          eventsTable.innerHTML = "<p style='padding: 20px; text-align: center; color: #9ca3af;'>Nenhuma movimentação importante encontrada.</p>";
+          return;
+        }
+        const header = `
+          <div class="table-row table-row--header">
+            <span>Data/Hora</span>
+            <span>Evento</span>
+            <span>Detalhes</span>
+            <span>Origem</span>
+          </div>
+        `;
+        const rows = limitedEvents
+          .map(
+            (event) => `
+            <div class="table-row">
+              <span>${event.date}</span>
+              <span class="table-tag ${getEventTypeClass(event.type)}">${event.type}</span>
+              <span>${event.description}</span>
+              <span>${event.origin}</span>
+            </div>
+          `
+          )
+          .join("");
+        eventsTable.innerHTML = header + rows;
+      };
+
+      const loadDashboardData = async (statsCards, eventsTable, userEmail) => {
+        try {
+          const dashboardResponse = await fetch("/api/dados-painel", {
+            headers: { 'x-user-email': userEmail }
+          });
+          
+          if (!dashboardResponse.ok) {
+            console.error("Erro na resposta do servidor:", dashboardResponse.status);
+            renderStatsFunction([], statsCards);
+            renderImportantEvents([], eventsTable);
+            return;
+          }
+          
+          const dashboardData = await dashboardResponse.json();
+          
+          if (dashboardData.stats && dashboardData.stats.length > 0) {
+            renderStatsFunction(dashboardData.stats, statsCards);
+          } else {
+            renderStatsFunction([], statsCards);
+          }
+          
+          if (dashboardData.importantEvents && dashboardData.importantEvents.length > 0) {
+            renderImportantEvents(dashboardData.importantEvents, eventsTable);
+          } else {
+            renderImportantEvents([], eventsTable);
+          }
+
+        } catch (error) {
+          console.error("Erro ao carregar dashboard:", error);
+          renderStatsFunction([], statsCards);
+          renderImportantEvents([], eventsTable);
+        }
+      };
+    </script>
+
+
+    <script>
+      function initDashboardEventsAccordion() {
+        const panel = document.getElementById('dashboard-events-panel');
+        const toggle = document.getElementById('dashboard-events-toggle');
+        if (!panel || !toggle) return;
+
+        const header = panel.querySelector('.dashboard-events-header');
+        const toggleIcon = toggle.querySelector('.dashboard-events-toggle__icon');
+
+        function setExpanded(expanded) {
+          panel.classList.toggle('dashboard-events-panel--open', expanded);
+          toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+          toggle.setAttribute('aria-label', expanded ? 'Retrair movimentações importantes' : 'Expandir movimentações importantes');
+        }
+
+        function togglePanel() {
+          const expanded = toggle.getAttribute('aria-expanded') === 'true';
+          setExpanded(!expanded);
+        }
+
+        toggle.addEventListener('click', (event) => {
+          event.stopPropagation();
+          togglePanel();
+        });
+
+        if (header) {
+          header.addEventListener('click', (event) => {
+            if (event.target.closest('a')) return;
+            togglePanel();
+          });
+        }
+
+        setExpanded(false);
+      }
+    </script>
+
+    <script src="../../recursos/js/notificacoes.js"></script>
+    <script src="../../recursos/js/menu-usuario.js"></script>
+    <script src="../../recursos/js/sidebar-menu.js"></script>
+    <script src="../../recursos/js/controle-acesso.js"></script>
+    <script>
+      // Inicializar quando o documento estiver pronto
+      document.addEventListener('DOMContentLoaded', async () => {
+        // Verificar autenticação
+        const userEmail = localStorage.getItem('userEmail');
+        
+        if (!userEmail) {
+          console.warn('Usuário não autenticado. Redirecionando para login...');
+          setTimeout(() => {
+            window.location.href = '../autenticacao/entrar.html';
+          }, 500);
+          return;
+        }
+
+        // Carregar dados do dashboard
+        const statsCards = document.getElementById("stats-cards");
+        const eventsTable = document.getElementById("important-events-table");
+        loadDashboardData(statsCards, eventsTable, userEmail);
+
+        initSidebarMenus();
+        bindSidebarPlaceholderLinks();
+        initDashboardEventsAccordion();
+        
+      });
+    </script>
+  </body>
+</html>

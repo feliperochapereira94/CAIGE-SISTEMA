@@ -1,50 +1,49 @@
-# CAIGE Frontend
+﻿# CAIGE Frontend
 
-Interface web do sistema CAIGE, desenvolvida com HTML, CSS e JavaScript vanilla. A aplicação é organizada por páginas e consome a API do backend para autenticação, cadastros, frequência, atividades e administração.
+Interface web do sistema CAIGE, desenvolvida com HTML, CSS e JavaScript vanilla. A aplicacao e organizada por paginas e consome a API do backend para autenticacao, cadastro, frequencia, questionarios, atividades e administracao.
 
 ## Estrutura
 
-O frontend está dividido nos seguintes grupos principais:
+O frontend esta dividido nos seguintes grupos principais:
 
-- `index.html`: ponto de entrada que redireciona para login ou dashboard conforme a sessão local
-- `pages/`: telas da aplicação separadas por módulo
-- `assets/css/`: estilos compartilhados e folhas específicas por contexto
-- `assets/js/`: scripts auxiliares de permissões, notificações, menu do usuário e questionários
-- `assets/images/`: imagens estáticas da interface
+- `index.html`: ponto de entrada que redireciona para login ou dashboard conforme a sessao local
+- `paginas/`: telas da aplicacao separadas por modulo
+- `recursos/css/`: estilos compartilhados e folhas especificas por contexto
+- `recursos/js/`: scripts auxiliares de permissoes, notificacoes, menu do usuario, sidebar, formularios de pacientes e questionarios
+- `recursos/images/`: imagens estaticas da interface
 
-## Módulos da interface
+## MÃ³dulos da interface
 
-As páginas atualmente presentes no sistema incluem:
+As paginas atualmente presentes no sistema incluem:
 
-- `pages/auth/login.html`: autenticação
-- `pages/dashboard/dashboard.html`: painel principal
-- `pages/patients/`: listagem, cadastro, edição, perfil, prontuários e questionários
-- `pages/attendance/attendance.html`: redirecionamento para relatório de frequência
-- `pages/attendance/frequency-report.html`: relatório de frequência derivado de prontuários
-- `pages/activities/activities.html`: gerenciamento de atividades
-- `pages/admin/users.html`: administração de usuários
-- `pages/admin/courses.html`: administração de cursos
-- `pages/admin/archived.html`: registros arquivados
+- `paginas/autenticacao/entrar.html`: autenticacao
+- `paginas/painel/painel.html`: painel principal
+- `paginas/pacientes/`: listagem, cadastro, edicao, perfil e questionarios
+- `paginas/frequencia/relatorio-frequencia.html`: relatorio de frequencia
+- `paginas/atividades/atividades.html`: gerenciamento de atividades
+- `paginas/administracao/usuarios.html`: administracao de usuarios, cursos e arquivados (abas)
 
 ## Recursos compartilhados
 
 Alguns arquivos centrais da interface:
 
-- `assets/js/user-menu.js`: menu do usuário e ações de sessão
-- `assets/js/access-control.js`: controle de exibição por permissão
-- `assets/js/questionnaire-handler.js`: suporte aos questionários e prontuários
-- `assets/js/notifications.js`: notificações da interface
-- `assets/css/login.css`: estilos da tela de login
-- `assets/css/dashboard.css`: estilos do dashboard
-- `assets/css/form.css`: estilos base de formulários
-- `assets/css/patient.css`: estilos do módulo de pacientes
+- `recursos/js/menu-usuario.js`: menu do usuario e acoes de sessao
+- `recursos/js/controle-acesso.js`: controle de exibicao por permissao
+- `recursos/js/gerenciador-questionarios.js`: suporte aos questionarios
+- `recursos/js/notificacoes.js`: notificaÃ§Ãµes da interface
+- `recursos/js/paciente-form-utils.js`: mascaras e autopreenchimento de campos de formulario de pacientes
+- `recursos/js/sidebar-menu.js`: inicializacao compartilhada dos submenus laterais
+- `recursos/css/autenticacao.css`: estilos da tela de login
+- `recursos/css/painel.css`: estilos do dashboard
+- `recursos/css/formulario.css`: estilos base de formulÃ¡rios
+- `recursos/css/pacientes.css`: estilos do mÃ³dulo de pacientes
 
-## Execução
+## ExecuÃ§Ã£o
 
 Existem duas formas principais de usar a interface:
 
-1. Integrada ao sistema completo, com o backend servindo a aplicação e a API em `http://localhost:3000`.
-2. Em desenvolvimento local na pasta `Frontend`, usando o servidor estático definido no `package.json`.
+1. Integrada ao sistema completo, com o backend servindo a aplicacao e a API em `http://localhost:3000`.
+2. Em desenvolvimento local na pasta `Frontend`, usando o servidor estÃ¡tico definido no `package.json`.
 
 ### Comandos locais
 
@@ -55,8 +54,13 @@ npm install
 npm run dev
 ```
 
-O script de desenvolvimento usa `live-server` na porta `5500`. Nesse modo, a interface é aberta separadamente, mas continua dependendo do backend em execução para chamadas da API.
+O script de desenvolvimento usa `live-server` na porta `5500`. Nesse modo, a interface e aberta separadamente, mas continua dependendo do backend em execucao para chamadas da API.
 
-## Observação
+## ObservaÃ§Ã£o
 
-O frontend segue uma estrutura simples e direta, baseada em páginas HTML com scripts auxiliares compartilhados. Isso reduz acoplamento desnecessário e facilita manutenção dos módulos existentes.
+O frontend segue uma estrutura simples e direta, baseada em paginas HTML com scripts auxiliares compartilhados. Isso reduz acoplamento desnecessario e facilita manutencao dos modulos existentes.
+
+## Contrato de API
+
+A referencia oficial de API e contratos esta em `docs/05-api.md`.
+

@@ -1,19 +1,18 @@
-import dotenv from "dotenv";
+﻿import dotenv from "dotenv";
 import express from "express";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import authRoutes from "./routes/auth.js";
-import usersRoutes from "./routes/users.js";
-import patientRoutes from "./routes/patients.js";
-import dashboardRoutes from "./routes/dashboard.js";
-import activitiesRoutes from "./routes/activities.js";
-import attendanceRoutes from "./routes/attendance.js";
-import archiveRoutes from "./routes/archive.js";
-import medicalRecordsRoutes from "./routes/medical-records.js";
-import questionnaireRoutes from "./routes/questionnaires.js";
-import coursesRoutes from "./routes/courses.js";
+import rotasAutenticacao from "./routes/autenticacao.js";
+import rotasUsuarios from "./routes/usuarios.js";
+import rotasPacientes from "./routes/pacientes.js";
+import rotasDadosPainel from "./routes/dados-painel.js";
+import rotasAtividades from "./routes/atividades.js";
+import rotasFrequencia from "./routes/frequencia.js";
+import rotasArquivo from "./routes/arquivo.js";
+import rotasQuestionarios from "./routes/questionarios.js";
+import rotasCursos from "./routes/cursos.js";
 
 dotenv.config();
 
@@ -23,10 +22,7 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const frontendPath = path.join(__dirname, "../../Frontend");
-const uploadsDir = path.join(__dirname, "../uploads");
-const faviconPath = path.join(frontendPath, "assets/images/logo-caige.png");
-
-fs.mkdirSync(uploadsDir, { recursive: true });
+const faviconPath = path.join(frontendPath, "recursos/images/logo-caige.png");
 
 console.log("=== INICIANDO SERVIDOR CAIGE ===");
 console.log(`Porta: ${PORT}`);
@@ -49,10 +45,9 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Static files - ANTES do requestLogger
-app.use("/uploads", express.static(uploadsDir));
 app.use(express.static(frontendPath));
 
-// Request logger - DEPOIS dos arquivos estáticos
+// Request logger - DEPOIS dos arquivos estÃ¡ticos
 app.use((req, res, next) => {
   const startTime = Date.now();
   console.log(`-> ${req.method} ${req.path} | IP: ${req.ip}`);
@@ -70,16 +65,15 @@ app.use((req, res, next) => {
 console.log("Middleware configurado");
 
 // Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/users", usersRoutes);
-app.use("/api/patients", patientRoutes);
-app.use("/api/dashboard-data", dashboardRoutes);
-app.use("/api/activities", activitiesRoutes);
-app.use("/api/attendance", attendanceRoutes);
-app.use("/api/archive", archiveRoutes);
-app.use("/api/medical-records", medicalRecordsRoutes);
-app.use("/api/questionnaires", questionnaireRoutes);
-app.use("/api/courses", coursesRoutes);
+app.use("/api/autenticacao", rotasAutenticacao);
+app.use("/api/usuarios", rotasUsuarios);
+app.use("/api/pacientes", rotasPacientes);
+app.use("/api/dados-painel", rotasDadosPainel);
+app.use("/api/atividades", rotasAtividades);
+app.use("/api/frequencia", rotasFrequencia);
+app.use("/api/arquivo", rotasArquivo);
+app.use("/api/questionarios", rotasQuestionarios);
+app.use("/api/cursos", rotasCursos);
 
 console.log("Rotas configuradas");
 
@@ -97,10 +91,10 @@ app.get("/favicon.ico", (req, res) => {
   res.status(204).end();
 });
 
-// 404 handler - ÚLTIMO
+// 404 handler - ÃšLTIMO
 app.use((req, res) => {
   console.error(`Rota nao encontrada: ${req.method} ${req.path}`);
-  res.status(404).json({ message: "Rota não encontrada." });
+  res.status(404).json({ message: "Rota nÃ£o encontrada." });
 });
 
 // Global error handler
@@ -112,3 +106,4 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Servidor iniciado com sucesso em http://localhost:${PORT}`);
 });
+

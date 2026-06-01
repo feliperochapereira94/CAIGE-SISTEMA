@@ -1,66 +1,76 @@
-# Estrutura CAIGE - Frontend
+﻿# Estrutura CAIGE - Frontend
 
-## Organização do Projeto
+## Organizacao
 
-O frontend está organizado por páginas, recursos compartilhados e módulos auxiliares:
+O frontend esta organizado por paginas, recursos compartilhados e scripts auxiliares:
 
-```
+```text
 Frontend/
-├── index.html
-├── assets/
-│   ├── css/
-│   │   ├── dashboard.css
-│   │   ├── form.css
-│   │   ├── patient.css
-│   │   ├── profile.css
-│   │   └── ...
-│   ├── images/
-│   └── js/
-├── pages/
-│   ├── activities/
-│   ├── admin/
-│   ├── attendance/
-│   ├── auth/
-│   ├── dashboard/
-│   └── patients/
-└── ...
+  index.html
+  recursos/
+    css/
+      autenticacao.css
+      formulario.css
+      menu-usuario.css
+      notificacoes.css
+      pacientes.css
+      painel.css
+      perfil.css
+      questionarios.css
+    images/
+    js/
+      controle-acesso.js
+      gerenciador-questionarios.js
+      menu-usuario.js
+      notificacoes.js
+      paciente-form-utils.js
+      sidebar-menu.js
+  paginas/
+    administracao/
+      usuarios.html
+    atividades/
+      atividades.html
+    autenticacao/
+      entrar.html
+    frequencia/
+      relatorio-frequencia.html
+    pacientes/
+      editar.html
+      lista.html
+      novo.html
+      questionario-detalhes.html
+      questionarios.html
+      visualizar.html
+    painel/
+      painel.html
 ```
 
-## Módulo de Pacientes
+## Modulo de Pacientes
 
-As páginas principais do cadastro de pacientes ficam em `pages/patients/`:
+As paginas principais do modulo de pacientes ficam em `paginas/pacientes/`:
 
-- `list.html`: listagem, busca, filtros e navegação para perfil
-- `new.html`: novo cadastro com foto, endereço e responsável
-- `view.html`: perfil completo, prontuários e resumo clínico
-- `edit.html`: atualização de dados cadastrais
-- `medical-records.html`: arquivos e prontuários médicos
-- `questions.html`: formulários e questionários auxiliares
+- `lista.html`: listagem, busca e filtros
+- `novo.html`: novo cadastro
+- `visualizar.html`: perfil completo e fluxo de questionarios
+- `editar.html`: atualizacao cadastral
+- `questionario-detalhes.html`: gerenciamento de prontuarios cadastrados
+- `questionarios.html`: cadastro de perguntas
 
-## CSS Principal
+## Integracao API
 
-Os estilos mais usados no fluxo de pacientes estão em:
+Base da API: `http://localhost:3000`
 
-- `assets/css/patient.css`: listagem e componentes do módulo de pacientes
-- `assets/css/profile.css`: visualização de perfil
-- `assets/css/form.css`: campos e formulários
+Arquivos auxiliares principais:
 
-## Integração com API
+- `recursos/js/menu-usuario.js`
+- `recursos/js/controle-acesso.js`
+- `recursos/js/gerenciador-questionarios.js`
+- `recursos/js/notificacoes.js`
+- `recursos/js/paciente-form-utils.js`
+- `recursos/js/sidebar-menu.js`
 
-O frontend consome a API principal em `http://localhost:3000`.
+## Navegacao Principal
 
-- `assets/js/user-menu.js`: carrega perfil, menu do usuário e ações da conta
-- `assets/js/access-control.js`: controla exibição de módulos administrativos
-- `assets/js/questionnaire-handler.js`: gerencia prontuários por curso
-
-## Navegação Principal
-
-Fluxo principal do módulo:
-
-1. `pages/patients/list.html`
-2. `pages/patients/view.html?id=<id>`
-3. `pages/patients/edit.html?id=<id>`
-
-## Observação
-
-O frontend foi padronizado para páginas HTML com scripts inline e módulos auxiliares em `assets/js`, reduzindo camadas antigas que não estavam mais em uso.
+1. `paginas/pacientes/lista.html`
+2. `paginas/pacientes/visualizar.html?id=<id>`
+3. `paginas/pacientes/editar.html?id=<id>`

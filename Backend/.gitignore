@@ -6,8 +6,5 @@ node_modules/
 npm-debug.log*
 dist/
 build/
-uploads/elderly/*
-uploads/patients/*
-uploads/medical-records/*
 .vscode/
 .idea/

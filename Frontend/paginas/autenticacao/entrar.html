@@ -1,0 +1,179 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Área Restrita - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../recursos/css/autenticacao.css" />
+    <link rel="stylesheet" href="../../recursos/css/notificacoes.css" />
+    <script src="../../recursos/js/text-normalizer.js"></script>
+  </head>
+  <body>
+    <main class="login">
+      <section class="login__panel">
+        <header class="brand">
+          <img src="../../recursos/images/logo-caige.png" alt="CAIGE Logo" class="brand__logo" />
+          <div>
+            <p class="brand__name">CAIGE</p>
+            <p class="brand__subtitle">Univale</p>
+          </div>
+        </header>
+
+        <div class="login__title">
+          <h1>Área Restrita - CAIGE</h1>
+          <p>Acesso exclusivo para equipe e colaboradores</p>
+        </div>
+
+        <form class="login__form">
+          <label class="field">
+            <span class="field__label">E-mail ou Usuário</span>
+            <div class="field__input">
+              <span class="field__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-9Z" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="m5 7 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+              <input type="email" placeholder="caige@univale.br" />
+            </div>
+          </label>
+
+          <label class="field">
+            <span class="field__label">Senha</span>
+            <div class="field__input">
+              <span class="field__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="5" y="11" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                  <path d="M8 11V8a4 4 0 1 1 8 0v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <input type="password" placeholder="Digite sua senha" />
+            </div>
+          </label>
+
+          <label class="remember">
+            <input type="checkbox" />
+            <span>Lembrar de mim</span>
+          </label>
+
+          <button type="submit" class="login__button">Entrar</button>
+        </form>
+      </section>
+
+      <section class="login__hero">
+        <div class="hero__content">
+          <div class="hero__card">
+            <h3>Cuidado Interdisciplinar</h3>
+            <p>
+              Nossa equipe multidisciplinar trabalha de forma integrada para oferecer
+              o melhor cuidado aos pacientes da nossa comunidade.
+            </p>
+            <div class="hero__dots">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <span class="hero__accent"></span>
+        </div>
+      </section>
+    </main>
+
+    <script src="../../recursos/js/notificacoes.js"></script>
+    <script>
+      const form = document.querySelector('.login__form');
+      const button = form.querySelector('button[type="submit"]');
+      const emailInput = form.querySelector('input[type="email"]');
+      const passwordInput = form.querySelector('input[type="password"]');
+      const rememberMeInput = form.querySelector('input[type="checkbox"]');
+      const REMEMBERED_EMAIL_KEY = 'rememberedUserEmail';
+
+      if (!sessionStorage.getItem('userEmail')) {
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('jwtToken');
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const rememberMe = rememberMeInput.checked;
+
+        // Validacao basica
+        if (!email || !password) {
+          notify.error('Email e senha sao obrigatorios');
+          return;
+        }
+
+        // Desabilitar botao durante requisicao
+        button.disabled = true;
+        const originalText = button.textContent;
+        button.textContent = 'Autenticando...';
+
+        try {
+          const response = await fetch('/api/autenticacao/entrar', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            const resolvedEmail = data?.user?.email || email;
+            sessionStorage.setItem('userEmail', resolvedEmail);
+            localStorage.setItem('userEmail', resolvedEmail);
+
+            if (data?.accessToken) {
+              localStorage.setItem('jwtToken', data.accessToken);
+            }
+
+            if (rememberMe) {
+              localStorage.setItem(REMEMBERED_EMAIL_KEY, email);
+            } else {
+              localStorage.removeItem(REMEMBERED_EMAIL_KEY);
+            }
+            
+            // Redirecionar para dashboard
+            setTimeout(() => {
+              window.location.href = '../painel/painel.html';
+            }, 1000);
+          } else {
+            // Mostrar erro
+            notify.error(data.message || 'Erro ao fazer login');
+            button.disabled = false;
+            button.textContent = originalText;
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+          notify.error('Erro ao conectar com o servidor. Verifique se o backend está em execução e acessível na mesma rede.');
+          button.disabled = false;
+          button.textContent = originalText;
+        }
+      });
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const savedEmail = localStorage.getItem(REMEMBERED_EMAIL_KEY);
+        if (savedEmail) {
+          emailInput.value = savedEmail;
+          rememberMeInput.checked = true;
+        }
+      });
+    </script>
+  </body>
+</html>
+
+
+
+
+

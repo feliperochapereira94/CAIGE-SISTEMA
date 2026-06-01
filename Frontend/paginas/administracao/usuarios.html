@@ -1,0 +1,1419 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel de Gerenciamento - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../../recursos/css/painel.css" />
+    <link rel="stylesheet" href="../../recursos/css/mobile-app.css" />
+    <link rel="stylesheet" href="../../recursos/css/formulario.css" />
+    <link rel="stylesheet" href="../../recursos/css/notificacoes.css" />
+    <link rel="stylesheet" href="../../recursos/css/menu-usuario.css" />
+    <link rel="stylesheet" href="../../recursos/css/desktop-polish.css" />
+    <script src="../../recursos/js/text-normalizer.js"></script>
+    <style>
+      .admin-tabs {
+        display: flex;
+        border-bottom: 2px solid #e5e7eb;
+        margin-bottom: 28px;
+      }
+      .admin-tab-btn {
+        padding: 12px 28px;
+        background: none;
+        border: none;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 600;
+        color: #6b7280;
+        font-family: inherit;
+        transition: color 0.2s;
+      }
+      .admin-tab-btn.active { color: #1f60e8; border-bottom-color: #1f60e8; }
+      .admin-tab-btn:hover:not(.active) { color: #374151; background: rgba(31,96,232,0.04); }
+
+      .card {
+        background: linear-gradient(135deg, white 0%, #fafbfd 100%);
+        border: 1px solid rgba(31, 96, 232, 0.1);
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 2px 8px rgba(31,96,232,0.08), 0 4px 16px rgba(31,96,232,0.04);
+      }
+      .card h3 { font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 24px; }
+      .form-group { margin-bottom: 20px; }
+      .form-group label { display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 8px; }
+      .form-group input, .form-group select {
+        width: 100%; padding: 12px;
+        border: 1px solid rgba(31,96,232,0.2);
+        border-radius: 8px; font-size: 14px; font-family: inherit; box-sizing: border-box;
+      }
+      .form-group input:focus, .form-group select:focus {
+        outline: none; border-color: #1f60e8; box-shadow: 0 0 0 3px rgba(31,96,232,0.1);
+      }
+      .btn-create {
+        width: 100%; padding: 14px 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white; border: none; border-radius: 8px;
+        font-weight: 600; cursor: pointer; font-family: inherit;
+        transition: all 0.3s ease; margin-top: 8px;
+      }
+      .btn-create:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(16,185,129,0.3); }
+      .btn-small {
+        padding: 7px 14px; border: 1px solid rgba(31,96,232,0.2);
+        border-radius: 6px; background: white; cursor: pointer;
+        font-size: 12px; font-family: inherit; transition: all 0.2s ease;
+      }
+      .btn-small:hover { background: rgba(31,96,232,0.05); border-color: #1f60e8; }
+      .btn-small-danger { color: #dc2626; border-color: rgba(220,38,38,0.2); }
+      .btn-small-danger:hover { background: rgba(220,38,38,0.05); border-color: #dc2626; }
+
+      .users-container { display: grid; grid-template-columns: 1fr 2fr; gap: 32px; margin-bottom: 32px; }
+      .users-list { max-height: 600px; overflow-y: auto; }
+      .user-item {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 16px; border: 1px solid rgba(31,96,232,0.1);
+        border-radius: 8px; margin-bottom: 12px;
+      }
+      .user-info { flex: 1; }
+      .user-email { font-weight: 500; color: #1f2937; margin-bottom: 4px; }
+      .user-role { font-size: 13px; color: #6b7280; }
+      .user-actions { display: flex; gap: 8px; }
+      .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+      .role-badge.supervisor { background: rgba(31,96,232,0.2); color: #1f60e8; }
+      .role-badge.professor { background: rgba(16,185,129,0.2); color: #047857; }
+
+      .courses-container { display: grid; grid-template-columns: 1fr 2fr; gap: 32px; margin-bottom: 32px; }
+      .courses-list { max-height: 600px; overflow-y: auto; }
+      .course-item {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 16px; border: 1px solid rgba(31,96,232,0.1);
+        border-radius: 8px; margin-bottom: 12px; transition: background 0.2s;
+      }
+      .course-item.inactive { opacity: 0.55; background: #f9fafb; }
+      .course-name { font-weight: 500; color: #1f2937; font-size: 15px; }
+      .course-status { font-size: 12px; margin-top: 4px; color: #6b7280; }
+      .course-actions { display: flex; gap: 8px; }
+      .status-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+      .status-badge.active { background: rgba(16,185,129,0.15); color: #047857; }
+      .status-badge.inactive { background: rgba(156,163,175,0.2); color: #6b7280; }
+
+      .archive-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+      .archive-card {
+        background: #fff; border: 1px solid rgba(31,96,232,0.15);
+        border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(31,96,232,0.07);
+      }
+      .archive-card h3 { margin: 0 0 14px; color: #1f2937; font-size: 18px; }
+      .archive-list { max-height: 520px; overflow: auto; }
+      .archive-item { border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin-bottom: 10px; background: #fafafa; }
+      .archive-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+      .archive-meta { margin-top: 4px; font-size: 12px; color: #6b7280; }
+      .archive-empty { color: #9ca3af; text-align: center; padding: 20px; }
+      .tag { display: inline-block; margin-left: 8px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; color: #1d4ed8; background: #dbeafe; }
+
+      .audit-container { display: grid; grid-template-columns: 1fr; gap: 18px; }
+      .audit-filters {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+        border: 1px solid rgba(31, 96, 232, 0.14);
+        border-radius: 12px;
+        padding: 16px;
+      }
+      .audit-filters-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 12px;
+      }
+      .audit-filter-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .audit-filter-block {
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 12px;
+        background: #fff;
+      }
+      .audit-filter-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #6b7280;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+      .audit-filter-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .audit-filter-row select,
+      .audit-filter-row input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid rgba(31,96,232,0.2);
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: inherit;
+      }
+      .audit-filter-row select:focus,
+      .audit-filter-row input:focus {
+        outline: none;
+        border-color: #1f60e8;
+        box-shadow: 0 0 0 3px rgba(31,96,232,0.1);
+      }
+      .audit-filter-toggles {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 14px;
+        margin-top: 12px;
+      }
+      .audit-filter-toggles label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: #374151;
+        cursor: pointer;
+      }
+      .audit-filter-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .audit-range-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .audit-range-row label {
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 6px;
+        display: block;
+      }
+      .audit-range-row input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid rgba(31,96,232,0.2);
+        border-radius: 8px;
+        font-size: 13px;
+        font-family: inherit;
+      }
+      .audit-range-row input:focus {
+        outline: none;
+        border-color: #1f60e8;
+        box-shadow: 0 0 0 3px rgba(31,96,232,0.1);
+      }
+      .audit-table-wrap {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .audit-table-head,
+      .audit-table-row {
+        display: grid;
+        grid-template-columns: 140px 120px 1fr 220px 100px;
+        gap: 10px;
+        align-items: center;
+        padding: 10px 14px;
+      }
+      .audit-table-head {
+        background: #f8fafc;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .audit-table-row {
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 13px;
+        color: #1f2937;
+      }
+      .audit-table-row:last-child { border-bottom: none; }
+      .audit-type-tag {
+        display: inline-flex;
+        width: fit-content;
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #1d4ed8;
+        background: #dbeafe;
+      }
+      .audit-role-tag {
+        display: inline-flex;
+        width: fit-content;
+        border-radius: 999px;
+        padding: 3px 8px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .audit-role-tag.supervisor { background: rgba(31,96,232,0.16); color: #1f60e8; }
+      .audit-role-tag.professor { background: rgba(16,185,129,0.16); color: #047857; }
+      .audit-role-tag.sistema { background: rgba(156,163,175,0.2); color: #4b5563; }
+      .audit-empty {
+        padding: 20px;
+        color: #9ca3af;
+        text-align: center;
+      }
+      .audit-pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .audit-result-info {
+        font-size: 12px;
+        color: #6b7280;
+      }
+      .audit-pagination-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .audit-page-btn {
+        padding: 7px 12px;
+        border: 1px solid #d1d5db;
+        background: #fff;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .audit-page-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      .audit-page-indicator {
+        font-size: 12px;
+        color: #4b5563;
+        font-weight: 600;
+      }
+
+      @media (max-width: 768px) {
+        .users-container, .courses-container { grid-template-columns: 1fr; }
+        .audit-filter-grid { grid-template-columns: 1fr; }
+        .audit-range-row { grid-template-columns: 1fr; }
+        .audit-table-head { display: none; }
+        .audit-table-row {
+          grid-template-columns: 1fr;
+          gap: 6px;
+          padding: 12px;
+        }
+        .audit-pagination {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .audit-pagination-controls {
+          justify-content: space-between;
+        }
+        .admin-tabs {
+          overflow-x: auto;
+          white-space: nowrap;
+          gap: 4px;
+          padding-bottom: 6px;
+        }
+        .admin-tab-btn {
+          flex: 0 0 auto;
+          padding: 10px 14px;
+        }
+        .card {
+          padding: 18px;
+        }
+        .user-item,
+        .course-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+        }
+        .user-actions,
+        .course-actions {
+          width: 100%;
+          flex-wrap: wrap;
+        }
+      }
+      @media (max-width: 900px) { .archive-grid { grid-template-columns: 1fr; } }
+
+      @media (max-width: 430px) {
+        .content__header h2 {
+          font-size: 19px;
+          letter-spacing: -0.01em;
+        }
+
+        .content__header p {
+          font-size: 12px;
+          color: #6b7280;
+        }
+
+        .admin-tab-btn {
+          padding: 9px 12px;
+          font-size: 13px;
+        }
+
+        .card,
+        .archive-card {
+          border-radius: 12px;
+          border-color: rgba(31, 96, 232, 0.12);
+          box-shadow: 0 3px 12px rgba(15, 23, 42, 0.05);
+        }
+
+        .card h3,
+        .archive-card h3 {
+          font-size: 17px;
+          margin-bottom: 14px;
+        }
+
+        .form-group label,
+        .user-role,
+        .archive-meta {
+          font-size: 12px;
+          color: #6b7280;
+        }
+
+        .btn-small {
+          font-size: 11px;
+          padding: 7px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="../../recursos/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link" href="../painel/painel.html">
+            <span>🏠</span>
+            Dashboard
+          </a>
+          <a class="sidebar__link" href="../atividades/atividades.html">
+            <span>📋</span>
+            Movimentações
+          </a>
+          <a class="sidebar__link" href="../pacientes/lista.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="../pacientes/questionario-detalhes.html">📋 Prontuários Cadastrados</a>
+              <a class="sidebar__submenu-link" href="../pacientes/questionarios.html">❓ Cadastro de Perguntas</a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="attendance-menu">
+              <a class="sidebar__submenu-link" href="../frequencia/relatorio-frequencia.html">📄 Relatório de Frequência</a>
+            </div>
+          </div>
+          <a class="sidebar__link sidebar__link--active" href="../administracao/usuarios.html" data-require-role="SUPERVISOR">
+            <span>🛡️</span>
+            Painel de Gerenciamento
+          </a>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2>Painel de Gerenciamento</h2>
+            <p>Gerencie usuários, cursos e arquivos do sistema</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn" id="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="breadcrumb"><span>Gerenciamento</span></div>
+
+        <div class="admin-tabs">
+          <button class="admin-tab-btn" data-tab="usuarios">👤 Usuários</button>
+          <button class="admin-tab-btn" data-tab="cursos">🎓 Cursos</button>
+          <button class="admin-tab-btn" data-tab="auditoria">🧾 Auditoria</button>
+          <button class="admin-tab-btn" data-tab="arquivados">🗂️ Arquivados</button>
+        </div>
+
+        <div id="tab-panel-usuarios" class="admin-tab-panel">
+          <div class="users-container">
+            <div class="card">
+              <h3>➕ Novo Usuário</h3>
+              <form id="create-user-form">
+                <div class="form-group">
+                  <label for="email">Email *</label>
+                  <input type="email" id="email" placeholder="usuario@univale.br" required />
+                </div>
+                <div class="form-group">
+                  <label for="password">Senha *</label>
+                  <input type="password" id="password" placeholder="Digite a senha" required />
+                </div>
+                <div class="form-group">
+                  <label for="role">Nível de Acesso *</label>
+                  <select id="role" required>
+                    <option value="">Selecione um nível</option>
+                    <option value="PROFESSOR">Professor</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="sector">Setor / Curso</label>
+                  <select id="sector">
+                    <option value="">Selecione um setor</option>
+                  </select>
+                </div>
+                <button type="submit" class="btn-create">Criar Usuário</button>
+              </form>
+            </div>
+            <div class="card">
+              <h3>👤 Usuários Cadastrados</h3>
+              <div class="users-list" id="users-list">
+                <p style="color: #9ca3af; text-align: center; padding: 20px;">Carregando usuários...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-panel-cursos" class="admin-tab-panel" style="display:none">
+          <div class="courses-container">
+            <div class="card">
+              <h3>➕ Novo Curso</h3>
+              <form id="create-course-form">
+                <div class="form-group">
+                  <label for="course-name">Nome do Curso *</label>
+                  <input type="text" id="course-name" placeholder="Ex: Fisioterapia" required />
+                </div>
+                <button type="submit" class="btn-create">Criar Curso</button>
+              </form>
+            </div>
+            <div class="card">
+              <h3>🎓 Cursos Cadastrados</h3>
+              <div class="courses-list" id="courses-list">
+                <p style="color: #9ca3af; text-align: center; padding: 20px;">Carregando cursos...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tab-panel-auditoria" class="admin-tab-panel" style="display:none">
+          <div class="audit-container">
+            <section class="audit-filters">
+              <div class="audit-filters-title">Filtros de auditoria</div>
+              <div class="audit-filter-grid">
+                <div class="audit-filter-block" id="audit-filter-primary">
+                  <div class="audit-filter-label">Filtro principal</div>
+                  <div class="audit-filter-row">
+                    <select id="audit-field-1">
+                      <option value="">Selecione o tipo de filtro</option>
+                      <option value="type">Tipo de ação</option>
+                      <option value="description">Ação (descrição)</option>
+                      <option value="responsible">Responsável</option>
+                      <option value="date">Data</option>
+                    </select>
+                    <input id="audit-value-text-1" type="text" placeholder="Digite o valor do filtro" />
+                    <input id="audit-value-date-1" type="date" style="display:none" />
+                    <select id="audit-value-type-1" style="display:none">
+                      <option value="">Selecione um tipo</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="audit-filter-block" id="audit-filter-secondary" style="display:none">
+                  <div class="audit-filter-label">Filtro adicional</div>
+                  <div class="audit-filter-row">
+                    <select id="audit-operator-2">
+                      <option value="and">Combinar com E</option>
+                      <option value="or">Combinar com OU</option>
+                    </select>
+                    <select id="audit-field-2">
+                      <option value="">Selecione o tipo de filtro</option>
+                      <option value="type">Tipo de ação</option>
+                      <option value="description">Ação (descrição)</option>
+                      <option value="responsible">Responsável</option>
+                      <option value="date">Data</option>
+                    </select>
+                    <input id="audit-value-text-2" type="text" placeholder="Digite o valor do filtro" />
+                    <input id="audit-value-date-2" type="date" style="display:none" />
+                    <select id="audit-value-type-2" style="display:none">
+                      <option value="">Selecione um tipo</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="audit-filter-toggles">
+                <label>
+                  <input type="checkbox" id="audit-enable-second-filter" />
+                  Adicionar segundo filtro
+                </label>
+                <label>
+                  <input type="checkbox" id="audit-only-professors" />
+                  Mostrar apenas ações de professores
+                </label>
+              </div>
+
+              <div class="audit-range-row">
+                <div>
+                  <label for="audit-date-from">Data inicial</label>
+                  <input type="date" id="audit-date-from" />
+                </div>
+                <div>
+                  <label for="audit-date-to">Data final</label>
+                  <input type="date" id="audit-date-to" />
+                </div>
+              </div>
+
+              <div class="audit-filter-actions">
+                <button type="button" class="btn-small" id="audit-apply-filters">Aplicar filtros</button>
+                <button type="button" class="btn-small" id="audit-clear-filters">Limpar filtros</button>
+                <button type="button" class="btn-small" id="audit-refresh">Atualizar auditoria</button>
+                <button type="button" class="btn-small" id="audit-export-csv">Exportar CSV</button>
+                <button type="button" class="btn-small" id="audit-export-excel">Exportar Excel</button>
+              </div>
+            </section>
+
+            <section class="card">
+              <h3>🧾 Auditoria de Ações no Sistema</h3>
+              <div class="audit-table-wrap">
+                <div class="audit-table-head">
+                  <span>Data</span>
+                  <span>Tipo</span>
+                  <span>Ação</span>
+                  <span>Responsável</span>
+                  <span>Papel</span>
+                </div>
+                <div id="audit-list">
+                  <p class="audit-empty">Carregando auditoria...</p>
+                </div>
+              </div>
+              <div class="audit-pagination" id="audit-pagination" style="display:none">
+                <div class="audit-result-info" id="audit-result-info">0 resultados</div>
+                <div class="audit-pagination-controls">
+                  <button class="audit-page-btn" id="audit-prev-page" type="button">Anterior</button>
+                  <span class="audit-page-indicator" id="audit-page-indicator">Página 1 de 1</span>
+                  <button class="audit-page-btn" id="audit-next-page" type="button">Próxima</button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div id="tab-panel-arquivados" class="admin-tab-panel" style="display:none">
+          <div class="archive-grid">
+            <section class="archive-card">
+              <h3>🧑 Pacientes Arquivados</h3>
+              <div id="patient-archived-list" class="archive-list">
+                <p class="archive-empty">Carregando...</p>
+              </div>
+            </section>
+            <section class="archive-card">
+              <h3>👤 Usuários Desabilitados</h3>
+              <div id="users-archived-list" class="archive-list">
+                <p class="archive-empty">Carregando...</p>
+              </div>
+            </section>
+          </div>
+        </div>
+
+        <div class="modal" id="modal-account">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Minha Conta</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <div>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                  <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">👤 Perfil</button>
+                  <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">🔐 Senha</button>
+                </div>
+                <div id="tab-profile" class="account__tab">
+                  <form class="modal__form" id="form-profile">
+                    <div class="modal__form-group">
+                      <label for="account-name">Nome</label>
+                      <input type="text" id="account-name" placeholder="Seu nome" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="account-email">Email (não pode ser alterado)</label>
+                      <input type="email" id="account-email" disabled />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+                <div id="tab-password" class="account__tab" style="display: none;">
+                  <form class="modal__form" id="form-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal" id="modal-edit-user">
+          <div class="modal__content" style="max-width: 500px;">
+            <div class="modal__header">
+              <h2 class="modal__title">Editar Usuário</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <form class="modal__form" id="form-edit-user">
+                <div class="modal__form-group">
+                  <label for="edit-email">Email</label>
+                  <input type="email" id="edit-email" placeholder="usuario@univale.br" required />
+                </div>
+                <div class="modal__form-group">
+                  <label for="edit-role">Nível de Acesso</label>
+                  <select id="edit-role" required>
+                    <option value="">Selecione um nível</option>
+                    <option value="SUPERVISOR">Supervisor</option>
+                    <option value="PROFESSOR">Professor</option>
+                  </select>
+                </div>
+                <div class="modal__form-group">
+                  <label for="edit-sector">Setor / Curso</label>
+                  <select id="edit-sector">
+                    <option value="">Sem setor</option>
+                  </select>
+                </div>
+                <div class="modal__form-group">
+                  <label style="display: flex; align-items: center; margin-bottom: 0;">
+                    <input type="checkbox" id="edit-is-active" style="width: auto; margin-right: 8px;" /> Usuário Ativo
+                  </label>
+                </div>
+                <div class="modal__form-actions">
+                  <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                  <button type="button" class="modal__btn modal__btn--secondary modal__close">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal" id="modal-edit-course" style="display:none;">
+          <div class="modal__content" style="max-width: 420px;">
+            <div class="modal__header">
+              <h2 class="modal__title">Editar Curso</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <form class="modal__form" id="form-edit-course">
+                <input type="hidden" id="edit-course-id" />
+                <div class="modal__form-group">
+                  <label for="edit-course-name">Nome do Curso</label>
+                  <input type="text" id="edit-course-name" required />
+                </div>
+                <div class="modal__form-group">
+                  <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 0; cursor: pointer;">
+                    <input type="checkbox" id="edit-course-active" style="width: auto;" />
+                    Curso ativo
+                  </label>
+                </div>
+                <div class="modal__form-actions">
+                  <button type="submit" class="modal__btn modal__btn--primary">Salvar</button>
+                  <button type="button" class="modal__btn modal__btn--secondary modal__close">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="../../recursos/js/notificacoes.js"></script>
+    <script src="../../recursos/js/menu-usuario.js"></script>
+    <script src="../../recursos/js/sidebar-menu.js"></script>
+    <script src="../../recursos/js/controle-acesso.js"></script>
+    <script>
+      const API_URL = '';
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) window.location.href = '../autenticacao/entrar.html';
+
+      // Tab Navigation
+      let archivedLoaded = false;
+      let auditLoaded = false;
+      function switchTab(name) {
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.tab === name);
+        });
+        document.querySelectorAll('.admin-tab-panel').forEach(panel => {
+          panel.style.display = panel.id === 'tab-panel-' + name ? 'block' : 'none';
+        });
+        if (name === 'auditoria' && !auditLoaded) {
+          loadAuditData();
+          auditLoaded = true;
+        }
+        if (name === 'arquivados' && !archivedLoaded) {
+          loadArchivedData();
+          archivedLoaded = true;
+        }
+        history.replaceState(null, '', '#' + name);
+      }
+      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+
+      initSidebarMenus();
+
+      // Modal close
+      let editingUserId = null;
+      document.querySelectorAll('.modal__close').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const modal = btn.closest('.modal');
+          if (modal) { modal.style.display = 'none'; editingUserId = null; }
+        });
+      });
+      document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) { modal.style.display = 'none'; editingUserId = null; }
+        });
+      });
+
+      // -- USERS --
+      async function loadUsers() {
+        try {
+          const response = await fetch(`${API_URL}/api/usuarios`, { headers: { 'x-user-email': userEmail } });
+          if (!response.ok) {
+            const errorData = await response.json();
+            if (response.status === 403) { notify.error('Você não tem permissão para gerenciar usuários'); return; }
+            if (response.status === 401) { notify.error('Sessão expirada. Faça login novamente'); window.location.href = '../autenticacao/entrar.html'; return; }
+            notify.error(errorData.message || 'Erro ao carregar usuários');
+            return;
+          }
+          const users = await response.json();
+          const list = document.getElementById('users-list');
+          if (!users.length) { list.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:20px;">Nenhum usuário encontrado</p>'; return; }
+          list.innerHTML = users.map(user => `
+            <div class="user-item">
+              <div class="user-info">
+                <div class="user-email">${user.email}</div>
+                <div class="user-role">
+                  <span class="role-badge ${user.role.toLowerCase()}">${user.role}</span>
+                  ${user.sector ? ` - ${user.sector}` : ''}
+                </div>
+              </div>
+              <div class="user-actions">
+                <button class="btn-small" onclick="editUser(${user.id})">Editar</button>
+                <button class="btn-small btn-small-danger" onclick="deleteUser(${user.id})">Desabilitar</button>
+              </div>
+            </div>
+          `).join('');
+        } catch (error) {
+          notify.error('Erro ao carregar usuários - Verifique a conexão com o servidor');
+        }
+      }
+
+      document.getElementById('create-user-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const role = document.getElementById('role').value;
+        const sector = document.getElementById('sector').value;
+        if (!email || !password || !role) { notify.error('Preencha todos os campos obrigatórios'); return; }
+        try {
+          const response = await fetch(`${API_URL}/api/usuarios`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-user-email': userEmail },
+            body: JSON.stringify({ email, password, role, sector: sector || null })
+          });
+          const data = await response.json();
+          if (response.ok) { notify.success('Usuário criado com sucesso!'); document.getElementById('create-user-form').reset(); loadUsers(); }
+          else { notify.error(data.message || 'Erro ao criar usuário'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+      });
+
+      async function deleteUser(userId) {
+        if (!confirm('Tem certeza que deseja desabilitar definitivamente este usuário?')) return;
+        try {
+          const response = await fetch(`${API_URL}/api/usuarios/${userId}`, { method: 'DELETE', headers: { 'x-user-email': userEmail } });
+          if (response.ok) { notify.success('Usuário desabilitado com sucesso!'); loadUsers(); }
+          else { notify.error('Erro ao desabilitar usuário'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+      }
+
+      function editUser(userId) {
+        fetch(`${API_URL}/api/usuarios`, { headers: { 'x-user-email': userEmail } })
+          .then(res => res.json())
+          .then(users => {
+            const user = users.find(u => u.id === userId);
+            if (!user) { notify.error('Usuário não encontrado'); return; }
+            editingUserId = userId;
+            document.getElementById('edit-email').value = user.email;
+            document.getElementById('edit-role').value = user.role;
+            document.getElementById('edit-sector').value = user.sector || '';
+            document.getElementById('edit-is-active').checked = user.is_active !== 0;
+            document.getElementById('modal-edit-user').style.display = 'flex';
+          })
+          .catch(() => notify.error('Erro ao carregar dados do usuário'));
+      }
+
+      document.getElementById('form-edit-user').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!editingUserId) { notify.error('Nenhum usuário selecionado'); return; }
+        const email = document.getElementById('edit-email').value;
+        const role = document.getElementById('edit-role').value;
+        const sector = document.getElementById('edit-sector').value;
+        const is_active = document.getElementById('edit-is-active').checked;
+        try {
+          const response = await fetch(`${API_URL}/api/usuarios/${editingUserId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'x-user-email': userEmail },
+            body: JSON.stringify({ email, role, sector: sector || null, is_active })
+          });
+          const data = await response.json();
+          if (response.ok) {
+            notify.success('Usuário atualizado com sucesso!');
+            document.getElementById('modal-edit-user').style.display = 'none';
+            editingUserId = null;
+            loadUsers();
+          } else { notify.error(data.message || 'Erro ao atualizar usuário'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+      });
+
+      // -- COURSES --
+      async function loadCourses() {
+        try {
+          const response = await fetch(`${API_URL}/api/cursos`, { headers: { 'x-user-email': userEmail } });
+          if (response.status === 403) { notify.error('Apenas supervisores podem gerenciar cursos'); return; }
+          const courses = await response.json();
+          renderCourses(courses);
+        } catch { notify.error('Erro ao carregar cursos'); }
+      }
+
+      function renderCourses(courses) {
+        const list = document.getElementById('courses-list');
+        if (!courses.length) { list.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:20px;">Nenhum curso cadastrado</p>'; return; }
+        list.innerHTML = courses.map(c => `
+          <div class="course-item ${c.is_active ? '' : 'inactive'}" id="course-row-${c.id}">
+            <div>
+              <div class="course-name">${c.name}</div>
+              <div class="course-status"><span class="status-badge ${c.is_active ? 'active' : 'inactive'}">${c.is_active ? 'Ativo' : 'Inativo'}</span></div>
+            </div>
+            <div class="course-actions">
+              <button class="btn-small" onclick="openEditCourse(${c.id}, '${c.name.replace(/'/g, "\\'")}', ${c.is_active})">Editar</button>
+              <button class="btn-small btn-small-danger" onclick="deleteCourse(${c.id}, '${c.name.replace(/'/g, "\\'")}')">Remover</button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.getElementById('create-course-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const name = document.getElementById('course-name').value.trim();
+        if (!name) return;
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true; btn.textContent = 'Criando...';
+        try {
+          const res = await fetch(`${API_URL}/api/cursos`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'x-user-email': userEmail },
+            body: JSON.stringify({ name })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            notify.success(`Curso "${name}" criado com sucesso!`);
+            document.getElementById('course-name').value = '';
+            loadCourses(); loadCoursesIntoSelects();
+          } else { notify.error(data.message || 'Erro ao criar curso'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+        finally { btn.disabled = false; btn.textContent = 'Criar Curso'; }
+      });
+
+      function openEditCourse(id, name, isActive) {
+        document.getElementById('edit-course-id').value = id;
+        document.getElementById('edit-course-name').value = name;
+        document.getElementById('edit-course-active').checked = isActive;
+        document.getElementById('modal-edit-course').style.display = 'flex';
+      }
+
+      document.getElementById('form-edit-course').addEventListener('submit', async e => {
+        e.preventDefault();
+        const id = document.getElementById('edit-course-id').value;
+        const name = document.getElementById('edit-course-name').value.trim();
+        const is_active = document.getElementById('edit-course-active').checked;
+        if (!name) return;
+        const btn = e.target.querySelector('button[type="submit"]');
+        btn.disabled = true; btn.textContent = 'Salvando...';
+        try {
+          const res = await fetch(`${API_URL}/api/cursos/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'x-user-email': userEmail },
+            body: JSON.stringify({ name, is_active })
+          });
+          const data = await res.json();
+          if (res.ok) {
+            notify.success('Curso atualizado com sucesso!');
+            document.getElementById('modal-edit-course').style.display = 'none';
+            loadCourses(); loadCoursesIntoSelects();
+          } else { notify.error(data.message || 'Erro ao atualizar curso'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+        finally { btn.disabled = false; btn.textContent = 'Salvar'; }
+      });
+
+      async function deleteCourse(id, name) {
+        if (!confirm(`Remover o curso "${name}"?\n\nIsto só é possível se não houver usuários vinculados.`)) return;
+        try {
+          const res = await fetch(`${API_URL}/api/cursos/${id}`, { method: 'DELETE', headers: { 'x-user-email': userEmail } });
+          const data = await res.json();
+          if (res.ok) { notify.success(`Curso "${name}" removido`); loadCourses(); loadCoursesIntoSelects(); }
+          else { notify.error(data.message || 'Erro ao remover curso'); }
+        } catch { notify.error('Erro ao conectar com o servidor'); }
+      }
+
+      // -- ARCHIVED --
+      function renderArchivedPatients(items) {
+        const container = document.getElementById('patient-archived-list');
+        if (!Array.isArray(items) || !items.length) { container.innerHTML = '<p class="archive-empty">Nenhum paciente arquivado.</p>'; return; }
+        container.innerHTML = items.map(item => `
+          <article class="archive-item">
+            <div class="archive-title">${item.name || 'Sem nome'} <span class="tag">${item.status || 'archived'}</span></div>
+            <div class="archive-meta">CPF: ${item.cpf || '-'} | Contato: ${item.phone || item.phone2 || '-'}</div>
+            <div class="archive-meta">Criado em: ${item.created_at || '-'}</div>
+          </article>
+        `).join('');
+      }
+
+      function renderArchivedUsers(items) {
+        const container = document.getElementById('users-archived-list');
+        if (!Array.isArray(items) || !items.length) { container.innerHTML = '<p class="archive-empty">Nenhum usuário desabilitado definitivamente.</p>'; return; }
+        container.innerHTML = items.map(item => `
+          <article class="archive-item">
+            <div class="archive-title">${item.email || 'Sem email'} <span class="tag">${item.role || '-'}</span></div>
+            <div class="archive-meta">Setor: ${item.sector || '-'} | Ativo: ${item.is_active ? 'Sim' : 'Não'} | Oculto: ${item.is_hidden ? 'Sim' : 'Não'}</div>
+            <div class="archive-meta">Criado em: ${item.created_at || '-'}</div>
+          </article>
+        `).join('');
+      }
+
+      async function loadArchivedData() {
+        document.getElementById('patient-archived-list').innerHTML = '<p class="archive-empty">Carregando...</p>';
+        document.getElementById('users-archived-list').innerHTML = '<p class="archive-empty">Carregando...</p>';
+        try {
+          const [patientsResponse, usersResponse] = await Promise.all([
+            fetch(`${API_URL}/api/arquivo/pacientes`, { headers: { 'x-user-email': userEmail } }),
+            fetch(`${API_URL}/api/arquivo/usuarios`, { headers: { 'x-user-email': userEmail } })
+          ]);
+          const patientsData = await patientsResponse.json();
+          const usersData = await usersResponse.json();
+          if (!patientsResponse.ok || !usersResponse.ok) { notify.error('Erro ao carregar registros arquivados.'); return; }
+          renderArchivedPatients(patientsData.archived_patients || []);
+          renderArchivedUsers(usersData.archived_users || []);
+        } catch { notify.error('Erro de conexão ao buscar arquivados.'); }
+      }
+
+      // -- SECTOR SELECTS --
+      async function loadCoursesIntoSelects() {
+        try {
+          const res = await fetch(`${API_URL}/api/cursos`, { headers: { 'x-user-email': userEmail } });
+          if (!res.ok) return;
+          const courses = await res.json();
+          const activeCourses = courses.filter(c => c.is_active);
+          const makeOptions = (includeEmpty, emptyLabel) => {
+            const empty = includeEmpty ? `<option value="">${emptyLabel}</option>` : '';
+            return empty + activeCourses.map(c => `<option value="${c.name}">${c.name}</option>`).join('');
+          };
+          document.getElementById('sector').innerHTML = makeOptions(true, 'Selecione um setor');
+          document.getElementById('edit-sector').innerHTML = makeOptions(true, 'Sem setor');
+        } catch (err) { console.error('Erro ao carregar cursos para selects:', err); }
+      }
+
+      // -- AUDIT --
+      let allAuditActivities = [];
+      let filteredAuditActivities = [];
+      let userRoleByEmail = new Map();
+      let auditCurrentPage = 1;
+      const AUDIT_PAGE_SIZE = 15;
+
+      function parseAuditDate(rawDate) {
+        const value = String(rawDate || '').trim();
+        if (!value) return null;
+
+        const brDate = value.match(/^(\d{2})\/(\d{2})\/(\d{4})\s?(\d{2})?:?(\d{2})?/);
+        if (brDate) {
+          const day = Number(brDate[1]);
+          const month = Number(brDate[2]) - 1;
+          const year = Number(brDate[3]);
+          const hour = Number(brDate[4] || 0);
+          const minute = Number(brDate[5] || 0);
+          return new Date(year, month, day, hour, minute);
+        }
+
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+      }
+
+      function getAuditDateKey(rawDate) {
+        const parsed = parseAuditDate(rawDate);
+        if (!parsed) return '';
+        const y = parsed.getFullYear();
+        const m = String(parsed.getMonth() + 1).padStart(2, '0');
+        const d = String(parsed.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+      }
+
+      function getRoleTag(role) {
+        if (role === 'SUPERVISOR') {
+          return '<span class="audit-role-tag supervisor">Supervisor</span>';
+        }
+        if (role === 'PROFESSOR') {
+          return '<span class="audit-role-tag professor">Professor</span>';
+        }
+        return '<span class="audit-role-tag sistema">Sistema</span>';
+      }
+
+      function renderAuditList(items) {
+        const container = document.getElementById('audit-list');
+        const paginationEl = document.getElementById('audit-pagination');
+        const resultInfoEl = document.getElementById('audit-result-info');
+        const pageIndicatorEl = document.getElementById('audit-page-indicator');
+        const prevBtn = document.getElementById('audit-prev-page');
+        const nextBtn = document.getElementById('audit-next-page');
+
+        if (!items.length) {
+          container.innerHTML = '<p class="audit-empty">Nenhuma ação encontrada para os filtros selecionados.</p>';
+          paginationEl.style.display = 'none';
+          return;
+        }
+
+        const totalPages = Math.max(1, Math.ceil(items.length / AUDIT_PAGE_SIZE));
+        auditCurrentPage = Math.min(Math.max(1, auditCurrentPage), totalPages);
+        const startIndex = (auditCurrentPage - 1) * AUDIT_PAGE_SIZE;
+        const pageItems = items.slice(startIndex, startIndex + AUDIT_PAGE_SIZE);
+
+        container.innerHTML = pageItems.map((item) => `
+          <div class="audit-table-row">
+            <span>${item.date || '-'}</span>
+            <span><span class="audit-type-tag">${item.type || '-'}</span></span>
+            <span>${item.description || '-'}</span>
+            <span>${item.responsible || '-'}</span>
+            <span>${getRoleTag(item.role)}</span>
+          </div>
+        `).join('');
+
+        paginationEl.style.display = 'flex';
+        resultInfoEl.textContent = `${items.length} resultado(s)`;
+        pageIndicatorEl.textContent = `Página ${auditCurrentPage} de ${totalPages}`;
+        prevBtn.disabled = auditCurrentPage <= 1;
+        nextBtn.disabled = auditCurrentPage >= totalPages;
+      }
+
+      function syncFilterInputVisibility(index) {
+        const field = document.getElementById(`audit-field-${index}`)?.value;
+        const textInput = document.getElementById(`audit-value-text-${index}`);
+        const dateInput = document.getElementById(`audit-value-date-${index}`);
+        const typeInput = document.getElementById(`audit-value-type-${index}`);
+
+        if (!textInput || !dateInput || !typeInput) return;
+
+        textInput.style.display = field && field !== 'date' && field !== 'type' ? 'block' : 'none';
+        dateInput.style.display = field === 'date' ? 'block' : 'none';
+        typeInput.style.display = field === 'type' ? 'block' : 'none';
+      }
+
+      function readCriterion(index) {
+        const field = document.getElementById(`audit-field-${index}`).value;
+        if (!field) return null;
+
+        const textValue = (document.getElementById(`audit-value-text-${index}`).value || '').trim();
+        const dateValue = document.getElementById(`audit-value-date-${index}`).value;
+        const typeValue = document.getElementById(`audit-value-type-${index}`).value;
+
+        let value = '';
+        if (field === 'date') value = dateValue;
+        if (field === 'type') value = typeValue;
+        if (field !== 'date' && field !== 'type') value = textValue;
+
+        if (!value) return null;
+        return { field, value };
+      }
+
+      function matchesCriterion(item, criterion) {
+        if (!criterion) return true;
+
+        if (criterion.field === 'type') {
+          return String(item.type || '').toLowerCase() === String(criterion.value).toLowerCase();
+        }
+
+        if (criterion.field === 'date') {
+          return getAuditDateKey(item.date) === criterion.value;
+        }
+
+        if (criterion.field === 'responsible') {
+          return String(item.responsible || '').toLowerCase().includes(String(criterion.value).toLowerCase());
+        }
+
+        if (criterion.field === 'description') {
+          return String(item.description || '').toLowerCase().includes(String(criterion.value).toLowerCase());
+        }
+
+        return true;
+      }
+
+      function applyAuditFilters() {
+        const onlyProfessors = document.getElementById('audit-only-professors').checked;
+        const secondEnabled = document.getElementById('audit-enable-second-filter').checked;
+        const secondOperator = document.getElementById('audit-operator-2').value;
+        const dateFrom = document.getElementById('audit-date-from').value;
+        const dateTo = document.getElementById('audit-date-to').value;
+
+        const c1 = readCriterion(1);
+        const c2 = secondEnabled ? readCriterion(2) : null;
+
+        filteredAuditActivities = allAuditActivities.filter((item) => {
+          if (onlyProfessors && item.role !== 'PROFESSOR') {
+            return false;
+          }
+
+          const itemDateKey = getAuditDateKey(item.date);
+          if (dateFrom && (!itemDateKey || itemDateKey < dateFrom)) {
+            return false;
+          }
+          if (dateTo && (!itemDateKey || itemDateKey > dateTo)) {
+            return false;
+          }
+
+          const firstMatch = matchesCriterion(item, c1);
+          if (!c2) {
+            return firstMatch;
+          }
+
+          const secondMatch = matchesCriterion(item, c2);
+          return secondOperator === 'or' ? (firstMatch || secondMatch) : (firstMatch && secondMatch);
+        });
+
+        auditCurrentPage = 1;
+        renderAuditList(filteredAuditActivities);
+      }
+
+      function exportAuditData(format) {
+        const rows = filteredAuditActivities.length ? filteredAuditActivities : allAuditActivities;
+        if (!rows.length) {
+          notify.info('Não há dados para exportar.');
+          return;
+        }
+
+        const header = ['Data', 'Tipo', 'Descrição', 'Responsável', 'Papel'];
+        const body = rows.map((item) => [
+          item.date || '-',
+          item.type || '-',
+          item.description || '-',
+          item.responsible || '-',
+          item.role || 'SISTEMA'
+        ]);
+
+        const now = new Date();
+        const stamp = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+
+        if (format === 'csv') {
+          const escapeCsv = (value) => `"${String(value).replace(/"/g, '""')}"`;
+          const csv = [header, ...body].map((row) => row.map(escapeCsv).join(';')).join('\n');
+          const blob = new Blob([`\uFEFF${csv}`], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `auditoria_${stamp}.csv`;
+          link.click();
+          URL.revokeObjectURL(url);
+          return;
+        }
+
+        const tsv = [header, ...body].map((row) => row.join('\t')).join('\n');
+        const blob = new Blob([`\uFEFF${tsv}`], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `auditoria_${stamp}.xls`;
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function clearAuditFilters() {
+        ['1', '2'].forEach((idx) => {
+          document.getElementById(`audit-field-${idx}`).value = '';
+          document.getElementById(`audit-value-text-${idx}`).value = '';
+          document.getElementById(`audit-value-date-${idx}`).value = '';
+          document.getElementById(`audit-value-type-${idx}`).value = '';
+          syncFilterInputVisibility(idx);
+        });
+
+        document.getElementById('audit-operator-2').value = 'and';
+        document.getElementById('audit-enable-second-filter').checked = false;
+        document.getElementById('audit-only-professors').checked = false;
+        document.getElementById('audit-date-from').value = '';
+        document.getElementById('audit-date-to').value = '';
+        document.getElementById('audit-filter-secondary').style.display = 'none';
+
+        applyAuditFilters();
+      }
+
+      async function loadAuditData() {
+        const list = document.getElementById('audit-list');
+        list.innerHTML = '<p class="audit-empty">Carregando auditoria...</p>';
+
+        try {
+          const usersResponse = await fetch(`${API_URL}/api/usuarios`, { headers: { 'x-user-email': userEmail } });
+          if (usersResponse.ok) {
+            const users = await usersResponse.json();
+            userRoleByEmail = new Map(
+              users.map((u) => [String(u.email || '').toLowerCase(), u.role || ''])
+            );
+          }
+
+          const pageSize = 200;
+          let offset = 0;
+          let keepGoing = true;
+          const loaded = [];
+
+          while (keepGoing) {
+            const response = await fetch(`${API_URL}/api/atividades?limit=${pageSize}&offset=${offset}`, {
+              headers: { 'x-user-email': userEmail }
+            });
+
+            if (!response.ok) {
+              throw new Error('Erro ao carregar auditoria');
+            }
+
+            const data = await response.json();
+            const batch = Array.isArray(data.activities) ? data.activities : [];
+
+            loaded.push(...batch.map((activity) => {
+              const responsible = String(activity.responsible || '').trim();
+              const role = userRoleByEmail.get(responsible.toLowerCase()) || 'SISTEMA';
+              return {
+                ...activity,
+                role
+              };
+            }));
+
+            keepGoing = Boolean(data.hasMore) && batch.length > 0;
+            offset += pageSize;
+
+            if (offset >= 2000) {
+              keepGoing = false;
+            }
+          }
+
+          allAuditActivities = loaded;
+
+          const uniqueTypes = [...new Set(allAuditActivities.map((a) => a.type).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+          const options = '<option value="">Selecione um tipo</option>' + uniqueTypes.map((type) => `<option value="${type}">${type}</option>`).join('');
+          document.getElementById('audit-value-type-1').innerHTML = options;
+          document.getElementById('audit-value-type-2').innerHTML = options;
+
+          clearAuditFilters();
+        } catch (error) {
+          console.error('Erro ao carregar auditoria:', error);
+          list.innerHTML = '<p class="audit-empty">Erro ao carregar auditoria.</p>';
+        }
+      }
+
+      document.getElementById('audit-field-1').addEventListener('change', () => syncFilterInputVisibility(1));
+      document.getElementById('audit-field-2').addEventListener('change', () => syncFilterInputVisibility(2));
+
+      document.getElementById('audit-enable-second-filter').addEventListener('change', (event) => {
+        document.getElementById('audit-filter-secondary').style.display = event.target.checked ? 'block' : 'none';
+        applyAuditFilters();
+      });
+
+      document.getElementById('audit-only-professors').addEventListener('change', applyAuditFilters);
+      document.getElementById('audit-apply-filters').addEventListener('click', applyAuditFilters);
+      document.getElementById('audit-clear-filters').addEventListener('click', clearAuditFilters);
+      document.getElementById('audit-refresh').addEventListener('click', loadAuditData);
+      document.getElementById('audit-date-from').addEventListener('change', applyAuditFilters);
+      document.getElementById('audit-date-to').addEventListener('change', applyAuditFilters);
+      document.getElementById('audit-export-csv').addEventListener('click', () => exportAuditData('csv'));
+      document.getElementById('audit-export-excel').addEventListener('click', () => exportAuditData('excel'));
+      document.getElementById('audit-prev-page').addEventListener('click', () => {
+        if (auditCurrentPage > 1) {
+          auditCurrentPage -= 1;
+          renderAuditList(filteredAuditActivities);
+        }
+      });
+      document.getElementById('audit-next-page').addEventListener('click', () => {
+        const totalPages = Math.max(1, Math.ceil(filteredAuditActivities.length / AUDIT_PAGE_SIZE));
+        if (auditCurrentPage < totalPages) {
+          auditCurrentPage += 1;
+          renderAuditList(filteredAuditActivities);
+        }
+      });
+
+      // Initialize
+      const hash = window.location.hash.substring(1);
+      switchTab(['usuarios', 'cursos', 'auditoria', 'arquivados'].includes(hash) ? hash : 'usuarios');
+      loadUsers();
+      loadCourses();
+      loadCoursesIntoSelects();
+    </script>
+  </body>
+</html>
+
+
+
+
+
+

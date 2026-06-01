@@ -1,0 +1,746 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editar Cadastro - CAIGE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+    <link rel="stylesheet" href="../../recursos/css/painel.css" />
+    <link rel="stylesheet" href="../../recursos/css/mobile-app.css" />
+    <link rel="stylesheet" href="../../recursos/css/formulario.css" />
+    <link rel="stylesheet" href="../../recursos/css/notificacoes.css" />
+    <link rel="stylesheet" href="../../recursos/css/menu-usuario.css" />
+    <link rel="stylesheet" href="../../recursos/css/desktop-polish.css" />
+    <script src="../../recursos/js/text-normalizer.js"></script>
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="sidebar__brand">
+          <img src="../../recursos/images/logo-caige.png" alt="CAIGE Logo" class="sidebar__logo" />
+          <div>
+            <h1>CAIGE</h1>
+            <span>Univale</span>
+          </div>
+        </div>
+        <nav class="sidebar__nav">
+          <a class="sidebar__link" href="../painel/painel.html">
+            <span>🏠</span>
+            Dashboard
+          </a>
+          <a class="sidebar__link" href="../atividades/atividades.html">
+            <span>📋</span>
+            Movimentações
+          </a>
+          <a class="sidebar__link sidebar__link--active" href="./lista.html">
+            <span>👥</span>
+            Pacientes
+          </a>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="prontuarios-menu">
+              <span>📄</span>
+              <span>Prontuários</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="prontuarios-menu">
+              <a class="sidebar__submenu-link" href="./questionario-detalhes.html">
+                📋 Prontuários Cadastrados
+              </a>
+              <a class="sidebar__submenu-link" href="./questionarios.html">
+                ❓ Cadastro de Perguntas
+              </a>
+            </div>
+          </div>
+          <div class="sidebar__menu-item">
+            <button class="sidebar__menu-toggle" data-expand="attendance-menu">
+              <span>📊</span>
+              <span>Frequência</span>
+              <span class="sidebar__menu-icon">+</span>
+            </button>
+            <div class="sidebar__submenu" id="attendance-menu">
+              <a class="sidebar__submenu-link" href="../frequencia/relatorio-frequencia.html">
+                📄 Relatório de Frequência
+              </a>
+            </div>
+          </div>
+        </nav>
+      </aside>
+
+      <main class="content">
+        <header class="content__header">
+          <div>
+            <h2>Editar Cadastro</h2>
+            <p>Atualize as informações do paciente</p>
+          </div>
+          <div class="user-menu">
+            <button class="user-avatar-btn">
+              <span class="content__user-avatar" id="user-avatar">SC</span>
+            </button>
+            <div class="user-dropdown">
+              <div class="user-dropdown__header">
+                <div class="user-dropdown__avatar" id="dropdown-avatar">SC</div>
+                <div style="flex: 1;">
+                  <div class="user-dropdown__name" id="dropdown-name" style="color: white; font-size: 14px;">Usuário</div>
+                  <div class="user-dropdown__email" id="dropdown-email">suportecaige@univale.br</div>
+                </div>
+              </div>
+              <div class="user-dropdown__body">
+                <button class="user-dropdown__item" data-modal="account">
+                  <span class="user-dropdown__item-icon">👤</span>
+                  Minha Conta
+                </button>
+                <button class="user-dropdown__item" data-action="manage-users" style="display: none;" id="btn-manage-users">
+                  <span class="user-dropdown__item-icon">🔐</span>
+                  Gerenciar Usuários
+                </button>
+                <div class="user-dropdown__divider"></div>
+                <button class="user-dropdown__item user-dropdown__item--danger" data-action="logout">
+                  <span class="user-dropdown__item-icon">🚪</span>
+                  Sair
+                </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="breadcrumb">
+          <a href="./lista.html">Pacientes Cadastrados</a>
+          <span>></span>
+          <span id="patient-name">Editar Cadastro</span>
+        </div>
+
+        <div class="form-container">
+          <section class="form-section">
+            <h3 class="section-title">Informações Pessoais</h3>
+            
+            <form id="patient-form" class="form-grid">
+              <div class="form-group form-group--full">
+                <label for="full-name">Nome completo *</label>
+                <input 
+                  type="text" 
+                  id="full-name" 
+                  name="full_name"
+                  placeholder="Nome completo do paciente"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="birth-date">Data de nascimento *</label>
+                <input 
+                  type="text" 
+                  id="birth-date" 
+                  name="birth_date"
+                  title="Selecione a data de nascimento"
+                  autocomplete="off"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="age">Idade</label>
+                <input 
+                  type="text" 
+                  id="age" 
+                  name="age"
+                  placeholder="Calculada automaticamente"
+                  disabled
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="gender">Sexo *</label>
+                <select id="gender" name="gender" required>
+                  <option value="">Selecione</option>
+                  <option value="masculino">Masculino</option>
+                  <option value="feminino">Feminino</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="cpf">CPF ou Documento *</label>
+                <input 
+                  type="text" 
+                  id="cpf" 
+                  name="cpf"
+                  placeholder="000.000.000-00"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="phone1">Telefone residencial</label>
+                <input 
+                  type="tel" 
+                  id="phone1" 
+                  name="phone1"
+                  placeholder="(00) 0000-0000"
+                  maxlength="14"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="phone2">Celular</label>
+                <input 
+                  type="tel" 
+                  id="phone2" 
+                  name="phone2"
+                  placeholder="(00) 00000-0000"
+                  maxlength="15"
+                />
+              </div>
+
+              <div class="form-group form-group--full" style="margin-top: -8px;">
+                <small style="color: #64748b; font-size: 12px;">Preencha ao menos Telefone residencial ou Celular.</small>
+              </div>
+
+              <div class="form-group">
+                <label for="cep">CEP</label>
+                <input 
+                  type="text" 
+                  id="cep" 
+                  name="cep"
+                  placeholder="00000-000"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="street">Rua *</label>
+                <input 
+                  type="text" 
+                  id="street" 
+                  name="street"
+                  placeholder="Rua"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="number">Número *</label>
+                <input 
+                  type="text" 
+                  id="number" 
+                  name="number"
+                  placeholder="Número"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="neighborhood">Bairro *</label>
+                <input 
+                  type="text" 
+                  id="neighborhood" 
+                  name="neighborhood"
+                  placeholder="Bairro"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="city">Cidade *</label>
+                <input 
+                  type="text" 
+                  id="city" 
+                  name="city"
+                  placeholder="Cidade"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="state">Estado *</label>
+                <select id="state" name="state" required>
+                  <option value="">Selecione</option>
+                  <option value="MG">Minas Gerais</option>
+                  <option value="SP">São Paulo</option>
+                  <option value="RJ">Rio de Janeiro</option>
+                  <option value="BA">Bahia</option>
+                  <option value="RS">Rio Grande do Sul</option>
+                  <option value="PR">Paraná</option>
+                  <option value="SC">Santa Catarina</option>
+                  <option value="PE">Pernambuco</option>
+                  <option value="GO">Goiás</option>
+                  <option value="PA">Pará</option>
+                </select>
+              </div>
+
+              <div class="form-group form-group--full" style="margin-top: 32px;">
+                <h4 class="subsection-title">Informações Complementares</h4>
+              </div>
+
+              <div class="form-group">
+                <label for="responsible">Responsável (nome) *</label>
+                <input 
+                  type="text" 
+                  id="responsible" 
+                  name="responsible"
+                  placeholder="Nome do responsável"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="responsible-relationship">Grau de Parentesco *</label>
+                <select id="responsible-relationship" name="responsible_relationship" required>
+                  <option value="">Selecione</option>
+                  <option value="mae">Mãe</option>
+                  <option value="pai">Pai</option>
+                  <option value="filho">Filho</option>
+                  <option value="filha">Filha</option>
+                  <option value="esposo">Esposo</option>
+                  <option value="esposa">Esposa</option>
+                  <option value="irmao">Irmão</option>
+                  <option value="irma">Irmã</option>
+                  <option value="avó">Avó</option>
+                  <option value="avo">Avô</option>
+                  <option value="neto">Neto</option>
+                  <option value="neta">Neta</option>
+                  <option value="tio">Tio</option>
+                  <option value="tia">Tia</option>
+                  <option value="sobrinho">Sobrinho</option>
+                  <option value="sobrinha">Sobrinha</option>
+                  <option value="primo">Primo</option>
+                  <option value="prima">Prima</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="responsible-phone">Telefone do responsável</label>
+                <input 
+                  type="tel" 
+                  id="responsible-phone" 
+                  name="responsible_phone"
+                  placeholder="(00) 00000-0000"
+                />
+              </div>
+
+              <div class="form-group form-group--full">
+                <label for="observations">Observações gerais</label>
+                <textarea 
+                  id="observations" 
+                  name="observations"
+                  placeholder="Informações adicionais relevantes..."
+                  rows="4"
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="status">Situação do cadastro *</label>
+                <select id="status" name="status" required>
+                  <option value="">Selecione</option>
+                  <option value="ativo">Ativo</option>
+                  <option value="inativo">Inativo</option>
+                </select>
+              </div>
+
+              <div class="form-actions form-group--full">
+                <button type="button" class="btn btn--secondary" onclick="goBackToProfile()">
+                  Cancelar
+                </button>
+                <button type="submit" class="btn btn--primary">
+                  Salvar Alterações
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+
+        <div class="modal" id="modal-account">
+          <div class="modal__content">
+            <div class="modal__header">
+              <h2 class="modal__title">Minha Conta</h2>
+              <button class="modal__close">×</button>
+            </div>
+            <div class="modal__body">
+              <div id="account-tabs">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e5e7eb;">
+                  <button type="button" class="account-tab-btn" data-tab="profile" style="padding: 10px 20px; background: none; border: none; color: #1f60e8; border-bottom: 3px solid #1f60e8; cursor: pointer; font-weight: 600;">
+                    👤 Perfil
+                  </button>
+                  <button type="button" class="account-tab-btn" data-tab="password" style="padding: 10px 20px; background: none; border: none; color: #999; cursor: pointer; font-weight: 600;">
+                    🔐 Senha
+                  </button>
+                </div>
+
+                <div id="tab-profile" class="account__tab">
+                  <form class="modal__form" id="form-profile">
+                    <div class="modal__form-group">
+                      <label for="account-name">Nome</label>
+                      <input type="text" id="account-name" placeholder="Seu nome" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="account-email">Email (não pode ser alterado)</label>
+                      <input type="email" id="account-email" placeholder="Seu email" disabled />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Salvar Alterações</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+
+                <div id="tab-password" class="account__tab" style="display: none;">
+                  <form class="modal__form" id="form-password">
+                    <div class="modal__form-group">
+                      <label for="current-password">Senha Atual</label>
+                      <input type="password" id="current-password" placeholder="Digite sua senha atual" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="new-password">Nova Senha</label>
+                      <input type="password" id="new-password" placeholder="Digite a nova senha" required />
+                    </div>
+                    <div class="modal__form-group">
+                      <label for="confirm-password">Confirmar Nova Senha</label>
+                      <input type="password" id="confirm-password" placeholder="Confirme a nova senha" required />
+                    </div>
+                    <div class="modal__form-actions">
+                      <button type="submit" class="modal__btn modal__btn--primary">Alterar Senha</button>
+                      <button type="button" class="modal__btn modal__btn--cancel modal__close">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <script src="../../recursos/js/notificacoes.js"></script>
+    <script src="../../recursos/js/menu-usuario.js"></script>
+    <script src="../../recursos/js/sidebar-menu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
+    <script src="../../recursos/js/date-picker-ptbr.js"></script>
+    <script src="../../recursos/js/paciente-form-utils.js"></script>
+    <script>
+      const API_URL = '';
+      const form = document.getElementById('patient-form');
+      const birthDateInput = document.getElementById('birth-date');
+      const ageInput = document.getElementById('age');
+      const patientNameEl = document.getElementById('patient-name');
+      const [birthDatePicker] = window.initPtBrDatePicker ? window.initPtBrDatePicker('#birth-date') : [];
+
+      if (!birthDatePicker) {
+        birthDateInput.type = 'date';
+        birthDateInput.lang = 'pt-BR';
+      }
+
+      let patientId = null;
+
+      // Obter email do localStorage
+      const userEmail = localStorage.getItem('userEmail');
+      if (!userEmail) { window.location.href = '../autenticacao/entrar.html'; }
+
+      // Obter ID da URL
+      function getIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id');
+      }
+
+      function goBackToProfile() {
+        const id = patientId || getIdFromURL();
+        if (id) {
+          window.location.href = `./visualizar.html?id=${id}`;
+          return;
+        }
+        window.location.href = './lista.html';
+      }
+
+      function getDateParts(dateValue) {
+        if (!dateValue) return null;
+        const raw = typeof dateValue === 'string' ? dateValue : new Date(dateValue).toISOString();
+        const dateOnly = raw.split('T')[0];
+        const [year, month, day] = dateOnly.split('-');
+        if (!year || !month || !day) return null;
+        return {
+          year: Number(year),
+          month: Number(month),
+          day: Number(day)
+        };
+      }
+
+      function formatBirthDateIso(dateValue) {
+        const parts = getDateParts(dateValue);
+        if (!parts) return '';
+        const month = String(parts.month).padStart(2, '0');
+        const day = String(parts.day).padStart(2, '0');
+        return `${parts.year}-${month}-${day}`;
+      }
+
+      function normalizePatientStatus(status) {
+        const normalized = String(status || '').trim().toLowerCase();
+        return normalized === 'inativo' ? 'inativo' : 'ativo';
+      }
+
+      function calculateAgeFromParts(parts) {
+        if (!parts) return null;
+        const birthDate = new Date(parts.year, parts.month - 1, parts.day);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        return age;
+      }
+
+      // Carregar dados do paciente
+      async function loadPatient() {
+        patientId = getIdFromURL();
+        if (!patientId) {
+          notify.error('ID do paciente não encontrado');
+          setTimeout(() => window.location.href = './lista.html', 1500);
+          return;
+        }
+
+        try {
+          const userEmail = localStorage.getItem('userEmail');
+          const response = await fetch(`${API_URL}/api/pacientes/${patientId}`, {
+            headers: {
+              'x-user-email': userEmail
+            }
+          });
+          if (response.ok) {
+            const data = await response.json();
+            populateForm(data);
+            patientNameEl.textContent = data.name;
+          } else {
+            notify.error('Paciente não encontrado');
+            setTimeout(() => window.location.href = './lista.html', 1500);
+          }
+        } catch (error) {
+          console.error('Erro ao carregar paciente:', error);
+          notify.error('Erro ao carregar dados do paciente');
+        }
+      }
+
+      function populateForm(data) {
+        document.getElementById('full-name').value = data.name || '';
+        
+        // Converter data de YYYY-MM-DD para DD/MM/YYYY
+        const dateParts = getDateParts(data.birth_date);
+        if (dateParts) {
+          const birthDateIso = formatBirthDateIso(data.birth_date);
+          if (birthDatePicker) {
+            birthDatePicker.setDate(birthDateIso, true, 'Y-m-d');
+          } else {
+            document.getElementById('birth-date').value = birthDateIso;
+          }
+          
+          const age = calculateAgeFromParts(dateParts);
+          if (age !== null) {
+            document.getElementById('age').value = age;
+          }
+        }
+
+        document.getElementById('gender').value = data.gender || '';
+        document.getElementById('cpf').value = data.cpf || '';
+        document.getElementById('phone1').value = data.phone || '';
+        document.getElementById('phone2').value = data.phone2 || '';
+        document.getElementById('cep').value = data.cep || '';
+        document.getElementById('street').value = data.street || '';
+        document.getElementById('number').value = data.number || '';
+        document.getElementById('neighborhood').value = data.neighborhood || '';
+        document.getElementById('city').value = data.city || '';
+        document.getElementById('state').value = data.state || '';
+        document.getElementById('responsible').value = data.responsible || '';
+        document.getElementById('responsible-relationship').value = data.responsible_relationship || '';
+        document.getElementById('responsible-phone').value = data.responsible_phone || '';
+        document.getElementById('observations').value = data.observations || '';
+        document.getElementById('status').value = normalizePatientStatus(data.status);
+      }
+
+      function parseBirthDateParts(value) {
+        const raw = String(value || '').trim();
+        const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+
+        if (!match) {
+          return null;
+        }
+
+        const year = Number(match[1]);
+        const month = Number(match[2]);
+        const day = Number(match[3]);
+        const date = new Date(year, month - 1, day);
+
+        if (
+          date.getFullYear() !== year ||
+          date.getMonth() !== month - 1 ||
+          date.getDate() !== day
+        ) {
+          return null;
+        }
+
+        return { day, month, year, date };
+      }
+
+      function updateAgeFromBirthDate(showWarning = false) {
+        const parsed = parseBirthDateParts(birthDateInput.value);
+
+        if (!birthDateInput.value) {
+          ageInput.value = '';
+          birthDateInput.setCustomValidity('');
+          return false;
+        }
+
+        if (!parsed) {
+          ageInput.value = '';
+          birthDateInput.setCustomValidity('Selecione uma data válida');
+          if (showWarning) {
+            birthDateInput.reportValidity();
+          }
+          return false;
+        }
+
+        const today = new Date();
+        let age = today.getFullYear() - parsed.year;
+        const monthDiff = today.getMonth() - (parsed.month - 1);
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < parsed.day)) {
+          age--;
+        }
+
+        if (age < 0 || age > 150) {
+          ageInput.value = '';
+          birthDateInput.setCustomValidity('Data de nascimento inválida');
+          if (showWarning) {
+            birthDateInput.reportValidity();
+          }
+          return false;
+        }
+
+        birthDateInput.setCustomValidity('');
+        ageInput.value = age;
+        return true;
+      }
+
+      birthDateInput.addEventListener('input', function() {
+        birthDateInput.setCustomValidity('');
+      });
+
+      birthDateInput.addEventListener('blur', function() {
+        updateAgeFromBirthDate(true);
+      });
+
+      birthDateInput.addEventListener('change', function() {
+        updateAgeFromBirthDate(false);
+      });
+
+      PatientFormUtils.attachPhoneMasks();
+      PatientFormUtils.attachCpfMask();
+      PatientFormUtils.attachCepAutoFill({
+        onNotFound: () => notify.warning('CEP não encontrado'),
+        onFilled: () => notify.success('Endereço preenchido automaticamente!'),
+        onError: (error) => console.error('Erro ao buscar CEP:', error)
+      });
+
+      // Salvar alterações
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+
+        try {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Salvando...';
+
+          const formData = {
+            name: document.getElementById('full-name').value.trim(),
+            birth_date: PatientFormUtils.convertBrDateToDb(document.getElementById('birth-date').value),
+            gender: document.getElementById('gender').value,
+            cpf: document.getElementById('cpf').value.trim(),
+            phone: document.getElementById('phone1').value.trim() || null,
+            phone2: document.getElementById('phone2').value.trim() || null,
+            cep: document.getElementById('cep').value.trim() || null,
+            street: document.getElementById('street').value.trim(),
+            number: document.getElementById('number').value.trim(),
+            neighborhood: document.getElementById('neighborhood').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            state: document.getElementById('state').value,
+            responsible: document.getElementById('responsible').value.trim(),
+            responsible_relationship: document.getElementById('responsible-relationship').value,
+            responsible_phone: document.getElementById('responsible-phone').value.trim() || null,
+            observations: document.getElementById('observations').value.trim() || null,
+            status: document.getElementById('status').value
+          };
+
+          if (!formData.name) {
+            notify.error('Por favor, preencha o nome completo');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            return;
+          }
+
+          if (!formData.birth_date || !updateAgeFromBirthDate(false)) {
+            notify.error('Por favor, preencha a data de nascimento');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            return;
+          }
+
+          if (!formData.gender) {
+            notify.error('Por favor, selecione o sexo');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            return;
+          }
+
+          const contactError = PatientFormUtils.validateContactFields(formData);
+          if (contactError) {
+            notify.error(contactError);
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+            return;
+          }
+
+          const response = await fetch(`${API_URL}/api/pacientes/${patientId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-user-email': localStorage.getItem('userEmail')
+            },
+            body: JSON.stringify(formData)
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            notify.success('Paciente atualizado com sucesso!');
+            setTimeout(() => {
+              window.location.href = `./visualizar.html?id=${patientId}`;
+            }, 3000);
+          } else {
+            notify.error(data.message || 'Erro ao atualizar paciente');
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+          }
+        } catch (error) {
+          console.error('Erro:', error);
+          notify.error('Erro ao conectar com o servidor');
+          const submitBtn = form.querySelector('button[type="submit"]');
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Salvar Alterações';
+        }
+      });
+      initSidebarMenus();
+
+      // Carregar dados do paciente quando a página carrega
+      loadPatient();
+    </script>
+  </body>
+</html>
+
+
+
+
+
