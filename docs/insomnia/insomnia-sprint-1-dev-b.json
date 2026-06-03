@@ -1,0 +1,353 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-06-02T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v9",
+  "resources": [
+    {
+      "_id": "wrk_caige_s1_dev_b",
+      "parentId": null,
+      "name": "CAIGE Backend - Sprint 1 - Dev B",
+      "description": "Colecao Sprint 1 para cenarios de validacao (Dev B)",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_caige_s1_dev_b",
+      "parentId": "wrk_caige_s1_dev_b",
+      "name": "Dev B",
+      "data": {
+        "base_url": "http://localhost:3000",
+        "token_supervisor": "",
+        "token_professor": "",
+        "token_sem_permissao": "",
+        "id_usuario_teste": "",
+        "id_paciente_teste": "",
+        "dev_nome": "Dev B",
+        "cenario_foco": "B"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "base_url",
+          "token_supervisor",
+          "token_professor",
+          "token_sem_permissao",
+          "id_usuario_teste",
+          "id_paciente_teste",
+          "dev_nome",
+          "cenario_foco"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1,
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_s1_us01_dev_b",
+      "parentId": "wrk_caige_s1_dev_b",
+      "name": "US-01 - Autenticacao",
+      "description": "Login com JWT",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_s1_us02_dev_b",
+      "parentId": "wrk_caige_s1_dev_b",
+      "name": "US-02 - Usuarios",
+      "description": "CRUD de usuarios",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -900,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_s1_us04_dev_b",
+      "parentId": "wrk_caige_s1_dev_b",
+      "name": "US-04 - Pacientes",
+      "description": "CRUD de pacientes",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -800,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_s1_login_dev_b",
+      "parentId": "fld_s1_us01_dev_b",
+      "name": "[US-01][B] Login senha invalida",
+      "method": "POST",
+      "url": "{{ base_url }}/api/autenticacao/entrar",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"supervisor@teste.com\",\n  \"senha\": \"123456-invalida\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_s1_get_usuarios_dev_b",
+      "parentId": "fld_s1_us02_dev_b",
+      "name": "[US-02][B] Listar usuarios",
+      "method": "GET",
+      "url": "{{ base_url }}/api/usuarios",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token_supervisor }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_s1_post_usuarios_dev_b",
+      "parentId": "fld_s1_us02_dev_b",
+      "name": "[US-02][B] Criar usuario com validacao",
+      "method": "POST",
+      "url": "{{ base_url }}/api/usuarios",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"\",\n  \"email\": \"usuario.teste.dev.b@caige.com\",\n  \"senha\": \"123456\",\n  \"tipo\": \"professor\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token_supervisor }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -900,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_s1_put_usuarios_dev_b",
+      "parentId": "fld_s1_us02_dev_b",
+      "name": "[US-02][B] Atualizar usuario",
+      "method": "PUT",
+      "url": "{{ base_url }}/api/usuarios/{{ id_usuario_teste }}",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"Usuario Teste Atualizado Dev B\",\n  \"tipo\": \"professor\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token_supervisor }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -800,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_s1_delete_usuarios_dev_b",
+      "parentId": "fld_s1_us02_dev_b",
+      "name": "[US-02][B] Excluir usuario",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/usuarios/{{ id_usuario_teste }}",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token_supervisor }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -700,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_s1_get_pacientes_dev_b",
+      "parentId": "fld_s1_us04_dev_b",
+      "name": "[US-04][B] Listar pacientes",
+      "method": "GET",
+      "url": "{{ base_url }}/api/pacientes",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token_supervisor }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1000,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_s1_get_paciente_id_dev_b",
+      "parentId": "fld_s1_us04_dev_b",
+      "name": "[US-04][B] Buscar paciente por id",
+      "method": "GET",
+      "url": "{{ base_url }}/api/pacientes/{{ id_paciente_teste }}",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token_supervisor }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -900,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_s1_post_pacientes_dev_b",
+      "parentId": "fld_s1_us04_dev_b",
+      "name": "[US-04][B] Criar paciente com validacao",
+      "method": "POST",
+      "url": "{{ base_url }}/api/pacientes",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"\",\n  \"data_nascimento\": \"2010-05-20\",\n  \"sexo\": \"M\",\n  \"curso\": 1\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token_supervisor }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -800,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_s1_put_pacientes_dev_b",
+      "parentId": "fld_s1_us04_dev_b",
+      "name": "[US-04][B] Atualizar paciente",
+      "method": "PUT",
+      "url": "{{ base_url }}/api/pacientes/{{ id_paciente_teste }}",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nome\": \"Paciente Teste Atualizado Dev B\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token_supervisor }}"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -700,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_s1_delete_pacientes_dev_b",
+      "parentId": "fld_s1_us04_dev_b",
+      "name": "[US-04][B] Excluir paciente",
+      "method": "DELETE",
+      "url": "{{ base_url }}/api/pacientes/{{ id_paciente_teste }}",
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{ token_supervisor }}"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -600,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    }
+  ]
+}
