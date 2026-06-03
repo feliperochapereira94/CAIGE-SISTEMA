@@ -44,7 +44,7 @@ Body de exemplo:
 
 ```json
 {
-	"email": "supervisor@teste.com",
+	"email": "supervisor@univale.br",
 	"senha": "123456"
 }
 ```
@@ -73,7 +73,7 @@ Body de criação (POST) exemplo:
 ```json
 {
 	"nome": "Usuario Teste",
-	"email": "usuario.teste@caige.com",
+	"email": "usuario.teste@univale.br",
 	"senha": "123456",
 	"tipo": "professor"
 }

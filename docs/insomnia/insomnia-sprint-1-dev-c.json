@@ -81,7 +81,7 @@
       "url": "{{ base_url }}/api/autenticacao/entrar",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"email\": \"supervisor@teste.com\"\n}"
+        "text": "{\n  \"email\": \"supervisor@univale.br\"\n}"
       },
       "parameters": [],
       "headers": [
@@ -133,7 +133,7 @@
       "url": "{{ base_url }}/api/usuarios",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"nome\": \"Usuario Teste Dev C\",\n  \"email\": \"usuario.teste.dev.c@caige.com\",\n  \"senha\": \"123456\",\n  \"tipo\": \"professor\"\n}"
+        "text": "{\n  \"nome\": \"Usuario Teste Dev C\",\n  \"email\": \"usuario.teste.dev.c@univale.br\",\n  \"senha\": \"123456\",\n  \"tipo\": \"professor\"\n}"
       },
       "parameters": [],
       "headers": [
